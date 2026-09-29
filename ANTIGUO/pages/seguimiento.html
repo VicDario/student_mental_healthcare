@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Seguimiento y cierre de casos de la Red de Apoyo y Salud Mental Universitaria."
+    />
+    <title>Seguimiento de casos | Red de Apoyo</title>
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/palette.css" />
+    <link rel="stylesheet" href="../css/navbar.css" />
+    <link rel="stylesheet" href="../css/footer.css" />
+    <link rel="stylesheet" href="../css/seguimiento.css" />
+  </head>
+
+  <body>
+    <header class="floating-header-wrapper">
+      <nav class="floating-navbar" aria-label="Navegación principal">
+        <a href="../index.html" class="nav-brand" title="Ir al Inicio">
+          <img
+            src="../images/logo_clean.png"
+            alt="Área Universitaria Salud Mental - Acompañamiento Terapéutico"
+            class="nav-brand-img"
+          />
+        </a>
+
+        <ul id="primaryNav" class="nav-pill-menu">
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="../index.html#inicio">Inicio</a>
+          </li>
+
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="solicitud-apoyo.html">Solicitudes</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="derivacion-docente.html">Derivar</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="clasificacion.html">Clasificar</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="gestionar-talleres.html">Talleres</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link active" href="seguimiento.html" aria-current="page">Seguimiento</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="reportes.html">Reportes</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="bitacora.html">Bitácora</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="admin-usuarios.html">Usuarios</a>
+          </li>
+        </ul>
+
+        <div class="nav-actions">
+          <a
+            href="tel:8005552983"
+            class="nav-sos-pill"
+            title="Línea de Crisis 24/7"
+          >
+            <span class="sos-dot"></span>
+            <span>SOS 24/7</span>
+          </a>
+
+          <span
+            class="nav-user-badge"
+            title="Ver Perfil Institucional"
+        >
+            <div class="nav-user-avatar">AU</div>
+            <div class="nav-user-info">
+              <span class="nav-user-name">Admin Unidad</span>
+            </div>
+          </span>
+        <button
+          type="button"
+          class="nav-toggle"
+          aria-label="Abrir menú de navegación"
+          aria-expanded="false"
+          aria-controls="primaryNav"
+        >
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
+      </div>
+      </nav>
+    </header>
+
+    <main class="layout">
+      <div class="page-header">
+        <h1 class="page-title">Seguimiento y cierre de casos</h1>
+        <p class="page-subtitle">
+          Revisa el historial de intervenciones de cada caso activo, registra
+          avances y formaliza el cierre cuando el proceso de acompañamiento haya
+          concluido satisfactoriamente.
+        </p>
+      </div>
+
+      <div class="stats-row" role="region" aria-label="Resumen de casos">
+        <div class="stat-card">
+          <p class="stat-value">5</p>
+          <p class="stat-label">Casos activos</p>
+        </div>
+        <div class="stat-card stat-card-warning">
+          <p class="stat-value">1</p>
+          <p class="stat-label">Pendientes de revisión</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-value">2</p>
+          <p class="stat-label">Listos para cierre</p>
+        </div>
+        <div class="stat-card stat-card-success">
+          <p class="stat-value">7</p>
+          <p class="stat-label">Cerrados este mes</p>
+        </div>
+      </div>
+
+      <form class="filter-bar" aria-label="Filtrar casos">
+        <div class="filter-field">
+          <label class="form-label" for="filter-status">Estado</label>
+          <select class="form-control" id="filter-status" name="filter-status">
+            <option value="">Todos los estados</option>
+            <option value="following">En seguimiento</option>
+            <option value="pending">Pendiente revisión</option>
+            <option value="ready">Listo para cierre</option>
+            <option value="closed">Cerrado</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="form-label" for="filter-unit">Unidad</label>
+          <select class="form-control" id="filter-unit" name="filter-unit">
+            <option value="">Todas las unidades</option>
+            <option value="psychology">Atención psicológica</option>
+            <option value="social">Trabajo social</option>
+            <option value="counseling">Orientación estudiantil</option>
+            <option value="academic">Apoyo académico</option>
+            <option value="welfare">Dirección de bienestar</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="form-label" for="filter-case">Código de caso</label>
+          <input
+            class="form-control"
+            type="text"
+            id="filter-case"
+            name="filter-case"
+            placeholder="Ej. CAS-0089"
+          />
+        </div>
+        <button class="button button-secondary" type="button">
+          Aplicar filtros
+        </button>
+      </form>
+
+      <div class="workspace workspace-seguimiento">
+
+        <!-- Panel izquierdo: lista de casos -->
+        <section class="panel" aria-labelledby="case-list-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="case-list-title">Casos en curso</h2>
+            <p class="panel-count" id="case-count">5 casos</p>
+          </div>
+
+          <ul class="request-list" id="case-list">
+
+            <li
+              class="case-card case-card-selected"
+              tabindex="0"
+              role="button"
+              aria-pressed="true"
+              data-id="CAS-0089"
+              data-status="following"
+            >
+              <div class="case-top">
+                <p class="case-code">CAS-0089</p>
+                <span class="badge badge-following">En seguimiento</span>
+              </div>
+              <p class="case-title">
+                <strong>Acompañamiento en crisis</strong>
+              </p>
+              <ul class="request-meta">
+                <li>Psic. Valentina Rojas</li>
+                <li>Atención psicológica</li>
+                <li>Casa central</li>
+              </ul>
+              <div class="case-footer">
+                <span class="case-date">Último contacto: 2 sep 2026</span>
+                <span class="badge badge-high">Alta</span>
+              </div>
+            </li>
+
+            <li
+              class="case-card"
+              tabindex="0"
+              role="button"
+              aria-pressed="false"
+              data-id="CAS-0091"
+              data-status="following"
+            >
+              <div class="case-top">
+                <p class="case-code">CAS-0091</p>
+                <span class="badge badge-following">En seguimiento</span>
+              </div>
+              <p class="case-title">Seguimiento preventivo primer año</p>
+              <ul class="request-meta">
+                <li>T.S. Marcela Fuentes</li>
+                <li>Trabajo social</li>
+                <li>Sede norte</li>
+              </ul>
+              <div class="case-footer">
+                <span class="case-date">Último contacto: 5 sep 2026</span>
+                <span class="badge badge-medium">Media</span>
+              </div>
+            </li>
+
+            <li
+              class="case-card"
+              tabindex="0"
+              role="button"
+              aria-pressed="false"
+              data-id="CAS-0085"
+              data-status="pending"
+            >
+              <div class="case-top">
+                <p class="case-code">CAS-0085</p>
+                <span class="badge badge-pending">Pendiente revisión</span>
+              </div>
+              <p class="case-title">Dificultades de convivencia grupal</p>
+              <ul class="request-meta">
+                <li>Sin asignar</li>
+                <li>Orientación estudiantil</li>
+                <li>Casa central</li>
+              </ul>
+              <div class="case-footer">
+                <span class="case-date">Recibido: 30 ago 2026</span>
+                <span class="badge badge-medium">Media</span>
+              </div>
+            </li>
+
+            <li
+              class="case-card"
+              tabindex="0"
+              role="button"
+              aria-pressed="false"
+              data-id="CAS-0078"
+              data-status="ready"
+            >
+              <div class="case-top">
+                <p class="case-code">CAS-0078</p>
+                <span class="badge badge-ready">Listo para cierre</span>
+              </div>
+              <p class="case-title">Orientación económica y beneficios</p>
+              <ul class="request-meta">
+                <li>Dir. Gabriela Muñoz</li>
+                <li>Dirección de bienestar</li>
+                <li>Sede sur</li>
+              </ul>
+              <div class="case-footer">
+                <span class="case-date">Último contacto: 4 sep 2026</span>
+                <span class="badge badge-low">Baja</span>
+              </div>
+            </li>
+
+            <li
+              class="case-card"
+              tabindex="0"
+              role="button"
+              aria-pressed="false"
+              data-id="CAS-0072"
+              data-status="ready"
+            >
+              <div class="case-top">
+                <p class="case-code">CAS-0072</p>
+                <span class="badge badge-ready">Listo para cierre</span>
+              </div>
+              <p class="case-title">Apoyo académico semestre crítico</p>
+              <ul class="request-meta">
+                <li>Prof. Ricardo Soto</li>
+                <li>Apoyo académico</li>
+                <li>Sede sur</li>
+              </ul>
+              <div class="case-footer">
+                <span class="case-date">Último contacto: 3 sep 2026</span>
+                <span class="badge badge-low">Baja</span>
+              </div>
+            </li>
+
+          </ul>
+        </section>
+
+        <!-- Panel derecho: detalle del caso -->
+        <section class="panel" aria-labelledby="case-detail-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="case-detail-title">
+              Seguimiento del caso
+            </h2>
+          </div>
+
+          <div id="case-detail-body">
+
+            <!-- Encabezado del caso -->
+            <div class="detail-header">
+              <p class="case-summary-code">CAS-0089</p>
+              <span class="badge badge-following" id="detail-status-badge">En seguimiento</span>
+              <span class="sensitivity-indicator">
+                <span class="sensitivity-dot"></span>
+                Caso sensible
+              </span>
+            </div>
+
+            <article class="case-summary">
+              <p class="case-summary-code">Acompañamiento en crisis</p>
+              <p class="case-summary-text">
+                Psic. Valentina Rojas — Atención psicológica · Casa central
+              </p>
+            </article>
+
+            <div class="detail-divider"></div>
+
+            <!-- Línea de tiempo -->
+            <p class="timeline-heading">Intervenciones registradas</p>
+
+            <ul class="timeline" aria-label="Historial de intervenciones">
+              <li class="timeline-item">
+                <p class="timeline-date">24 ago 2026</p>
+                <p class="timeline-title">Solicitud recibida y clasificada</p>
+                <p class="timeline-desc">
+                  Urgencia alta. Derivada de inmediato a atención psicológica.
+                </p>
+              </li>
+              <li class="timeline-item">
+                <p class="timeline-date">25 ago 2026</p>
+                <p class="timeline-title">Primera sesión de acompañamiento</p>
+                <p class="timeline-desc">
+                  Se establece rapport y se aplica evaluación inicial. Signos de
+                  ansiedad moderada.
+                </p>
+              </li>
+              <li class="timeline-item">
+                <p class="timeline-date">28 ago 2026</p>
+                <p class="timeline-title">Segunda sesión — ajuste del plan</p>
+                <p class="timeline-desc">
+                  Se incorpora red de apoyo familiar y se ajustan los objetivos
+                  terapéuticos.
+                </p>
+              </li>
+              <li class="timeline-item">
+                <p class="timeline-date">2 sep 2026</p>
+                <p class="timeline-title">Seguimiento telefónico</p>
+                <p class="timeline-desc">
+                  Estudiante reporta mejoría. Confirma asistencia a próxima
+                  sesión.
+                </p>
+              </li>
+              <li class="timeline-item timeline-item-pending">
+                <p class="timeline-date">9 sep 2026</p>
+                <p class="timeline-title timeline-title-pending">
+                  Tercera sesión (programada)
+                </p>
+              </li>
+            </ul>
+
+            <div class="detail-divider"></div>
+
+            <!-- Formulario de cierre -->
+            <div id="close-section">
+              <p class="close-section-title">Registrar cierre de caso</p>
+              <p class="close-section-hint">
+                Solo disponible cuando el proceso de acompañamiento ha concluido
+                y el profesional responsable autoriza el cierre.
+              </p>
+
+              <form id="close-form">
+                <div class="form-field">
+                  <label class="form-label" for="close-reason">
+                    Motivo de cierre
+                  </label>
+                  <select
+                    class="form-control"
+                    id="close-reason"
+                    name="close-reason"
+                    required
+                  >
+                    <option value="">Selecciona un motivo</option>
+                    <option value="resolved">Caso resuelto satisfactoriamente</option>
+                    <option value="voluntary">Alta voluntaria del estudiante</option>
+                    <option value="referral">Derivación a servicio externo</option>
+                    <option value="no-response">Sin respuesta del estudiante (3 intentos)</option>
+                    <option value="admin">Cierre administrativo</option>
+                  </select>
+                </div>
+
+                <div class="form-field">
+                  <label class="form-label" for="close-summary">
+                    Resumen del proceso
+                  </label>
+                  <textarea
+                    class="form-control"
+                    id="close-summary"
+                    name="close-summary"
+                    placeholder="Describe brevemente los resultados del acompañamiento y el estado del estudiante al cierre."
+                    required
+                  ></textarea>
+                  <p class="form-hint">
+                    Este texto quedará registrado en la bitácora como parte del
+                    historial permanente del caso.
+                  </p>
+                </div>
+
+                <label class="choice close-confirm-choice">
+                  <input
+                    type="checkbox"
+                    id="close-confirm"
+                    name="close-confirm"
+                    required
+                  />
+                  Confirmo que el proceso de acompañamiento ha concluido y
+                  autorizo el cierre de este caso.
+                </label>
+
+                <div class="form-actions">
+                  <button
+                    class="button button-danger"
+                    type="submit"
+                    id="btn-close"
+                  >
+                    Registrar cierre
+                  </button>
+                  <button class="button button-secondary" type="reset">
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+
+              <div class="close-confirmation" id="close-confirmation" role="status">
+                <p class="close-confirmation-title">Caso cerrado correctamente</p>
+                <p class="close-confirmation-text" id="close-confirmation-text"></p>
+              </div>
+            </div>
+
+          </div>
+
+          <p class="privacy-note privacy-note-spaced">
+            <strong>Confidencialidad.</strong> Toda la información registrada en
+            este seguimiento es de carácter reservado. El cierre de un caso queda
+            registrado permanentemente en la bitácora del sistema junto con la
+            identidad del profesional que lo autorizó.
+          </p>
+        </section>
+
+      </div>
+    </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>Red de Apoyo y Salud Mental Universitaria</h3>
+          <p>
+            Plataforma institucional de acompañamiento y contención psicológica para estudiantes de pregrado y posgrado.
+          </p>
+          <p class="footer-location">
+            📍 Edificio de Servicios Estudiantiles, Piso 2, Campus Central.
+          </p>
+        </div>
+
+        <div class="footer-column">
+          <h4>Navegación</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html#inicio">Inicio</a></li>
+            <li><a href="../index.html#descripcion">Descripción</a></li>
+            <li><a href="../index.html#problema">El Problema</a></li>
+            <li><a href="../index.html#apoyo">Estamos Contigo</a></li>
+            <li><a href="../index.html#solucion">Nuestra Solución</a></li>
+            <li><a href="../index.html#servicios">Servicios</a></li>
+            <li><a href="../index.html#atencion">Horarios</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Servicios</h4>
+          <ul class="footer-links">
+            <li><a href="solicitud-apoyo.html">Solicitud de Apoyo</a></li>
+            <li><a href="../index.html#formulario">Solicitar Orientación</a></li>
+            <li><a href="gestionar-talleres.html">Talleres Preventivos</a></li>
+            <li><a href="clasificacion.html">Clasificar Solicitudes</a></li>
+            <li><a href="seguimiento.html">Seguimiento de Casos</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Emergencias 24/7</h4>
+          <p class="footer-emergency-note">
+            Si tú o alguien que conoces necesita ayuda inmediata:
+          </p>
+          <strong class="footer-emergency-phone">800-555-AYUDA</strong>
+          <span class="footer-emergency-sub">Línea gratuita, anónima y permanente.</span>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Red de Salud Mental Universitaria. Todos los derechos reservados.</p>
+        <p>Cumplimiento estricto con protocolos de confidencialidad y ética profesional.</p>
+      </div>
+    </div>
+  </footer>
+
+    <script src="../js/seguimiento.js"></script>
+    <script src="../js/navbar.js"></script>
+</body>
+</html>

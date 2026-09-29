@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Bitácora de accesos y modificaciones en casos sensibles de la Red de Apoyo y Salud Mental Universitaria."
+    />
+    <title>Bitácora de accesos | Red de Apoyo</title>
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/palette.css" />
+    <link rel="stylesheet" href="../css/navbar.css" />
+    <link rel="stylesheet" href="../css/footer.css" />
+    <link rel="stylesheet" href="../css/bitacora.css" />
+  </head>
+
+  <body>
+    <header class="floating-header-wrapper">
+      <nav class="floating-navbar" aria-label="Navegación principal">
+        <a href="../index.html" class="nav-brand" title="Ir al Inicio">
+          <img
+            src="../images/logo_clean.png"
+            alt="Área Universitaria Salud Mental - Acompañamiento Terapéutico"
+            class="nav-brand-img"
+          />
+        </a>
+
+        <ul id="primaryNav" class="nav-pill-menu">
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="../index.html#inicio">Inicio</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="solicitud-apoyo.html">Solicitudes</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="derivacion-docente.html">Derivar</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="clasificacion.html">Clasificar</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="gestionar-talleres.html">Talleres</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="seguimiento.html">Seguimiento</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="reportes.html">Reportes</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link active" href="bitacora.html" aria-current="page">Bitácora</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="admin-usuarios.html">Usuarios</a>
+          </li>
+        </ul>
+
+        <div class="nav-actions">
+          <a
+            href="tel:8005552983"
+            class="nav-sos-pill"
+            title="Línea de Crisis 24/7"
+          >
+            <span class="sos-dot"></span>
+            <span>SOS 24/7</span>
+          </a>
+
+          <span
+            class="nav-user-badge"
+            title="Ver Perfil Institucional"
+        >
+            <div class="nav-user-avatar">AU</div>
+            <div class="nav-user-info">
+              <span class="nav-user-name">Admin Unidad</span>
+            </div>
+          </span>
+        <button
+          type="button"
+          class="nav-toggle"
+          aria-label="Abrir menú de navegación"
+          aria-expanded="false"
+          aria-controls="primaryNav"
+        >
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
+      </div>
+      </nav>
+    </header>
+
+    <main class="layout">
+      <div class="page-header">
+        <h1 class="page-title">Bitácora de accesos y modificaciones</h1>
+        <p class="page-subtitle">
+          Registro auditado de cada acceso, modificación y restricción aplicada
+          a casos sensibles. Toda acción queda vinculada al usuario, la fecha y
+          la hora para garantizar la trazabilidad y el cumplimiento de la
+          política de confidencialidad.
+        </p>
+      </div>
+
+      <div class="stats-row" role="region" aria-label="Resumen de actividad">
+        <div class="stat-card">
+          <p class="stat-value">38</p>
+          <p class="stat-label">Registros hoy</p>
+        </div>
+        <div class="stat-card stat-card-warning">
+          <p class="stat-value">12</p>
+          <p class="stat-label">Modificaciones esta semana</p>
+        </div>
+        <div class="stat-card stat-card-alert">
+          <p class="stat-value">3</p>
+          <p class="stat-label">Restricciones activas</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-value">9</p>
+          <p class="stat-label">Casos sensibles abiertos</p>
+        </div>
+      </div>
+
+      <form class="filter-bar" id="filter-form" aria-label="Filtrar registros de bitácora">
+        <div class="filter-field">
+          <label class="form-label" for="filter-from">Desde</label>
+          <input
+            class="form-control"
+            type="date"
+            id="filter-from"
+            name="filter-from"
+            value="2026-09-01"
+          />
+        </div>
+        <div class="filter-field">
+          <label class="form-label" for="filter-to">Hasta</label>
+          <input
+            class="form-control"
+            type="date"
+            id="filter-to"
+            name="filter-to"
+            value="2026-09-06"
+          />
+        </div>
+        <div class="filter-field">
+          <label class="form-label" for="filter-action">Tipo de acción</label>
+          <select
+            class="form-control"
+            id="filter-action"
+            name="filter-action"
+          >
+            <option value="">Todas las acciones</option>
+            <option value="access">Acceso</option>
+            <option value="modify">Modificación</option>
+            <option value="restrict">Restricción</option>
+            <option value="export">Exportación</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="form-label" for="filter-case">Código de caso</label>
+          <input
+            class="form-control"
+            type="text"
+            id="filter-case"
+            name="filter-case"
+            placeholder="Ej. CAS-0089"
+          />
+        </div>
+        <button class="button button-secondary" id="btn-filter" type="button">
+          Aplicar filtros
+        </button>
+      </form>
+
+      <div class="workspace">
+
+        <section class="panel" aria-labelledby="log-list-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="log-list-title">
+              Registros de bitácora
+            </h2>
+            <p class="panel-count" id="log-count">6 registros</p>
+          </div>
+
+          <ul class="request-list" id="log-list">
+
+            <li
+              class="log-entry log-entry-selected"
+              tabindex="0"
+              role="button"
+              aria-pressed="true"
+              data-id="BIT-0031"
+              data-type="modify"
+              data-case="CAS-0089"
+              data-date="2026-09-06"
+            >
+              <div class="log-top">
+                <p class="log-id">BIT-0031</p>
+                <span class="badge badge-modify">Modificación</span>
+              </div>
+              <p class="log-action-text">
+                <strong>Cambio de clasificación en caso de alta sensibilidad</strong>
+              </p>
+              <ul class="request-meta">
+                <li>Caso <strong>CAS-0089</strong></li>
+                <li>Psic. Valentina Rojas</li>
+                <li>Atención psicológica</li>
+              </ul>
+              <div class="log-footer">
+                <time class="log-timestamp" datetime="2026-09-06T09:22">
+                  06 sep 2026, 09:22
+                </time>
+                <button class="button button-quiet" type="button">
+                  Viendo detalle
+                </button>
+              </div>
+            </li>
+
+            <li
+              class="log-entry"
+              tabindex="0"
+              role="button"
+              aria-pressed="false"
+              data-id="BIT-0030"
+              data-type="access"
+              data-case="CAS-0089"
+              data-date="2026-09-06"
+            >
+              <div class="log-top">
+                <p class="log-id">BIT-0030</p>
+                <span class="badge badge-access">Acceso</span>
+              </div>
+              <p class="log-action-text">
+                Consulta de ficha de caso de alta sensibilidad
+              </p>
+              <ul class="request-meta">
+                <li>Caso <strong>CAS-0089</strong></li>
+                <li>Admin Unidad</li>
+                <li>Unidad central</li>
+              </ul>
+              <div class="log-footer">
+                <time class="log-timestamp" datetime="2026-09-06T09:14">
+                  06 sep 2026, 09:14
+                </time>
+                <button class="button button-quiet" type="button">
+                  Ver detalle
+                </button>
+              </div>
+            </li>
+
+            <li
+              class="log-entry"
+              tabindex="0"
+              role="button"
+              aria-pressed="false"
+              data-id="BIT-0029"
+              data-type="restrict"
+              data-case="CAS-0091"
+              data-date="2026-09-05"
+            >
+              <div class="log-top">
+                <p class="log-id">BIT-0029</p>
+                <span class="badge badge-restrict">Restricción</span>
+              </div>
+              <p class="log-action-text">
+                <strong>Restricción de acceso aplicada a caso en crisis</strong>
+              </p>
+              <ul class="request-meta">
+                <li>Caso <strong>CAS-0091</strong></li>
+                <li>Admin Unidad</li>
+                <li>Unidad central</li>
+              </ul>
+              <div class="log-footer">
+                <time class="log-timestamp" datetime="2026-09-05T16:45">
+                  05 sep 2026, 16:45
+                </time>
+                <button class="button button-quiet" type="button">
+                  Ver detalle
+                </button>
+              </div>
+            </li>
+
+            <li
+              class="log-entry"
+              tabindex="0"
+              role="button"
+              aria-pressed="false"
+              data-id="BIT-0028"
+              data-type="access"
+              data-case="CAS-0091"
+              data-date="2026-09-05"
+            >
+              <div class="log-top">
+                <p class="log-id">BIT-0028</p>
+                <span class="badge badge-access">Acceso</span>
+              </div>
+              <p class="log-action-text">
+                Revisión de historial de intervenciones
+              </p>
+              <ul class="request-meta">
+                <li>Caso <strong>CAS-0091</strong></li>
+                <li>T.S. Marcela Fuentes</li>
+                <li>Trabajo social</li>
+              </ul>
+              <div class="log-footer">
+                <time class="log-timestamp" datetime="2026-09-05T16:30">
+                  05 sep 2026, 16:30
+                </time>
+                <button class="button button-quiet" type="button">
+                  Ver detalle
+                </button>
+              </div>
+            </li>
+
+            <li
+              class="log-entry"
+              tabindex="0"
+              role="button"
+              aria-pressed="false"
+              data-id="BIT-0027"
+              data-type="export"
+              data-case="CAS-0078"
+              data-date="2026-09-04"
+            >
+              <div class="log-top">
+                <p class="log-id">BIT-0027</p>
+                <span class="badge badge-export">Exportación</span>
+              </div>
+              <p class="log-action-text">
+                Generación de informe de seguimiento para caso sensible
+              </p>
+              <ul class="request-meta">
+                <li>Caso <strong>CAS-0078</strong></li>
+                <li>Dir. Gabriela Muñoz</li>
+                <li>Dirección de bienestar</li>
+              </ul>
+              <div class="log-footer">
+                <time class="log-timestamp" datetime="2026-09-04T11:00">
+                  04 sep 2026, 11:00
+                </time>
+                <button class="button button-quiet" type="button">
+                  Ver detalle
+                </button>
+              </div>
+            </li>
+
+            <li
+              class="log-entry"
+              tabindex="0"
+              role="button"
+              aria-pressed="false"
+              data-id="BIT-0026"
+              data-type="modify"
+              data-case="CAS-0078"
+              data-date="2026-09-04"
+            >
+              <div class="log-top">
+                <p class="log-id">BIT-0026</p>
+                <span class="badge badge-modify">Modificación</span>
+              </div>
+              <p class="log-action-text">
+                Actualización de observaciones clínicas
+              </p>
+              <ul class="request-meta">
+                <li>Caso <strong>CAS-0078</strong></li>
+                <li>Psic. Valentina Rojas</li>
+                <li>Atención psicológica</li>
+              </ul>
+              <div class="log-footer">
+                <time class="log-timestamp" datetime="2026-09-04T10:48">
+                  04 sep 2026, 10:48
+                </time>
+                <button class="button button-quiet" type="button">
+                  Ver detalle
+                </button>
+              </div>
+            </li>
+
+          </ul>
+        </section>
+
+        <section class="panel" aria-labelledby="log-detail-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="log-detail-title">
+              Detalle del registro
+            </h2>
+          </div>
+
+          <article id="log-detail-body" aria-label="Detalle de BIT-0031">
+            <div class="detail-header">
+              <p class="case-summary-code">BIT-0031</p>
+              <span class="badge badge-modify">Modificación</span>
+              <span class="sensitivity-indicator">
+                <span class="sensitivity-dot"></span>
+                Caso sensible
+              </span>
+            </div>
+
+            <div class="detail-divider"></div>
+
+            <div class="detail-field">
+              <p class="detail-label">Caso afectado</p>
+              <p class="detail-value">
+                <strong>CAS-0089</strong> — Acompañamiento en crisis
+              </p>
+            </div>
+
+            <div class="detail-field">
+              <p class="detail-label">Acción realizada</p>
+              <p class="detail-value">
+                Cambio de clasificación: tipo de apoyo y prioridad de atención
+              </p>
+            </div>
+
+            <div class="detail-field">
+              <p class="detail-label">Usuario responsable</p>
+              <p class="detail-value">
+                Psic. Valentina Rojas — Atención psicológica
+              </p>
+            </div>
+
+            <div class="detail-field">
+              <p class="detail-label">Fecha y hora</p>
+              <p class="detail-value">
+                <time datetime="2026-09-06T09:22:41">
+                  Domingo 6 de septiembre de 2026, 09:22:41
+                </time>
+              </p>
+            </div>
+
+            <div class="detail-field">
+              <p class="detail-label">Dirección IP</p>
+              <p class="detail-value detail-mono">
+                192.168.1.104 — Red interna universitaria
+              </p>
+            </div>
+
+            <div class="detail-divider"></div>
+
+            <p class="detail-label detail-label-spaced">
+              Cambios registrados
+            </p>
+
+            <div class="detail-change-block detail-change-before">
+              <span class="detail-change-label">Antes</span>
+              Tipo de apoyo: <strong>Emocional</strong> · Prioridad:
+              <strong>Media</strong>
+            </div>
+            <div class="detail-change-block detail-change-after">
+              <span class="detail-change-label">Después</span>
+              Tipo de apoyo: <strong>Psicológico</strong> · Prioridad:
+              <strong>Alta</strong>
+            </div>
+
+            <div class="detail-divider"></div>
+
+            <div class="form-actions">
+              <button class="button button-secondary" id="btn-export" type="button">
+                Exportar este registro
+              </button>
+            </div>
+            <p class="export-toast" id="export-toast" role="status"></p>
+          </article>
+
+          <p class="privacy-note">
+            <strong>Trazabilidad.</strong> Este registro forma parte de la
+            auditoría del sistema y no puede ser editado ni eliminado. Cualquier
+            intento de modificación queda igualmente registrado con la identidad
+            del usuario y la marca de tiempo.
+          </p>
+        </section>
+
+      </div>
+    </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>Red de Apoyo y Salud Mental Universitaria</h3>
+          <p>
+            Plataforma institucional de acompañamiento y contención psicológica para estudiantes de pregrado y posgrado.
+          </p>
+          <p class="footer-location">
+            📍 Edificio de Servicios Estudiantiles, Piso 2, Campus Central.
+          </p>
+        </div>
+
+        <div class="footer-column">
+          <h4>Navegación</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html#inicio">Inicio</a></li>
+            <li><a href="../index.html#descripcion">Descripción</a></li>
+            <li><a href="../index.html#problema">El Problema</a></li>
+            <li><a href="../index.html#apoyo">Estamos Contigo</a></li>
+            <li><a href="../index.html#solucion">Nuestra Solución</a></li>
+            <li><a href="../index.html#servicios">Servicios</a></li>
+            <li><a href="../index.html#atencion">Horarios</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Servicios</h4>
+          <ul class="footer-links">
+            <li><a href="solicitud-apoyo.html">Solicitud de Apoyo</a></li>
+            <li><a href="../index.html#formulario">Solicitar Orientación</a></li>
+            <li><a href="gestionar-talleres.html">Talleres Preventivos</a></li>
+            <li><a href="clasificacion.html">Clasificar Solicitudes</a></li>
+            <li><a href="seguimiento.html">Seguimiento de Casos</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Emergencias 24/7</h4>
+          <p class="footer-emergency-note">
+            Si tú o alguien que conoces necesita ayuda inmediata:
+          </p>
+          <strong class="footer-emergency-phone">800-555-AYUDA</strong>
+          <span class="footer-emergency-sub">Línea gratuita, anónima y permanente.</span>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Red de Salud Mental Universitaria. Todos los derechos reservados.</p>
+        <p>Cumplimiento estricto con protocolos de confidencialidad y ética profesional.</p>
+      </div>
+    </div>
+  </footer>
+
+    <script src="../js/bitacora.js"></script>
+    <script src="../js/navbar.js"></script>
+</body>
+</html>

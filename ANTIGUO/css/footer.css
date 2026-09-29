@@ -1,0 +1,136 @@
+/**
+ * Pie de página compartido
+ * Red de Apoyo y Salud Mental Universitaria (achieve_1)
+ *
+ * Depende de las variables definidas en palette.css.
+ * La envoltura usa .footer-inner en lugar de un contenedor global para no
+ * chocar con los contenedores propios de cada página (.container,
+ * .contenedor, .layout).
+ */
+
+.site-footer {
+  background-color: var(--color-forest-900, #081c15);
+  color: #ffffff;
+  padding: 60px 0 28px 0;
+  margin-top: 80px;
+}
+
+.site-footer .footer-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.footer-brand h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.footer-brand p {
+  font-size: 0.86rem;
+  color: var(--color-forest-200, #b7e4c7);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.footer-column h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-links li {
+  list-style: none;
+}
+
+.footer-links a {
+  color: var(--color-forest-200, #b7e4c7);
+  text-decoration: none;
+  font-size: 0.86rem;
+  transition: color 0.15s ease;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: var(--color-forest-400, #74c69d);
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+/* Detalles del pie de página */
+.footer-location {
+  font-size: 0.8rem;
+  color: var(--color-forest-400, #74c69d);
+}
+
+.footer-emergency-note {
+  font-size: 0.84rem;
+  color: var(--color-forest-200, #b7e4c7);
+  margin-bottom: 8px;
+}
+
+.footer-emergency-phone {
+  color: #ef4444;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.footer-emergency-sub {
+  font-size: 0.78rem;
+  color: var(--color-forest-400, #74c69d);
+}
+
+@media (max-width: 960px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 580px) {
+  .site-footer {
+    margin-top: 48px;
+    padding: 44px 0 24px 0;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+}

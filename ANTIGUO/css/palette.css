@@ -1,0 +1,62 @@
+@import url("https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap");
+
+/**
+ * Sistema de Diseño y Paleta de Colores para Salud Mental
+ */
+
+:root {
+  /* --- Tonos Verdes Principales (Calma, Estabilidad y Confianza) --- */
+  --color-forest-900: #081c15; /* Verde Bosque Muy Oscuro (Texto Principal / Títulos) */
+  --color-forest-800: #1b4332; /* Verde Bosque Profundo (Botones Primarios / Acentos Fuertes) */
+  --color-forest-700: #2d6a4f; /* Verde Pino Medio (Hover / Enlaces / Encabezados) */
+  --color-forest-600: #40916c; /* Verde Salvia Intenso (Badges / Iconos Destacados) */
+  --color-forest-500: #52b788; /* Verde Esmeralda Suave (Bordes Activos / Estados) */
+  --color-forest-400: #74c69d; /* Verde Claro para Acentos */
+  --color-forest-200: #b7e4c7; /* Verde Menta Claro (Bordes y Badges) */
+  --color-forest-100: #d8f3dc; /* Menta Pálido (Fondos de Alerta Suave / Tags) */
+  --color-forest-50:  #f0fdf4; /* Tinte Menta Ultraclaro (Hover de Filas / Tarjetas) */
+
+  /* --- Superficies y Fondos Limpios (Blancos y Neutros Terapéuticos) --- */
+  --color-bg-page:    #f4f8f5; /* Fondo General de Página (Descanso Visual) */
+  --color-bg-card:    #ffffff; /* Blanco Puro (Superficies de Contenido) */
+  --color-bg-subtle:  #eaf2ec; /* Fondo Neutro Secundario */
+
+  /* --- Tipografía y Contrastes --- */
+  --color-text-title: #0d2319; /* Casi Negro con Tinte Verde */
+  --color-text-body:  #1e293b; /* Texto de Lectura Principal */
+  --color-text-muted: #52796f; /* Texto Secundario y Metadatos */
+  --color-text-light: #ffffff; /* Texto sobre Fondos Oscuros */
+
+  /* --- Bordes y Separadores --- */
+  --color-border:     #e2ede5; /* Borde Suave Estándar */
+  --color-border-subtle: #edf4ef; /* Borde Muy Tenue */
+  --color-border-active: #2d6a4f; /* Borde para Elementos Enfocados */
+
+  /* --- Estados Funcionales (Triage y Crisis) --- */
+  --color-crisis-bg:  #fff1f2; /* Fondo de Alerta Urgente */
+  --color-crisis-border: #fecdd3;
+  --color-crisis-text: #9f1239;
+
+  --color-warning-bg: #fffbeb; /* Fondo de Alerta Moderada */
+  --color-warning-border: #fde68a;
+  --color-warning-text: #92400e;
+
+  /* --- Radios y Sombras --- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+
+  --shadow-subtle: 0 2px 8px rgba(8, 28, 21, 0.04);
+  --shadow-card:   0 8px 24px -4px rgba(27, 67, 50, 0.08);
+  --shadow-elevated: 0 16px 36px -6px rgba(8, 28, 21, 0.12);
+
+  /* --- Tipografía Base --- */
+  --font-family-sans: 'Switzer', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fuente-base: var(--font-family-sans);
+}
+
+html, body, button, input, select, textarea {
+  font-family: var(--font-family-sans);
+}

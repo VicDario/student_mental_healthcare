@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Talleres y Actividades Grupales | Área Universitaria de Salud Mental</title>
+  <link rel="stylesheet" href="../css/gestionar-talleres.css" />
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Barra de Navegación Flotante -->
+  <header class="site-header">
+    <nav class="floating-navbar" aria-label="Navegación Principal">
+      <a href="../index.html" class="brand-link" title="Ir al Inicio">
+        <img src="../images/logo_clean.png" alt="Área Universitaria Salud Mental" class="brand-logo" />
+      </a>
+
+      <ul id="primaryNav" class="nav-pill-menu">
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="../index.html#inicio">Inicio</a>
+          </li>
+
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="solicitud-apoyo.html">Solicitudes</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="derivacion-docente.html">Derivar</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="clasificacion.html">Clasificar</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link active" href="gestionar-talleres.html" aria-current="page">Talleres</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="seguimiento.html">Seguimiento</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="reportes.html">Reportes</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="bitacora.html">Bitácora</a>
+          </li>
+          <li class="nav-pill-item">
+            <a class="nav-pill-link" href="admin-usuarios.html">Usuarios</a>
+          </li>
+        </ul>
+
+      <div class="nav-cta-group">
+        <a href="tel:8005552983" class="btn-sos" title="Línea de Crisis 24/7">
+          <span class="sos-indicator"></span>
+          <span>SOS 24/7</span>
+        </a>
+        <span class="role-badge">Coordinación DAE</span>
+        <a href="#panelCrear" class="btn-nav-primary">+ Nueva Actividad</a>
+        <button
+          type="button"
+          class="nav-toggle"
+          aria-label="Abrir menú de navegación"
+          aria-expanded="false"
+          aria-controls="primaryNav"
+        >
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container-fluid main-content">
+    <!-- Encabezado de Gestión -->
+    <div class="top-bar-header">
+      <div>
+        <h1 class="page-title">Consola Operativa de Actividades y Talleres</h1>
+        <p class="page-subtitle">Monitoreo de nóminas, control de aforos en tiempo real y apertura inmediata de convocatorias grupales.</p>
+      </div>
+      <div class="header-badges">
+        <span class="status-chip active-chip">● 5 Talleres Vigentes</span>
+        <span class="status-chip warning-chip">▲ 2 Por Completar Cupos</span>
+      </div>
+    </div>
+
+    <!-- Layout Dividido (Master-Detail) -->
+    <div class="console-grid">
+      <!-- Columna Principal: Tabla de Control (Master) -->
+      <section class="console-master">
+        <div class="table-card">
+          <div class="table-toolbar">
+            <div class="search-input-group">
+              <span class="icon">🔍</span>
+              <input type="text" placeholder="Filtrar por actividad, profesional o tema..." />
+            </div>
+            <div class="table-filters">
+              <button class="filter-tab active">Todos (5)</button>
+              <button class="filter-tab">Disponibles (3)</button>
+              <button class="filter-tab">Cupos Críticos (1)</button>
+              <button class="filter-tab">Completos (1)</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Taller / Actividad</th>
+                  <th>Facilitador(a)</th>
+                  <th>Horario & Sede</th>
+                  <th>Estado de Cupos</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="workshopsTableBody">
+                <tr>
+                  <td>
+                    <div class="cell-title">Mindfulness y Reducción del Estrés</div>
+                    <span class="sub-badge tag-mindfulness">Mindfulness</span>
+                  </td>
+                  <td>
+                    <div class="facilitator-cell">
+                      <span class="avatar-emoji">👩‍⚕️</span>
+                      <div>
+                        <strong>Ps. Carolina Muñoz</strong>
+                        <small>Psicología Clínica</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div><strong>Miércoles 15:00 - 16:30</strong></div>
+                    <small class="location-label">📍 Sala Multiuso Campus Central</small>
+                  </td>
+                  <td>
+                    <div class="slot-status">
+                      <div class="slot-text">
+                        <strong>18 / 20</strong>
+                        <span class="pct warning">90%</span>
+                      </div>
+                      <div class="mini-bar"><div class="fill warning w-90"></div></div>
+                    </div>
+                  </td>
+                  <td>
+                    <button class="btn-table-action" onclick="alert('Nómina de Inscritos: 18 alumnos inscritos.\nDescargando listado oficial...');">Ver Nómina</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-title">Vencer la Procrastinación Académica</div>
+                    <span class="sub-badge tag-estres">Manejo del Estrés</span>
+                  </td>
+                  <td>
+                    <div class="facilitator-cell">
+                      <span class="avatar-emoji">👨‍⚕️</span>
+                      <div>
+                        <strong>Dr. Rodrigo Valenzuela</strong>
+                        <small>Apoyo al Aprendizaje</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div><strong>Jueves 17:00 - 18:30</strong></div>
+                    <small class="location-label">💻 Plataforma Zoom DAE</small>
+                  </td>
+                  <td>
+                    <div class="slot-status">
+                      <div class="slot-text">
+                        <strong>25 / 30</strong>
+                        <span class="pct normal">83%</span>
+                      </div>
+                      <div class="mini-bar"><div class="fill normal w-83"></div></div>
+                    </div>
+                  </td>
+                  <td>
+                    <button class="btn-table-action" onclick="alert('Nómina de Inscritos: 25 alumnos inscritos.\nDescargando listado oficial...');">Ver Nómina</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-title">Círculo de Acompañamiento: Regiones</div>
+                    <span class="sub-badge tag-adaptacion">Adaptación</span>
+                  </td>
+                  <td>
+                    <div class="facilitator-cell">
+                      <span class="avatar-emoji">👩‍🏫</span>
+                      <div>
+                        <strong>Lic. Camila Torres</strong>
+                        <small>Integración Estudiantil</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div><strong>Viernes 12:30 - 14:00</strong></div>
+                    <small class="location-label">📍 Terraza DAE, Central</small>
+                  </td>
+                  <td>
+                    <div class="slot-status">
+                      <div class="slot-text">
+                        <strong class="slot-full-count">15 / 15</strong>
+                        <span class="pct full">Lleno</span>
+                      </div>
+                      <div class="mini-bar"><div class="fill full w-100"></div></div>
+                    </div>
+                  </td>
+                  <td>
+                    <button class="btn-table-action" onclick="alert('Nómina Completa: 15 alumnos + 4 en lista de espera.');">Ver Nómina</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-title">Técnicas de Respiración y Ataques de Pánico</div>
+                    <span class="sub-badge tag-mindfulness">Crisis & Ansiedad</span>
+                  </td>
+                  <td>
+                    <div class="facilitator-cell">
+                      <span class="avatar-emoji">👩‍⚕️</span>
+                      <div>
+                        <strong>Ps. Sofía Morales</strong>
+                        <small>Intervención en Crisis</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div><strong>Martes 10:00 - 11:30</strong></div>
+                    <small class="location-label">📍 Box Terapéutico 4</small>
+                  </td>
+                  <td>
+                    <div class="slot-status">
+                      <div class="slot-text">
+                        <strong>8 / 12</strong>
+                        <span class="pct normal">66%</span>
+                      </div>
+                      <div class="mini-bar"><div class="fill normal w-66"></div></div>
+                    </div>
+                  </td>
+                  <td>
+                    <button class="btn-table-action" onclick="alert('Nómina de Inscritos: 8 alumnos inscritos.\nDescargando listado oficial...');">Ver Nómina</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-title">Taller: Higiene del Sueño en Exámenes</div>
+                    <span class="sub-badge tag-estres">Autocuidado</span>
+                  </td>
+                  <td>
+                    <div class="facilitator-cell">
+                      <span class="avatar-emoji">👨‍⚕️</span>
+                      <div>
+                        <strong>Dr. Ignacio San Martín</strong>
+                        <small>Medicina del Sueño</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div><strong>Lunes 18:00 - 19:30</strong></div>
+                    <small class="location-label">💻 Streaming Teams</small>
+                  </td>
+                  <td>
+                    <div class="slot-status">
+                      <div class="slot-text">
+                        <strong>22 / 40</strong>
+                        <span class="pct normal">55%</span>
+                      </div>
+                      <div class="mini-bar"><div class="fill normal w-55"></div></div>
+                    </div>
+                  </td>
+                  <td>
+                    <button class="btn-table-action" onclick="alert('Nómina de Inscritos: 22 alumnos inscritos. Descargando listado oficial...');">Ver Nómina</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Columna Lateral Fija: Panel de Creación Rápida (Detail/Sidebar) -->
+      <aside class="console-sidebar" id="panelCrear">
+        <div class="sidebar-card">
+          <div class="sidebar-card-header">
+            <h3>+ Nueva Actividad</h3>
+            <p>Habilita la inscripción para la comunidad universitaria.</p>
+          </div>
+
+          <form id="quickCreateForm" class="quick-form" novalidate>
+            <div class="form-group">
+              <label for="quickTitulo">Título de la Actividad <span class="req">*</span></label>
+              <input type="text" id="quickTitulo" placeholder="Ej: Taller de Asertividad" required />
+            </div>
+
+            <div class="form-group">
+              <label for="quickCategoria">Categoría <span class="req">*</span></label>
+              <select id="quickCategoria" required>
+                <option value="" disabled selected>Selecciona categoría...</option>
+                <option value="Mindfulness y Calma">Mindfulness y Calma</option>
+                <option value="Manejo del Estrés">Manejo del Estrés</option>
+                <option value="Adaptación Universitaria">Adaptación Universitaria</option>
+                <option value="Habilidades Sociales">Habilidades Sociales</option>
+                <option value="Higiene del Sueño">Higiene del Sueño</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="quickFacilitador">Facilitador / Docente <span class="req">*</span></label>
+              <input type="text" id="quickFacilitador" placeholder="Ej: Ps. Carolina Muñoz" required />
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="quickFecha">Fecha <span class="req">*</span></label>
+                <input type="date" id="quickFecha" required />
+              </div>
+              <div class="form-group">
+                <label for="quickHora">Horario <span class="req">*</span></label>
+                <input type="text" id="quickHora" placeholder="15:00 - 16:30" required />
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="quickCupos">Cupos <span class="req">*</span></label>
+                <input type="number" id="quickCupos" min="5" max="100" placeholder="20" required />
+              </div>
+              <div class="form-group">
+                <label for="quickModalidad">Modalidad <span class="req">*</span></label>
+                <select id="quickModalidad" required>
+                  <option value="Presencial">Presencial</option>
+                  <option value="Virtual (Zoom)">Virtual (Zoom)</option>
+                  <option value="Híbrida">Híbrida</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="quickUbicacion">Lugar / Enlace <span class="req">*</span></label>
+              <input type="text" id="quickUbicacion" placeholder="Ej: Box 2 o Enlace Zoom" required />
+            </div>
+
+            <div class="form-group">
+              <label for="quickNotas">Objetivos / Requisitos</label>
+              <textarea id="quickNotas" rows="2" placeholder="Detalles para los inscritos..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-publish-sidebar">Publicar Actividad e Iniciar Cupos →</button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>Red de Apoyo y Salud Mental Universitaria</h3>
+          <p>
+            Plataforma institucional de acompañamiento y contención psicológica para estudiantes de pregrado y posgrado.
+          </p>
+          <p class="footer-location">
+            📍 Edificio de Servicios Estudiantiles, Piso 2, Campus Central.
+          </p>
+        </div>
+
+        <div class="footer-column">
+          <h4>Navegación</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html#inicio">Inicio</a></li>
+            <li><a href="../index.html#descripcion">Descripción</a></li>
+            <li><a href="../index.html#problema">El Problema</a></li>
+            <li><a href="../index.html#apoyo">Estamos Contigo</a></li>
+            <li><a href="../index.html#solucion">Nuestra Solución</a></li>
+            <li><a href="../index.html#servicios">Servicios</a></li>
+            <li><a href="../index.html#atencion">Horarios</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Servicios</h4>
+          <ul class="footer-links">
+            <li><a href="solicitud-apoyo.html">Solicitud de Apoyo</a></li>
+            <li><a href="../index.html#formulario">Solicitar Orientación</a></li>
+            <li><a href="gestionar-talleres.html">Talleres Preventivos</a></li>
+            <li><a href="clasificacion.html">Clasificar Solicitudes</a></li>
+            <li><a href="seguimiento.html">Seguimiento de Casos</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Emergencias 24/7</h4>
+          <p class="footer-emergency-note">
+            Si tú o alguien que conoces necesita ayuda inmediata:
+          </p>
+          <strong class="footer-emergency-phone">800-555-AYUDA</strong>
+          <span class="footer-emergency-sub">Línea gratuita, anónima y permanente.</span>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Red de Salud Mental Universitaria. Todos los derechos reservados.</p>
+        <p>Cumplimiento estricto con protocolos de confidencialidad y ética profesional.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/gestionar-talleres.js"></script>
+  <script src="../js/navbar.js"></script>
+</body>
+</html>
