@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red de Apoyo y Salud Mental Universitaria</title>
+  <link rel="stylesheet" href="css/landing.css" />
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- =========================================================================
+       CABECERA Y NAVEGACIÓN FLOTANTE (ESTILO CÁPSULA KINDRED)
+       ========================================================================= -->
+  <header class="site-header">
+    <nav class="floating-navbar" aria-label="Navegación Institucional">
+      <a href="index.html" class="brand-link">
+        <img src="images/logo_clean.png" alt="Área Universitaria Salud Mental - Acompañamiento Terapéutico" class="brand-logo" />
+      </a>
+
+      <ul id="primaryNav" class="nav-links">
+        <li><a href="#inicio" class="active" aria-current="page">Inicio</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="pages/solicitud-apoyo.html">Solicitudes</a></li>
+        <li><a href="pages/derivacion-docente.html">Derivar</a></li>
+        <li><a href="pages/clasificacion.html">Clasificar</a></li>
+        <li><a href="pages/gestionar-talleres.html">Talleres</a></li>
+        <li><a href="pages/seguimiento.html">Seguimiento</a></li>
+        <li><a href="pages/reportes.html">Reportes</a></li>
+        <li><a href="pages/bitacora.html">Bitácora</a></li>
+        <li><a href="pages/admin-usuarios.html">Usuarios</a></li>
+        <li><a href="#formulario">Contacto</a></li>
+      </ul>
+
+      <div class="nav-cta-group">
+        <a href="tel:8005552983" class="btn-sos" title="Línea de Crisis 24/7">
+          <span class="sos-indicator"></span>
+          <span>SOS 24/7</span>
+        </a>
+        <a href="pages/solicitud-apoyo.html" class="btn-nav-primary">Solicitar Apoyo →</a>
+        <button
+          type="button"
+          class="nav-toggle"
+          aria-label="Abrir menú de navegación"
+          aria-expanded="false"
+          aria-controls="primaryNav"
+        >
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="inicio">
+
+    <!-- =========================================================================
+         HERO / PORTADA CON FOCO EMPÁTICO Y TARJETA DE PROFESIONAL
+         ========================================================================= -->
+    <section class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-text-content">
+          <h1 class="hero-title">
+            Tu salud mental es tan importante como <span>tu carrera</span>.
+          </h1>
+          <p class="hero-description">
+            Un espacio universitario seguro, confidencial y gratuito diseñado para acompañarte ante el estrés de exámenes, ansiedad, problemas de adaptación o cualquier momento difícil.
+          </p>
+          
+          <div class="hero-cta-box">
+            <a href="pages/solicitud-apoyo.html" class="btn-cta-large">
+              <span>📝 Solicitar Apoyo Estudiantil</span>
+            </a>
+            <a href="#formulario" class="btn-cta-secondary">
+              <span>Orientación Rápida</span>
+            </a>
+          </div>
+
+          <div class="hero-trust-list">
+            <div class="trust-item">
+              <span>🔒</span>
+              <span>100% Confidencial</span>
+            </div>
+            <div class="trust-item">
+              <span>🎓</span>
+              <span>Servicio Gratuito</span>
+            </div>
+            <div class="trust-item">
+              <span>⚡</span>
+              <span>Sin Esperas Burocráticas</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Presentación de la Profesional Asignada -->
+        <div class="hero-card-preview">
+          <div class="preview-photo-wrap">
+            <img src="images/psicologa_2.webp" alt="Dra. Carolina Muñoz - Psicóloga Clínica" class="preview-photo" />
+          </div>
+          <h2 class="preview-name">Dra. Carolina Muñoz</h2>
+          <p class="preview-role">Psicóloga Clínica • Especialista en Adaptación Universitaria</p>
+          <p class="preview-quote">
+            "Pedir ayuda no es señal de debilidad; es una decisión valiente para recuperar tu tranquilidad y continuar tu formación."
+          </p>
+          <a href="pages/solicitud-apoyo.html" class="preview-link-btn">Solicitar Acompañamiento →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN 1: DESCRIPCIÓN DEL PROYECTO (RUBRICA CRITERIO 4)
+         ========================================================================= -->
+    <section id="descripcion" class="section-wrapper">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title">Descripción del Proyecto Institucional</h2>
+          <p class="section-subtitle">
+            La <strong>Red de Apoyo y Salud Mental Universitaria</strong> es un programa oficial impulsado por la Dirección de Asuntos Estudiantiles (DAE) para garantizar que todo estudiante cuente con acompañamiento psicológico, contención emocional y orientación preventiva durante su trayectoria académica.
+          </p>
+        </header>
+
+        <div class="mission-grid">
+          <div class="mission-card">
+            <div class="mission-card-icon">🎯</div>
+            <h3 class="mission-card-title">Propósito y Misión</h3>
+            <p class="mission-card-text">
+              Promover el bienestar biopsicosocial de la comunidad estudiantil, reduciendo factores de riesgo como el estrés crónico, el aislamiento y la deserción académica a través de intervenciones oportunas y profesionales.
+            </p>
+          </div>
+
+          <div class="mission-card">
+            <div class="mission-card-icon">👥</div>
+            <h3 class="mission-card-title">Público Objetivo</h3>
+            <p class="mission-card-text">
+              Estudiantes regulares de pregrado y posgrado de todas las carreras y sedes, además de docentes y tutores académicos que participan como agentes activos de detección y derivación responsable (CU3).
+            </p>
+          </div>
+
+          <div class="mission-card">
+            <div class="mission-card-icon">⚖️</div>
+            <h3 class="mission-card-title">Garantías y Principios</h3>
+            <p class="mission-card-text">
+              Atención 100% gratuita, acceso equitativo, sin barreras burocráticas y con secreto profesional estricto: ningún antecedente clínico se mezcla con el expediente académico del alumno (RF12).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN 2: EL PROBLEMA O NECESIDAD (RUBRICA CRITERIO 4)
+         ========================================================================= -->
+    <section id="problema" class="section-wrapper section-alt">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title">Reconocer lo que sientes es el primer paso</h2>
+          <p class="section-subtitle">
+            La vida universitaria trae exigencias intensas. Muchos estudiantes enfrentan situaciones complejas en soledad por falta de canales claros o temor al estigma.
+          </p>
+        </header>
+
+        <div class="problem-grid">
+          <article class="problem-card">
+            <div class="card-icon-box">📚</div>
+            <h3>Sobrecarga y Bloqueo Académico</h3>
+            <p>
+              Ansiedad intensa ante certámenes, entregas finales y sensación de agotamiento continuo que dificulta la concentración y el descanso.
+            </p>
+          </article>
+
+          <article class="problem-card">
+            <div class="card-icon-box">🌧️</div>
+            <h3>Ansiedad y Tristeza Persistente</h3>
+            <p>
+              Cambios de ánimo, desmotivación o angustia recurrente que afectan tu rutina diaria y tus relaciones personales y familiares.
+            </p>
+          </article>
+
+          <article class="problem-card">
+            <div class="card-icon-box">🧭</div>
+            <h3>Adaptación y Soledad</h3>
+            <p>
+              Dificultad para integrarse a la vida universitaria, lejanía de las familias en estudiantes de otras regiones o incertidumbre vocacional.
+            </p>
+          </article>
+
+          <article class="problem-card">
+            <div class="card-icon-box">⏳</div>
+            <h3>Canales Desorganizados</h3>
+            <p>
+              Falta de un sistema seguro donde pedir apoyo a tiempo sin trámites engorrosos ni exposición de la intimidad del estudiante.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN: ESTAMOS CONTIGO (LA IMPORTANCIA DE PEDIR AYUDA A TIEMPO)
+         ========================================================================= -->
+    <section id="apoyo" class="section-wrapper">
+      <div class="container">
+        <div class="support-grid">
+          <!-- Fotografía del Grupo de Estudiantes -->
+          <div class="support-image-card">
+            <img src="images/students_showing_thumbs_up_at.png" alt="Grupo de estudiantes universitarios acompañados y sonriendo" class="support-img" />
+            <div class="support-floating-pill">
+              <span class="icon">💚</span>
+              <span>Comunidad Universitaria • Más de 1,450 estudiantes acompañados</span>
+            </div>
+          </div>
+
+          <!-- Mensaje Empático: "Estamos Contigo" y la Importancia de la Ayuda -->
+          <div class="support-text-content">
+            <h2>Pedir ayuda es un acto de valentía: <span>Estamos contigo</span></h2>
+            <p class="support-lead">
+              Nadie debería enfrentar la presión universitaria en soledad. Reconocer que necesitas una pausa o un espacio para ordenar tus emociones no es debilidad; es la decisión más responsable para cuidar tu bienestar y tu futuro profesional.
+            </p>
+
+            <div class="support-quote-callout">
+              No tienes que poder con todo tú solo/a. Compartir lo que sientes alivia el peso de inmediato y abre caminos que no se ven en el aislamiento.
+            </div>
+
+            <div class="support-points">
+              <div class="support-point-item">
+                <div class="support-point-icon">🤝</div>
+                <div>
+                  <strong>Acompañamiento Oportuno sin Juicios</strong>
+                  <span>Un espacio cálido y libre de presiones académicas donde dialogar sobre dudas vocacionales, ansiedad por certámenes o duelos personales con total respeto.</span>
+                </div>
+              </div>
+
+              <div class="support-point-item">
+                <div class="support-point-icon">🌱</div>
+                <div>
+                  <strong>Prevenir antes de Llegar al Límite</strong>
+                  <span>Consultar ante las primeras señales de agotamiento evita la deserción estudiantil, cuadros severos y el deterioro de tu salud física y mental.</span>
+                </div>
+              </div>
+
+              <div class="support-point-item">
+                <div class="support-point-icon">🛡️</div>
+                <div>
+                  <strong>Respaldados por una Red Profesional</strong>
+                  <span>Psicólogos clínicos, orientadores y docentes derivadores coordinados para proteger tu tranquilidad desde tu ingreso hasta tu graduación.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="support-actions">
+              <a href="pages/solicitud-apoyo.html" class="btn-cta-large">
+                <span>📝 Ingresar Solicitud de Apoyo →</span>
+              </a>
+              <a href="#formulario" class="btn-cta-secondary">
+                <span>Enviar Consulta Breve</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN 3: LA SOLUCIÓN PROPUESTA (RUBRICA CRITERIO 4)
+         ========================================================================= -->
+    <section id="solucion" class="section-wrapper section-alt">
+      <div class="container">
+        <div class="solution-split">
+          <div class="solution-content">
+            <h2>Una red pensada para cuidarte y acompañarte</h2>
+            <p>
+              Nuestra plataforma unifica la solicitud de atención psicológica, talleres preventivos y derivación docente en un solo entorno institucional confidencial, seguro y libre de barreras.
+            </p>
+
+            <ul class="feature-check-list">
+              <li class="feature-check-item">
+                <div class="check-icon">✓</div>
+                <div>
+                  <strong>Triage y Priorización Inmediata</strong>
+                  <span>Casos urgentes reciben canalización prioritaria con el equipo de salud mental.</span>
+                </div>
+              </li>
+              <li class="feature-check-item">
+                <div class="check-icon">✓</div>
+                <div>
+                  <strong>Autonomía para el Estudiante</strong>
+                  <span>Tú eliges el horario, la modalidad (presencial o virtual) y el tipo de orientación.</span>
+                </div>
+              </li>
+              <li class="feature-check-item">
+                <div class="check-icon">✓</div>
+                <div>
+                  <strong>Protección Estricta de Datos</strong>
+                  <span>Tus registros clínicos están protegidos y disociados de tu historial académico (RF12).</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="solution-steps-box">
+            <h3>¿Cómo funciona el proceso de apoyo?</h3>
+
+            <div class="step-card">
+              <div class="step-number">1</div>
+              <div class="step-info">
+                <h4>Solicitas tu atención</h4>
+                <p>Completas el formulario breve indicando tu motivo, urgencia y datos de contacto.</p>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">2</div>
+              <div class="step-info">
+                <h4>Asignación con el especialista</h4>
+                <p>Te asignamos al orientador o psicólogo idóneo según tu motivo y urgencia.</p>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-number">3</div>
+              <div class="step-info">
+                <h4>Sesión confidencial</h4>
+                <p>Acudes a tu sesión de 45 minutos presencial en el campus o por videollamada segura.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN 3: FUNCIONALIDADES Y SERVICIOS (RUBRICA CRITERIO 4 Y RF4)
+         ========================================================================= -->
+    <section id="servicios" class="section-wrapper section-alt">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title">Servicios diseñados para tu bienestar integral</h2>
+          <p class="section-subtitle">
+            Brindamos atención personalizada en cuatro dimensiones claves del desarrollo estudiantil.
+          </p>
+        </header>
+
+        <div class="services-grid">
+          <article class="service-card">
+            <div>
+              <div class="service-icon">🌱</div>
+              <h3>Salud Emocional y Psicológica</h3>
+              <p>Atención terapéutica individual para afrontar ansiedad, desánimo, duelos y crisis vitales en un espacio seguro.</p>
+              <div class="service-tag-list">
+                <span class="service-tag">Ansiedad</span>
+                <span class="service-tag">Autoestima</span>
+                <span class="service-tag">Contención</span>
+              </div>
+            </div>
+            <a href="pages/solicitud-apoyo.html" class="service-link">Solicitar Atención →</a>
+          </article>
+
+          <article class="service-card">
+            <div>
+              <div class="service-icon">📖</div>
+              <h3>Acompañamiento Académico</h3>
+              <p>Estrategias personalizadas para el manejo del tiempo, métodos de estudio y superación del bloqueo por exámenes.</p>
+              <div class="service-tag-list">
+                <span class="service-tag">Técnicas de Estudio</span>
+                <span class="service-tag">Bloqueo</span>
+                <span class="service-tag">Planificación</span>
+              </div>
+            </div>
+            <a href="#formulario" class="service-link">Pedir Tutoría →</a>
+          </article>
+
+          <article class="service-card">
+            <div>
+              <div class="service-icon">🤝</div>
+              <h3>Convivencia y Adaptación</h3>
+              <p>Apoyo en habilidades sociales, integración a la vida universitaria y mediación constructiva de conflictos.</p>
+              <div class="service-tag-list">
+                <span class="service-tag">Vida Universitaria</span>
+                <span class="service-tag">Relaciones</span>
+                <span class="service-tag">Vínculos</span>
+              </div>
+            </div>
+            <a href="#formulario" class="service-link">Solicitar Orientación →</a>
+          </article>
+
+          <article class="service-card">
+            <div>
+              <div class="service-icon">💡</div>
+              <h3>Talleres Preventivos</h3>
+              <p>Actividades grupales sobre mindfulness, higiene del sueño, gestión del estrés y primeros auxilios psicológicos.</p>
+              <div class="service-tag-list">
+                <span class="service-tag">Grupal</span>
+                <span class="service-tag">Mindfulness</span>
+                <span class="service-tag">Resiliencia</span>
+              </div>
+            </div>
+            <a href="#atencion" class="service-link">Ver Cronograma →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN 4: TABLA INFORMATIVA DE ATENCIÓN (RUBRICA CRITERIO 8)
+         ========================================================================= -->
+    <section id="atencion" class="section-wrapper">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title">Canales de Atención en el Campus</h2>
+          <p class="section-subtitle">
+            Conoce los puntos de atención presencial, horarios disponibles y plazos de respuesta según la modalidad solicitada.
+          </p>
+        </header>
+
+        <div class="table-container">
+          <table class="info-table" aria-label="Tabla de servicios y horarios de salud mental">
+            <thead>
+              <tr>
+                <th scope="col">Unidad / Servicio</th>
+                <th scope="col">Ubicación Física</th>
+                <th scope="col">Horario Semanal</th>
+                <th scope="col">Modalidad</th>
+                <th scope="col">Tiempo Máx. Respuesta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Atención Psicológica Individual</strong></td>
+                <td>Centro de Salud, Box 101 al 104</td>
+                <td>Lunes a Viernes 08:30 - 18:00</td>
+                <td><span class="status-badge presencial">Presencial / Virtual</span></td>
+                <td>24 a 48 horas hábiles</td>
+              </tr>
+              <tr>
+                <td><strong>Orientación Psicoeducativa</strong></td>
+                <td>Edificio DAE, Sala de Asesorías 2</td>
+                <td>Martes y Jueves 09:00 - 17:00</td>
+                <td><span class="status-badge presencial">Presencial</span></td>
+                <td>48 horas hábiles</td>
+              </tr>
+              <tr>
+                <td><strong>Línea de Crisis y Primeros Auxilios</strong></td>
+                <td>Unidad Central de Triage</td>
+                <td>24 horas / 7 días a la semana</td>
+                <td><span class="status-badge virtual">Telefónica (800-555-AYUDA)</span></td>
+                <td>Inmediata (0 minutos)</td>
+              </tr>
+              <tr>
+                <td><strong>Talleres Grupales de Mindfulness</strong></td>
+                <td>Sala Multiuso Campus Central</td>
+                <td>Miércoles 15:00 - 16:30</td>
+                <td><span class="status-badge presencial">Presencial (Cupos 20)</span></td>
+                <td>Inscripción semanal</td>
+              </tr>
+              <tr>
+                <td><strong>Espacio de Derivación Docente</strong></td>
+                <td>Portal Docente Institucional</td>
+                <td>Permanente en línea</td>
+                <td><span class="status-badge virtual">Plataforma Web</span></td>
+                <td>24 horas hábiles</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN 5: FORMULARIO Y RESULTADO VISIBLE EN JS (RUBRICA CRITERIO 6 Y 7)
+         ========================================================================= -->
+    <section id="formulario" class="section-wrapper section-alt">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title">Solicita Orientación Inicial</h2>
+          <p class="section-subtitle">
+            Si no estás seguro de qué tipo de sesión necesitas, completa este formulario breve. Nuestro equipo revisará tus antecedentes con estricta confidencialidad.
+          </p>
+        </header>
+
+        <div class="form-section-grid" id="formSectionGrid">
+          <!-- Formulario Contextualizado (Criterio 6) -->
+          <div class="form-card">
+            <form id="orientationForm" action="#" method="POST" novalidate>
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="inputNombre">Nombre Completo <span class="required">*</span></label>
+                  <input type="text" id="inputNombre" name="nombre" class="form-control" placeholder="Ej: Valeria Gómez" required />
+                </div>
+                <div class="form-group">
+                  <label for="inputRut">RUT / Identificador</label>
+                  <input type="text" id="inputRut" name="rut" class="form-control" placeholder="Ej: 20.123.456-7" />
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="inputCarrera">Carrera / Facultad <span class="required">*</span></label>
+                  <input type="text" id="inputCarrera" name="carrera" class="form-control" placeholder="Ej: Ingeniería Comercial" required />
+                </div>
+                <div class="form-group">
+                  <label for="inputCorreo">Correo Institucional <span class="required">*</span></label>
+                  <input type="email" id="inputCorreo" name="correo" class="form-control" placeholder="valeria.gomez@universidad.cl" required />
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label for="selectMotivo">Motivo Principal <span class="required">*</span></label>
+                  <select id="selectMotivo" name="motivo" class="form-control" required>
+                    <option value="" disabled selected>Selecciona un motivo...</option>
+                    <option value="Ansiedad y Estrés ante Exámenes">Ansiedad y Estrés ante Exámenes</option>
+                    <option value="Tristeza o Desánimo Continuo">Tristeza o Desánimo Continuo</option>
+                    <option value="Dificultades de Adaptación">Dificultades de Adaptación</option>
+                    <option value="Problemas Familiares o Personales">Problemas Familiares o Personales</option>
+                    <option value="Orientación Vocacional">Orientación Vocacional</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="selectUrgencia">Nivel de Malestar Percibido <span class="required">*</span></label>
+                  <select id="selectUrgencia" name="urgencia" class="form-control" required>
+                    <option value="Bajo (Preventivo)">Bajo (Preventivo)</option>
+                    <option value="Moderado (Afecta mi estudio)" selected>Moderado (Afecta mi estudio)</option>
+                    <option value="Alto (Necesito atención pronta)">Alto (Necesito atención pronta)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="selectModalidad">Modalidad de Preferencia <span class="required">*</span></label>
+                <select id="selectModalidad" name="modalidad" class="form-control" required>
+                  <option value="Presencial (Campus Central)">Presencial (Campus Central)</option>
+                  <option value="Virtual (Videollamada Segura)">Virtual (Videollamada Segura)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="inputMensaje">Cuéntanos brevemente cómo te sientes</label>
+                <textarea id="inputMensaje" name="mensaje" rows="3" class="form-control" placeholder="Escribe lo que desees compartir. Toda la información es confidencial..."></textarea>
+              </div>
+
+              <button type="submit" class="btn-submit-form">
+                Enviar Solicitud de Orientación →
+              </button>
+            </form>
+          </div>
+
+          <!-- Comprobante de Solicitud (Aparece a la derecha tras enviar) -->
+          <div class="form-result-container" id="formResultContainer">
+            <div id="resultCard" class="result-display-card">
+              <span class="result-badge">✓ Solicitud Registrada con Éxito</span>
+              <h3 class="result-title">Comprobante de Orientación</h3>
+              <p class="result-text">
+                Hemos recibido tus datos correctamente. Se ha generado un registro confidencial para canalizar tu caso.
+              </p>
+
+              <div class="result-list">
+                <div class="result-item">
+                  <span>Código de Folio:</span>
+                  <strong id="resFolio">SMU-000000</strong>
+                </div>
+                <div class="result-item">
+                  <span>Estudiante:</span>
+                  <strong id="resNombre">-</strong>
+                </div>
+                <div class="result-item">
+                  <span>RUT:</span>
+                  <strong id="resRut">-</strong>
+                </div>
+                <div class="result-item">
+                  <span>Carrera:</span>
+                  <strong id="resCarrera">-</strong>
+                </div>
+                <div class="result-item">
+                  <span>Correo:</span>
+                  <strong id="resCorreo">-</strong>
+                </div>
+                <div class="result-item">
+                  <span>Motivo Informado:</span>
+                  <strong id="resMotivo">-</strong>
+                </div>
+                <div class="result-item">
+                  <span>Nivel de Urgencia:</span>
+                  <strong id="resUrgencia">-</strong>
+                </div>
+                <div class="result-item">
+                  <span>Modalidad:</span>
+                  <strong id="resModalidad">-</strong>
+                </div>
+                <div class="result-item">
+                  <span>Observaciones:</span>
+                  <strong id="resMensaje">-</strong>
+                </div>
+              </div>
+
+              <a href="pages/solicitud-apoyo.html" class="btn-proceed-booking">
+                Ir al Panel de Solicitud y Asignación Institucional →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECCIÓN 6: LLAMADA A LA ACCIÓN (RUBRICA CRITERIO 4)
+         ========================================================================= -->
+    <section id="accion" class="section-wrapper">
+      <div class="container">
+        <div class="cta-banner">
+          <h2>¿Listo para priorizar tu bienestar universitario?</h2>
+          <p>
+            No tienes que esperar a que el malestar aumente. Ingresa tu solicitud de apoyo hoy o contáctate con la unidad de bienestar de tu sede.
+          </p>
+          <div class="cta-banner-buttons">
+            <a href="pages/solicitud-apoyo.html" class="btn-banner-white">
+              <span>📝 Ingresar Solicitud de Apoyo</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       PIE DE PÁGINA (FOOTER)
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>Red de Apoyo y Salud Mental Universitaria</h3>
+          <p>
+            Plataforma institucional de acompañamiento y contención psicológica para estudiantes de pregrado y posgrado.
+          </p>
+          <p class="footer-location">
+            📍 Edificio de Servicios Estudiantiles, Piso 2, Campus Central.
+          </p>
+        </div>
+
+        <div class="footer-column">
+          <h4>Navegación</h4>
+          <ul class="footer-links">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#descripcion">Descripción</a></li>
+            <li><a href="#problema">El Problema</a></li>
+            <li><a href="#apoyo">Estamos Contigo</a></li>
+            <li><a href="#solucion">Nuestra Solución</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#atencion">Horarios</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Servicios</h4>
+          <ul class="footer-links">
+            <li><a href="pages/solicitud-apoyo.html">Solicitud de Apoyo</a></li>
+            <li><a href="#formulario">Solicitar Orientación</a></li>
+            <li><a href="pages/gestionar-talleres.html">Talleres Preventivos</a></li>
+            <li><a href="pages/clasificacion.html">Clasificar Solicitudes</a></li>
+            <li><a href="pages/seguimiento.html">Seguimiento de Casos</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Emergencias 24/7</h4>
+          <p class="footer-emergency-note">
+            Si tú o alguien que conoces necesita ayuda inmediata:
+          </p>
+          <strong class="footer-emergency-phone">800-555-AYUDA</strong>
+          <span class="footer-emergency-sub">Línea gratuita, anónima y permanente.</span>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Red de Salud Mental Universitaria. Todos los derechos reservados.</p>
+        <p>Cumplimiento estricto con protocolos de confidencialidad y ética profesional.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script interactivo del formulario -->
+  <script src="js/landing.js"></script>
+  <script src="js/navbar.js"></script>
+</body>
+</html>

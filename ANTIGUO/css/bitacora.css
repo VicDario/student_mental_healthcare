@@ -1,0 +1,835 @@
+@import url("https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap");
+
+/* --------------------------------------------------------------------------
+   1. Variables globales
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Paleta Verdes Salvia, Bosque y Menta */
+  --color-forest-900: #081c15;
+  --color-forest-800: #1b4332;
+  --color-forest-700: #2d6a4f;
+  --color-forest-600: #40916c;
+  --color-forest-500: #52b788;
+  --color-forest-400: #74c69d;
+  --color-forest-200: #b7e4c7;
+  --color-forest-100: #d8f3dc;
+  --color-forest-50:  #f0fdf4;
+
+  /* Superficies y fondos */
+  --color-bg-page:   #f4f8f5;
+  --color-bg-card:   #ffffff;
+  --color-bg-subtle: #eaf2ec;
+
+  /* Tipografía */
+  --color-text-title: #0d2319;
+  --color-text-body:  #1e293b;
+  --color-text-muted: #52796f;
+  --color-text-light: #ffffff;
+
+  /* Bordes */
+  --color-border:        #e2ede5;
+  --color-border-subtle: #edf4ef;
+  --color-border-active: #2d6a4f;
+
+  /* Estados funcionales */
+  --color-crisis-bg:     #fff1f2;
+  --color-crisis-border: #fecdd3;
+  --color-crisis-text:   #9f1239;
+
+  --color-warning-bg:     #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-warning-text:   #92400e;
+
+  /* Urgencia */
+  --color-urgency-low-bg:   var(--color-forest-100);
+  --color-urgency-low-text: #1b4332;
+  --color-urgency-med-bg:   #fffbeb;
+  --color-urgency-med-text: #92400e;
+  --color-urgency-high-bg:  #fff1f2;
+  --color-urgency-high-text: #9f1239;
+
+  /* Radios */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+  --radius-pill: 9999px;
+
+  /* Sombras */
+  --shadow-subtle: 0 2px 8px rgba(8, 28, 21, 0.04);
+  --shadow-card:   0 8px 24px -4px rgba(27, 67, 50, 0.08);
+
+  /* Tipografía */
+  --font-family-sans: 'Switzer', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-size-small: 0.8125rem;
+  --font-size-base:  0.9375rem;
+  --font-size-large: 1.125rem;
+  --font-size-title: 1.75rem;
+  --line-height-base: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-page);
+  color: var(--color-text-body);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+main {
+  flex: 1;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-family-sans);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-text-title);
+}
+
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-forest-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+.layout {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   3. Navbar flotante
+   -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   4. Encabezado de página
+   -------------------------------------------------------------------------- */
+
+.page-header {
+  padding-block: 0 1.5rem;
+}
+
+.page-title {
+  font-size: var(--font-size-title);
+  font-weight: 800;
+  color: var(--color-text-title);
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  margin-top: 0.5rem;
+  max-width: 62ch;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. Filtros
+   -------------------------------------------------------------------------- */
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  padding: 20px 24px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-subtle);
+  margin-bottom: 1.5rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1 1 180px;
+}
+
+/* --------------------------------------------------------------------------
+   6. Formularios
+   -------------------------------------------------------------------------- */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-forest-900);
+}
+
+.form-hint {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  color: var(--color-text-body);
+  background-color: var(--color-bg-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  appearance: none;
+}
+
+.form-control:hover {
+  border-color: var(--color-forest-400);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-border-active);
+  box-shadow: 0 0 0 3px var(--color-forest-100);
+}
+
+textarea.form-control {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.form-fieldset {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.form-legend {
+  padding-inline: 0.25rem;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-forest-900);
+}
+
+.choice-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+}
+
+.choice input[type="radio"],
+.choice input[type="checkbox"] {
+  accent-color: var(--color-forest-700);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   7. Botones
+   -------------------------------------------------------------------------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.4rem;
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  border-style: solid;
+  border-width: 1.5px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+              color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button-primary {
+  background-color: var(--color-forest-800);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(27, 67, 50, 0.2);
+}
+
+.button-primary:hover {
+  background-color: var(--color-forest-900);
+  transform: translateY(-1px);
+}
+
+.button-secondary {
+  background-color: transparent;
+  color: var(--color-forest-700);
+  border-color: var(--color-forest-500);
+}
+
+.button-secondary:hover {
+  background-color: var(--color-forest-50);
+  border-color: var(--color-forest-700);
+}
+
+.button-quiet {
+  padding-block: 0.4rem;
+  padding-inline: 0.9rem;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  background-color: transparent;
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+
+.button-quiet:hover {
+  background-color: var(--color-bg-subtle);
+  color: var(--color-forest-900);
+  border-color: var(--color-forest-200);
+}
+
+/* --------------------------------------------------------------------------
+   8. Workspace y paneles
+   -------------------------------------------------------------------------- */
+
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.panel {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.panel-title {
+  font-size: var(--font-size-large);
+  font-weight: 700;
+  color: var(--color-text-title);
+}
+
+.panel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.panel-count {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-subtle);
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+
+/* --------------------------------------------------------------------------
+   9. Tarjetas de solicitud
+   -------------------------------------------------------------------------- */
+
+.request-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.request-card {
+  padding: 14px 16px;
+  background-color: var(--color-bg-page);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.request-card:hover {
+  border-color: var(--color-forest-400);
+  box-shadow: var(--shadow-subtle);
+}
+
+.request-card-selected {
+  background-color: var(--color-forest-50);
+  border-color: var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+.request-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.request-code {
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.request-summary {
+  font-size: var(--font-size-base);
+  margin-bottom: 0.5rem;
+  color: var(--color-text-body);
+  line-height: 1.5;
+}
+
+.request-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.request-meta li:not(:last-child)::after {
+  content: "·";
+  margin-left: 0.5rem;
+}
+
+.request-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   10. Badges de urgencia
+   -------------------------------------------------------------------------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.badge-low {
+  background-color: var(--color-urgency-low-bg);
+  color: var(--color-urgency-low-text);
+}
+
+.badge-medium {
+  background-color: var(--color-urgency-med-bg);
+  color: var(--color-urgency-med-text);
+}
+
+.badge-high {
+  background-color: var(--color-urgency-high-bg);
+  color: var(--color-urgency-high-text);
+}
+
+/* --------------------------------------------------------------------------
+   11. Resumen del caso y notas
+   -------------------------------------------------------------------------- */
+
+.case-summary {
+  padding: 14px 16px;
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+}
+
+.case-summary-code {
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.case-summary-text {
+  margin-top: 0.3rem;
+  color: var(--color-text-body);
+  font-weight: 500;
+}
+
+.privacy-note {
+  margin-top: 1.5rem;
+  padding: 14px 16px;
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  background-color: var(--color-forest-50);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  line-height: 1.5;
+}
+
+/* Bloque de resumen de datos enviados */
+.datos-enviados {
+  margin-top: 1.5rem;
+  padding: 16px 20px;
+  background-color: var(--color-forest-50);
+  border: 1.5px solid var(--color-forest-400);
+  border-radius: var(--radius-sm);
+}
+
+.datos-titulo {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-forest-700);
+  margin-bottom: 0.75rem;
+}
+
+.datos-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.datos-item {
+  font-size: var(--font-size-small);
+  color: var(--color-text-body);
+  line-height: 1.5;
+}
+
+.datos-etiqueta {
+  font-weight: 600;
+  color: var(--color-text-title);
+}
+
+/* --------------------------------------------------------------------------
+   13. Media queries
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 900px) {
+  .workspace {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
+  }
+}
+
+@media (max-width: 760px) {
+
+  .floating-header-wrapper {
+    top: 8px;
+    padding: 0 12px;
+  }
+
+  .filter-bar {
+    border-radius: var(--radius-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .request-card,
+  .nav-pill-link,
+  .sos-dot {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   14. Estilos específicos de Bitácora de Accesos y Modificaciones
+   -------------------------------------------------------------------------- */
+
+/* ── Badges de tipo de acción ── */
+
+.badge-access {
+  background-color: var(--color-urgency-low-bg);
+  color: var(--color-urgency-low-text);
+}
+
+.badge-modify {
+  background-color: var(--color-urgency-med-bg);
+  color: var(--color-urgency-med-text);
+}
+
+.badge-restrict {
+  background-color: var(--color-urgency-high-bg);
+  color: var(--color-urgency-high-text);
+}
+
+.badge-export {
+  background-color: #eff6ff;
+  color: #1e40af;
+}
+
+/* ── Tarjetas de registro ── */
+
+.log-entry {
+  padding: 14px 16px;
+  background-color: var(--color-bg-page);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.log-entry:hover {
+  border-color: var(--color-forest-400);
+  box-shadow: var(--shadow-subtle);
+}
+
+.log-entry-selected {
+  background-color: var(--color-forest-50);
+  border-color: var(--color-border-active);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px);
+}
+
+.log-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.log-id {
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.log-action-text {
+  font-size: var(--font-size-base);
+  color: var(--color-text-body);
+  margin-bottom: 0.4rem;
+}
+
+.log-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.85rem;
+}
+
+.log-timestamp {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+/* ── Panel de detalle ── */
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.detail-field {
+  margin-bottom: 1rem;
+}
+
+.detail-label {
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  color: var(--color-forest-900);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+.detail-label-spaced {
+  margin-bottom: 0.6rem;
+}
+
+.detail-value {
+  font-size: var(--font-size-base);
+  color: var(--color-text-body);
+}
+
+.detail-mono {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.85rem;
+}
+
+.detail-divider {
+  height: 1px;
+  background-color: var(--color-border-subtle);
+  margin: 1.25rem 0;
+}
+
+.detail-change-block {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-small);
+  margin-bottom: 0.5rem;
+}
+
+.detail-change-before {
+  background-color: #fff1f2;
+  border-left: 3px solid #f43f5e;
+  color: #9f1239;
+}
+
+.detail-change-after {
+  background-color: var(--color-forest-50);
+  border-left: 3px solid var(--color-forest-500);
+  color: var(--color-forest-800);
+}
+
+.detail-change-label {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* ── Indicador de sensibilidad ── */
+
+.sensitivity-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  background-color: var(--color-urgency-high-bg);
+  color: var(--color-urgency-high-text);
+  border: 1px solid var(--color-crisis-border);
+  margin-left: auto;
+}
+
+.sensitivity-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Fila de estadísticas ── */
+
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  flex: 1 1 150px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text-title);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.stat-card-alert .stat-value { color: var(--color-crisis-text); }
+.stat-card-warning .stat-value { color: var(--color-warning-text); }
+
+/* ── Feedback exportación ── */
+
+.export-toast {
+  display: none;
+  margin-top: 0.75rem;
+  padding: 10px 14px;
+  background-color: var(--color-forest-50);
+  border: 1px solid var(--color-forest-400);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-small);
+  color: var(--color-forest-700);
+  font-weight: 500;
+}
+
+.export-toast.visible {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .log-entry { transition: none; }
+}
+

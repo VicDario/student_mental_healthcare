@@ -1,0 +1,92 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens del proyecto. Cada variable genera utilidades de Tailwind:
+ * --color-forest-800 -> bg-forest-800, text-forest-800, border-forest-800...
+ * --shadow-card      -> shadow-card
+ * --radius-md        -> rounded-md
+ */
+@theme {
+  /* Verdes principales (calma, estabilidad y confianza) */
+  --color-forest-50: #f0fdf4;
+  --color-forest-100: #d8f3dc;
+  --color-forest-200: #b7e4c7;
+  --color-forest-400: #74c69d;
+  --color-forest-500: #52b788;
+  --color-forest-600: #40916c;
+  --color-forest-700: #2d6a4f;
+  --color-forest-800: #1b4332;
+  --color-forest-900: #081c15;
+
+  /* Superficies y fondos */
+  --color-page: #f4f8f5;
+  --color-card: #ffffff;
+  --color-subtle: #eaf2ec;
+
+  /* Texto */
+  --color-title: #0d2319;
+  --color-body: #1e293b;
+  --color-muted: #52796f;
+
+  /* Bordes */
+  --color-border: #e2ede5;
+  --color-border-subtle: #edf4ef;
+  --color-border-active: #2d6a4f;
+
+  /* Estados funcionales (triage y crisis) */
+  --color-crisis-bg: #fff1f2;
+  --color-crisis-border: #fecdd3;
+  --color-crisis-text: #9f1239;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-warning-text: #92400e;
+
+  /* Radios (rounded-full se usa para las pildoras) */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Sombras */
+  --shadow-subtle: 0 2px 8px rgba(8, 28, 21, 0.04);
+  --shadow-card: 0 8px 24px -4px rgba(27, 67, 50, 0.08);
+  --shadow-elevated: 0 16px 36px -6px rgba(8, 28, 21, 0.12);
+
+  /* Tipografia */
+  --font-sans: 'Switzer', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Animaciones */
+  --animate-pulse-dot: pulse-dot 1.8s infinite;
+  --animate-slide-in: slide-in 0.4s ease forwards;
+
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.4;
+      transform: scale(0.85);
+    }
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateX(12px);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-page font-sans leading-relaxed text-body;
+  }
+}
