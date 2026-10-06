@@ -11,20 +11,8 @@ import RecordCard from '../components/ui/RecordCard'
 import RecordList from '../components/ui/RecordList'
 import StatsRow from '../components/ui/StatsRow'
 import Workspace from '../components/ui/Workspace'
-import { CAMPUSES, findOption, labelOf, PRIORITIES, UNITS } from '../data/catalogs'
-import { CASE_STATUSES, CASES, CLOSED_THIS_MONTH } from '../data/cases'
-import { formatShortDate } from '../utils/dates'
-
-const selectedCase = CASES[0]
-
-const countByStatus = (status) => CASES.filter((caseItem) => caseItem.status === status).length
-
-const STATS = [
-  { value: CASES.length - countByStatus('closed'), label: 'Casos activos' },
-  { value: countByStatus('pending'), label: 'Pendientes de revisión', tone: 'warning' },
-  { value: countByStatus('ready'), label: 'Listos para cierre' },
-  { value: CLOSED_THIS_MONTH, label: 'Cerrados este mes', tone: 'success' },
-]
+import { UNITS } from '../data/catalogs'
+import { CASE_STATS, CASE_STATUSES, CASES } from '../data/cases'
 
 export default function SeguimientoPage() {
   return (
@@ -32,7 +20,7 @@ export default function SeguimientoPage() {
       title="Seguimiento y cierre de casos"
       subtitle="Revisa el historial de intervenciones de cada caso activo, registra avances y formaliza el cierre cuando el proceso de acompañamiento haya concluido satisfactoriamente."
     >
-      <StatsRow label="Resumen de casos" stats={STATS} />
+      <StatsRow label="Resumen de casos" stats={CASE_STATS} />
 
       <FilterBar label="Filtrar casos">
         <FormField id="filter-status" label="Estado" className="flex-[1_1_180px]">
@@ -47,31 +35,26 @@ export default function SeguimientoPage() {
       </FilterBar>
 
       <Workspace balanced>
-        <Panel id="case-list-title" title="Casos en curso" count={`${CASES.length} casos`}>
-          <RecordList emptyMessage="No hay casos registrados.">
-            {CASES.map((caseItem) => {
-              const status = findOption(CASE_STATUSES, caseItem.status)
-              const priority = findOption(PRIORITIES, caseItem.priority)
-
-              return (
-                <RecordCard
-                  key={caseItem.id}
-                  code={caseItem.id}
-                  badge={<Badge tone={status.tone}>{status.label}</Badge>}
-                  meta={[caseItem.professional, labelOf(UNITS, caseItem.unit), labelOf(CAMPUSES, caseItem.campus)]}
-                  footerStart={`${caseItem.status === 'pending' ? 'Recibido' : 'Último contacto'}: ${formatShortDate(caseItem.lastContact)}`}
-                  actionLabel={<Badge tone={priority.tone}>{priority.label}</Badge>}
-                  selected={caseItem.id === selectedCase.id}
-                >
-                  <p className="font-semibold text-title">{caseItem.title}</p>
-                </RecordCard>
-              )
-            })}
+        <Panel id="case-list-title" title="Casos en curso" count="5 casos">
+          <RecordList>
+            {CASES.map((caseItem, index) => (
+              <RecordCard
+                key={caseItem.id}
+                code={caseItem.id}
+                badge={<Badge tone={caseItem.status.tone}>{caseItem.status.label}</Badge>}
+                meta={[caseItem.professional, caseItem.unit, caseItem.campus]}
+                footerStart={caseItem.contact}
+                footerEnd={<Badge tone={caseItem.priority.tone}>{caseItem.priority.label}</Badge>}
+                selected={index === 0}
+              >
+                <p className="font-semibold text-title">{caseItem.title}</p>
+              </RecordCard>
+            ))}
           </RecordList>
         </Panel>
 
         <Panel id="case-detail-title" title="Seguimiento del caso">
-          <CaseDetail caseItem={selectedCase} />
+          <CaseDetail caseItem={CASES[0]} />
 
           <PrivacyNote title="Confidencialidad">
             Toda la información registrada en este seguimiento es de carácter reservado. El cierre de un caso queda

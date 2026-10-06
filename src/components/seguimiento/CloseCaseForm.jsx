@@ -8,7 +8,7 @@ import Textarea from '../ui/form/Textarea'
 
 export default function CloseCaseForm() {
   return (
-    <form onSubmit={(event) => event.preventDefault()}>
+    <form>
       <FormField id="close-reason" label="Motivo de cierre">
         <Select
           id="close-reason"
@@ -37,7 +37,7 @@ export default function CloseCaseForm() {
       </Choice>
 
       <FormActions>
-        <Button type="submit" variant="danger">
+        <Button variant="danger">
           Registrar cierre
         </Button>
         <Button type="reset" variant="secondary">

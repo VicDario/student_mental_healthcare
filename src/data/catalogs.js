@@ -1,7 +1,7 @@
 export const PRIORITIES = [
-  { value: 'low', label: 'Baja', tone: 'success' },
-  { value: 'medium', label: 'Media', tone: 'warning' },
-  { value: 'high', label: 'Alta', tone: 'danger' },
+  { value: 'low', label: 'Baja' },
+  { value: 'medium', label: 'Media' },
+  { value: 'high', label: 'Alta' },
 ]
 
 export const SUPPORT_TYPES = [
@@ -26,11 +26,3 @@ export const CAMPUSES = [
   { value: 'north', label: 'Sede norte' },
   { value: 'south', label: 'Sede sur' },
 ]
-
-export function findOption(options, value) {
-  return options.find((option) => option.value === value)
-}
-
-export function labelOf(options, value, fallback = '') {
-  return findOption(options, value)?.label ?? fallback
-}

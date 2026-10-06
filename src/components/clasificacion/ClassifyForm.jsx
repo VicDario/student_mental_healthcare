@@ -1,4 +1,4 @@
-import { PRIORITIES, SUPPORT_TYPES, UNITS } from '../../data/catalogs'
+import { SUPPORT_TYPES, UNITS } from '../../data/catalogs'
 import Button from '../ui/Button'
 import Choice from '../ui/form/Choice'
 import FormActions from '../ui/form/FormActions'
@@ -8,7 +8,7 @@ import Textarea from '../ui/form/Textarea'
 
 export default function ClassifyForm() {
   return (
-    <form onSubmit={(event) => event.preventDefault()}>
+    <form>
       <FormField id="request-type" label="Tipo de apoyo" hint="Determina la unidad que recibirá el caso.">
         <Select id="request-type" name="type" required options={SUPPORT_TYPES} placeholder="Selecciona una opción" />
       </FormField>
@@ -16,11 +16,15 @@ export default function ClassifyForm() {
       <fieldset className="mb-4 rounded-sm border-[1.5px] border-border p-4">
         <legend className="px-1 text-[0.8125rem] font-semibold text-forest-900">Prioridad de atención</legend>
         <div className="mt-1 flex flex-wrap gap-4">
-          {PRIORITIES.map(({ value, label }) => (
-            <Choice key={value} type="radio" name="priority" value={value} defaultChecked={value === 'medium'}>
-              {label}
-            </Choice>
-          ))}
+          <Choice type="radio" name="priority" value="low">
+            Baja
+          </Choice>
+          <Choice type="radio" name="priority" value="medium" defaultChecked>
+            Media
+          </Choice>
+          <Choice type="radio" name="priority" value="high">
+            Alta
+          </Choice>
         </div>
       </fieldset>
 
@@ -39,7 +43,7 @@ export default function ClassifyForm() {
       <Choice name="restricted">Marcar como caso de acceso restringido</Choice>
 
       <FormActions>
-        <Button type="submit">Guardar clasificación</Button>
+        <Button>Guardar clasificación</Button>
         <Button type="reset" variant="secondary">
           Cancelar
         </Button>
