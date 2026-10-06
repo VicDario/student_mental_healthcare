@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router";
-import logo from "../../assets/logo_clean.png";
+import logo from "../../assets/logo.png";
 
 const NAV_LINKS = [
   { label: "Inicio", to: "/" },
@@ -71,7 +71,7 @@ export default function Navbar() {
           <img
             src={logo}
             alt="Área Universitaria Salud Mental - Acompañamiento Terapéutico"
-            className="block max-h-8 w-auto max-w-32.5 object-contain sm:h-10.5 sm:max-h-none sm:max-w-37.5"
+            className="block h-8 w-auto object-contain sm:h-10.5"
           />
         </Link>
 
