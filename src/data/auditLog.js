@@ -1,0 +1,91 @@
+export const LOG_TYPES = [
+  { value: 'access', label: 'Acceso' },
+  { value: 'modify', label: 'Modificación' },
+  { value: 'restrict', label: 'Restricción' },
+  { value: 'export', label: 'Exportación' },
+]
+
+export const AUDIT_STATS = [
+  { value: 38, label: 'Registros hoy' },
+  { value: 12, label: 'Modificaciones esta semana', tone: 'warning' },
+  { value: 3, label: 'Restricciones activas', tone: 'danger' },
+  { value: 9, label: 'Casos sensibles abiertos' },
+]
+
+export const LOG_ENTRIES = [
+  {
+    id: 'BIT-0031',
+    type: { label: 'Modificación', tone: 'warning' },
+    sensitive: true,
+    caseCode: 'CAS-0089',
+    caseName: 'Acompañamiento en crisis',
+    summary: 'Cambio de clasificación en caso de alta sensibilidad',
+    action: 'Cambio de clasificación: tipo de apoyo y prioridad de atención',
+    user: 'Psic. Valentina Rojas',
+    unit: 'Atención psicológica',
+    datetime: '2026-09-06T09:22:41',
+    dateLabel: '06 sep 2026, 09:22',
+    longDateLabel: 'Domingo 6 de septiembre de 2026, 09:22:41',
+    ip: '192.168.1.104 — Red interna universitaria',
+    changes: {
+      before: [
+        ['Tipo de apoyo', 'Emocional'],
+        ['Prioridad', 'Media'],
+      ],
+      after: [
+        ['Tipo de apoyo', 'Psicológico'],
+        ['Prioridad', 'Alta'],
+      ],
+    },
+  },
+  {
+    id: 'BIT-0030',
+    type: { label: 'Acceso', tone: 'success' },
+    caseCode: 'CAS-0089',
+    summary: 'Consulta de ficha de caso de alta sensibilidad',
+    user: 'Admin Unidad',
+    unit: 'Unidad central',
+    datetime: '2026-09-06T09:14:03',
+    dateLabel: '06 sep 2026, 09:14',
+  },
+  {
+    id: 'BIT-0029',
+    type: { label: 'Restricción', tone: 'danger' },
+    caseCode: 'CAS-0091',
+    summary: 'Restricción de acceso aplicada a caso en crisis',
+    user: 'Admin Unidad',
+    unit: 'Unidad central',
+    datetime: '2026-09-05T16:45:22',
+    dateLabel: '05 sep 2026, 16:45',
+  },
+  {
+    id: 'BIT-0028',
+    type: { label: 'Acceso', tone: 'success' },
+    caseCode: 'CAS-0091',
+    summary: 'Revisión de historial de intervenciones',
+    user: 'T.S. Marcela Fuentes',
+    unit: 'Trabajo social',
+    datetime: '2026-09-05T16:30:07',
+    dateLabel: '05 sep 2026, 16:30',
+  },
+  {
+    id: 'BIT-0027',
+    type: { label: 'Exportación', tone: 'info' },
+    caseCode: 'CAS-0078',
+    summary: 'Generación de informe de seguimiento para caso sensible',
+    user: 'Dir. Gabriela Muñoz',
+    unit: 'Dirección de bienestar',
+    datetime: '2026-09-04T11:00:34',
+    dateLabel: '04 sep 2026, 11:00',
+  },
+  {
+    id: 'BIT-0026',
+    type: { label: 'Modificación', tone: 'warning' },
+    caseCode: 'CAS-0078',
+    summary: 'Actualización de observaciones clínicas',
+    user: 'Psic. Valentina Rojas',
+    unit: 'Atención psicológica',
+    datetime: '2026-09-04T10:48:19',
+    dateLabel: '04 sep 2026, 10:48',
+  },
+]
