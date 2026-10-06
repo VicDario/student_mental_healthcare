@@ -5,6 +5,7 @@ import logo from "../../assets/logo_clean.png";
 const NAV_LINKS = [
   { label: "Inicio", to: "/" },
   { label: "Servicios", href: "/#servicios" },
+  { label: "Citas", to: "/agendar-cita" },
   { label: "Solicitudes", to: "/solicitud-apoyo" },
   { label: "Derivar", to: "/derivacion-docente" },
   { label: "Clasificar", to: "/clasificacion" },
