@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import Badge from '../ui/Badge'
+import Panel from '../ui/Panel'
 
 // Tabla de gestión operativa con filtrado por cupos y búsqueda de talleres
 export default function TallerTable({ workshops, onSelectTaller }) {
@@ -37,7 +38,11 @@ export default function TallerTable({ workshops, onSelectTaller }) {
   }, [workshops])
 
   return (
-    <div className="rounded-lg border border-border bg-card p-5 shadow-subtle sm:p-6">
+    <Panel
+      id="tabla-talleres"
+      title="Convocatorias y Nóminas de Talleres"
+      count={`${filteredWorkshops.length} actividades`}
+    >
       {/* Barra de herramientas: Búsqueda y tabs de estado */}
       <div className="mb-5 flex flex-col gap-3.5 border-b border-border-subtle pb-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="relative w-full max-w-sm">
@@ -186,6 +191,6 @@ export default function TallerTable({ workshops, onSelectTaller }) {
           </div>
         )}
       </div>
-    </div>
+    </Panel>
   )
 }
