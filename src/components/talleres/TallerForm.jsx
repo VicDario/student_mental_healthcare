@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Button from '../ui/Button'
+import Panel from '../ui/Panel'
 import FormField from '../ui/form/FormField'
 import Input from '../ui/form/Input'
 import Select from '../ui/form/Select'
@@ -67,11 +68,8 @@ export default function TallerForm({ onCreated }) {
   }
 
   return (
-    <div className="rounded-lg border border-border bg-card p-5 shadow-subtle sm:p-6" id="panelCrear">
-      <div className="mb-4 border-b border-border-subtle pb-3">
-        <h3 className="text-[1.125rem] font-bold text-title">+ Nueva Actividad</h3>
-        <p className="text-xs text-muted">Habilita la inscripción para la comunidad universitaria.</p>
-      </div>
+    <Panel id="panelCrear" title="+ Nueva Actividad">
+      <p className="-mt-3 mb-4 text-xs text-muted">Habilita la inscripción para la comunidad universitaria.</p>
 
       {submitted && (
         <div className="mb-4 rounded-md border border-forest-200 bg-forest-50 p-3 text-xs text-forest-800">
@@ -181,6 +179,6 @@ export default function TallerForm({ onCreated }) {
           Publicar Actividad e Iniciar Cupos →
         </Button>
       </form>
-    </div>
+    </Panel>
   )
 }

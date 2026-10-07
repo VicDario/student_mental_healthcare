@@ -3,6 +3,8 @@ import BookingConfirmationModal from '../components/citas/BookingConfirmationMod
 import BookingSummaryCard from '../components/citas/BookingSummaryCard'
 import ProviderCard from '../components/citas/ProviderCard'
 import DashboardPage from '../components/layout/DashboardPage'
+import Divider from '../components/ui/Divider'
+import Panel from '../components/ui/Panel'
 import FormField from '../components/ui/form/FormField'
 import Input from '../components/ui/form/Input'
 import Select from '../components/ui/form/Select'
@@ -55,12 +57,12 @@ export default function AgendarCitaPage() {
         <ProviderCard provider={DEFAULT_PROVIDER} />
 
         {/* Columna 2: Selección de fecha, hora y datos del estudiante */}
-        <section className="rounded-lg border border-border bg-card p-5 shadow-subtle sm:p-6">
+        <Panel id="booking-selection" title="Reserva de Cita de Orientación">
           <div className="mb-6 border-b border-border-subtle pb-4">
             <span className="text-xs font-bold uppercase tracking-wider text-forest-700">
               Paso 1: Horario disponible
             </span>
-            <h2 className="mt-1 text-lg font-bold text-title">Elige un horario que se adapte a ti</h2>
+            <h3 className="mt-1 text-base font-bold text-title">Elige un horario que se adapte a ti</h3>
             <p className="text-xs text-muted">
               Selecciona el día y bloque disponible para tu sesión individual.
             </p>
@@ -99,7 +101,7 @@ export default function AgendarCitaPage() {
           </div>
 
           {/* Selector de bloques horarios */}
-          <div className="mb-6 border-b border-border-subtle pb-6">
+          <div className="mb-4">
             <div className="mb-3 flex items-center justify-between text-xs">
               <strong className="font-semibold text-title">Bloques disponibles</strong>
               <span className="text-muted">Hora Local (Chile Continental)</span>
@@ -125,6 +127,8 @@ export default function AgendarCitaPage() {
               })}
             </div>
           </div>
+
+          <Divider />
 
           {/* Formulario de ingreso de datos */}
           <div>
@@ -210,7 +214,7 @@ export default function AgendarCitaPage() {
               </div>
             </div>
           </div>
-        </section>
+        </Panel>
 
         {/* Columna 3: Tarjeta de Resumen en vivo y confirmación */}
         <BookingSummaryCard

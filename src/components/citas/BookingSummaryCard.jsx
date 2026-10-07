@@ -1,5 +1,7 @@
 import { Link } from 'react-router'
 import Button from '../ui/Button'
+import Divider from '../ui/Divider'
+import PrivacyNote from '../ui/PrivacyNote'
 
 // Tarjeta flotante con el resumen en vivo de la cita y confirmación
 export default function BookingSummaryCard({
@@ -47,7 +49,9 @@ export default function BookingSummaryCard({
         </div>
       </div>
 
-      <div className="my-5 border-t border-border-subtle pt-4">
+      <Divider />
+
+      <div className="mb-5">
         <label className="flex items-start gap-2.5 text-xs text-muted cursor-pointer">
           <input
             type="checkbox"
@@ -78,9 +82,9 @@ export default function BookingSummaryCard({
         </Link>
       </div>
 
-      <p className="mt-4 border-t border-border-subtle pt-3 text-center text-[0.75rem] text-muted">
-        ✓ Servicio 100% institucional y gratuito. Recibirás comprobante en tu correo.
-      </p>
+      <PrivacyNote title="Atención Institucional">
+        Servicio confidencial y gratuito. Recibirás comprobante en tu correo institucional.
+      </PrivacyNote>
     </div>
   )
 }
