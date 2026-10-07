@@ -1,9 +1,11 @@
 import psicologa from '../../assets/psicologa_2.webp'
+import Divider from '../ui/Divider'
+import Panel from '../ui/Panel'
 
 // Tarjeta informativa con el perfil profesional del facilitador y datos del servicio
 export default function ProviderCard({ provider }) {
   return (
-    <aside className="rounded-lg border border-border bg-card p-5 shadow-subtle sm:p-6">
+    <Panel id="provider-card" title="Profesional Asignado">
       <div className="mb-4 overflow-hidden rounded-lg border border-border">
         <img
           src={psicologa}
@@ -12,13 +14,15 @@ export default function ProviderCard({ provider }) {
         />
       </div>
 
-      <div className="mb-4 border-b border-border-subtle pb-4">
+      <div>
         <span className="inline-block rounded-full bg-forest-100 px-3 py-0.5 text-xs font-semibold text-forest-800">
           {provider.role}
         </span>
-        <h2 className="mt-2 text-xl font-extrabold text-title">{provider.name}</h2>
+        <h3 className="mt-2 text-xl font-extrabold text-title">{provider.name}</h3>
         <p className="mt-1 text-xs text-muted leading-relaxed">{provider.bio}</p>
       </div>
+
+      <Divider />
 
       <div className="space-y-2.5 text-xs text-title">
         <div className="flex items-center gap-2">
@@ -42,6 +46,6 @@ export default function ProviderCard({ provider }) {
           <strong className="font-extrabold underline">800-555-AYUDA</strong>.
         </p>
       </div>
-    </aside>
+    </Panel>
   )
 }
