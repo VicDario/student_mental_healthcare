@@ -1,0 +1,60 @@
+name: Funcionalidad
+description: Tarea de desarrollo asociada a un requerimiento del caso
+title: "[Funcionalidad]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción
+      description: Qué se debe construir y por qué.
+    validations:
+      required: true
+  - type: dropdown
+    id: requerimiento
+    attributes:
+      label: Requerimiento
+      description: Requerimientos funcionales (RF) o no funcionales (RNF) que cubre.
+      multiple: true
+      options:
+        - RF1 - Registro y autenticación
+        - RF2 - Solicitud de apoyo
+        - RF3 - Derivación docente
+        - RF4 - Clasificación
+        - RF5 - Asignación de profesional
+        - RF6 - Citas y seguimiento
+        - RF7 - Notificaciones
+        - RF8 - Talleres
+        - RF9 - Administración de maestros
+        - RF10 - Reportes agregados
+        - RF11 - Cierre de casos
+        - RF12 - Bitácora
+        - RNF - Seguridad y confidencialidad
+        - RNF - Validaciones
+        - RNF - Documentación
+        - Infraestructura
+        - Integración frontend
+    validations:
+      required: true
+  - type: textarea
+    id: esquema
+    attributes:
+      label: Colecciones involucradas
+      description: Colecciones del esquema de base de datos que se crean o modifican.
+  - type: textarea
+    id: endpoints
+    attributes:
+      label: Endpoints
+      description: Rutas de la API con método y perfiles permitidos.
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      description: Lista verificable de lo que debe cumplirse para cerrar la tarea.
+    validations:
+      required: true
+  - type: input
+    id: dependencias
+    attributes:
+      label: Depende de
+      description: Issues que deben completarse antes (ej. #12).
