@@ -1,0 +1,13 @@
+# Base de datos MongoDB para desarrollo local.
+# Levantar con: podman compose up -d
+services:
+  mongo:
+    image: docker.io/library/mongo:8
+    container_name: smh-mongo
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
