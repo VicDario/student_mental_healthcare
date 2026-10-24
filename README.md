@@ -13,7 +13,14 @@ Sistema web integral desarrollado en **React** y **Tailwind CSS** para la gesti�
 
 ## 🛠️ Instalación y Ejecución
 
-Sigue estos pasos para clonar y ejecutar el proyecto localmente:
+El repositorio tiene dos proyectos separados:
+
+```
+student_mental_healthcare/
+├── frontend/      # React + Vite + Tailwind
+├── backend/       # Node + Express + Mongoose (API REST)
+└── compose.yaml   # Contenedor de MongoDB (Podman)
+```
 
 1. **Clonar el repositorio**:
    ```bash
@@ -21,40 +28,56 @@ Sigue estos pasos para clonar y ejecutar el proyecto localmente:
    cd student_mental_healthcare
    ```
 
-2. **Instalar dependencias**:
+2. **Levantar MongoDB** (requiere Podman):
    ```bash
-   npm install
+   podman compose up -d
    ```
 
-3. **Iniciar el servidor de desarrollo**:
+3. **Backend** (http://localhost:3000):
    ```bash
+   cd backend
+   cp .env.example .env
+   npm install
+   npm run seed   # crea colecciones, índices y usuarios de prueba (contraseña: 123456)
    npm run dev
    ```
-   Abre tu navegador en [http://localhost:5173](http://localhost:5173).
+   Usuarios de prueba: `estudiante@test.cl`, `docente@test.cl`, `consejero@test.cl`, `profesional@test.cl`, `admin@test.cl`.
 
-4. **Verificación de código (Linter)**:
+4. **Frontend** (http://localhost:5173):
    ```bash
-   npm run lint
+   cd frontend
+   npm install
+   npm run dev
    ```
-
-5. **Compilar para producción**:
-   ```bash
-   npm run build
-   ```
-
-6. **Previsualizar la versión de producción**:
-   ```bash
-   npm run preview
-   ```
+   Otros comandos: `npm run lint`, `npm run build`, `npm run preview`.
 
 ---
 
-## 📁 Estructura del Proyecto
+## 🔌 Backend
+
+Estructura de `backend/src/`:
+
+```
+config/        # Conexión a MongoDB y constantes (perfiles, estados, tipos)
+models/        # Modelos de Mongoose (10 colecciones)
+middlewares/   # Manejo de errores
+app.js         # Configuración de Express
+server.js      # Punto de entrada
+seed.js        # Crea colecciones e índices y carga datos de prueba
+```
+
+Colecciones: `users`, `sessions`, `catalogs`, `supportRequests`, `followUps`, `appointments`, `notifications`, `workshops`, `enrollments`, `auditLogs`.
+
+Los endpoints de cada funcionalidad se implementan según los issues del repositorio (#12 a #28).
+
+---
+
+## 📁 Estructura del Frontend
 
 El código está estructurado bajo una arquitectura modular de componentes, separando responsabilidades entre primitivas de diseño, componentes de dominio, vistas y modelos de datos:
 
 ```
-src/
+frontend/src/
 ├── assets/                 # Recursos gráficos institucionales (logos, fotografías, banners)
 ├── components/
 │   ├── layout/             # Componentes estructurales globales (Navbar, Footer, DashboardPage)
