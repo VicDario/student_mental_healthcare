@@ -7,6 +7,7 @@ import * as models from './models/index.js'
 const { Catalog, User } = models
 
 const TEST_PASSWORD = '123456'
+const LOCAL_HOSTS = ['localhost', '127.0.0.1']
 
 const catalogs = [
   { type: 'support_type', code: 'emotional', name: 'Emocional' },
@@ -24,6 +25,16 @@ const catalogs = [
   { type: 'unit', code: 'academic', name: 'Apoyo académico' },
   { type: 'unit', code: 'welfare', name: 'Dirección de bienestar' },
 ]
+
+// Evita borrar una base que no sea la local de desarrollo
+function ensureLocalDatabase() {
+  const { hostname } = new URL(process.env.MONGO_URI)
+
+  if (process.env.NODE_ENV === 'production' || !LOCAL_HOSTS.includes(hostname)) {
+    console.error('Seed cancelled: it only runs against a local development database')
+    process.exit(1)
+  }
+}
 
 async function resetDatabase() {
   await mongoose.connection.dropDatabase()
@@ -66,6 +77,7 @@ async function seedUsers(findCatalog) {
   await User.insertMany(users.map((user) => ({ ...user, passwordHash, campus })))
 }
 
+ensureLocalDatabase()
 await connectDB()
 await resetDatabase()
 

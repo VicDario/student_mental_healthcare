@@ -11,6 +11,12 @@ export function errorHandler(err, _req, res, _next) {
     return res.status(409).json({ message: 'El registro ya existe' })
   }
 
+  // Errores de cliente de Express, ej. JSON mal formado (400) o cuerpo muy grande (413)
+  const status = err.status ?? err.statusCode
+  if (status >= 400 && status < 500) {
+    return res.status(status).json({ message: 'Solicitud inválida' })
+  }
+
   console.error(err)
   res.status(500).json({ message: 'Error interno del servidor' })
 }
