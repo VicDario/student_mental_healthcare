@@ -28,6 +28,11 @@ const catalogs = [
 
 // Evita borrar una base que no sea la local de desarrollo
 function ensureLocalDatabase() {
+  if (!process.env.MONGO_URI) {
+    console.error('Seed cancelled: MONGO_URI is not defined, copy .env.example to .env')
+    process.exit(1)
+  }
+
   const { hostname } = new URL(process.env.MONGO_URI)
 
   if (process.env.NODE_ENV === 'production' || !LOCAL_HOSTS.includes(hostname)) {
