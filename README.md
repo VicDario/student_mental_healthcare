@@ -41,6 +41,8 @@ student_mental_healthcare/
    npm run seed   # crea colecciones, índices y usuarios de prueba (contraseña: 123456)
    npm run dev
    ```
+   Estilo y lint con [Biome](https://biomejs.dev): `npm run check` (corrige formato e imports), `npm run lint`, `npm run format`.
+
    Usuarios de prueba: `estudiante@test.cl`, `docente@test.cl`, `consejero@test.cl`, `profesional@test.cl`, `admin@test.cl`.
 
 4. **Frontend** (http://localhost:5173):

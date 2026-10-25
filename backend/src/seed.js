@@ -35,11 +35,32 @@ async function seedUsers(findCatalog) {
   const campus = findCatalog('campus', 'central')
 
   const users = [
-    { name: 'Ana Pérez', email: 'estudiante@test.cl', role: 'student', studentCode: '2026001', program: 'Ingeniería en Computación' },
+    {
+      name: 'Ana Pérez',
+      email: 'estudiante@test.cl',
+      role: 'student',
+      studentCode: '2026001',
+      program: 'Ingeniería en Computación',
+    },
     { name: 'Jorge Rojas', email: 'docente@test.cl', role: 'teacher' },
-    { name: 'Marcela Soto', email: 'consejero@test.cl', role: 'counselor', unit: findCatalog('unit', 'counseling') },
-    { name: 'Carolina Muñoz', email: 'profesional@test.cl', role: 'professional', unit: findCatalog('unit', 'psychology') },
-    { name: 'Admin Bienestar', email: 'admin@test.cl', role: 'admin', unit: findCatalog('unit', 'welfare') },
+    {
+      name: 'Marcela Soto',
+      email: 'consejero@test.cl',
+      role: 'counselor',
+      unit: findCatalog('unit', 'counseling'),
+    },
+    {
+      name: 'Carolina Muñoz',
+      email: 'profesional@test.cl',
+      role: 'professional',
+      unit: findCatalog('unit', 'psychology'),
+    },
+    {
+      name: 'Admin Bienestar',
+      email: 'admin@test.cl',
+      role: 'admin',
+      unit: findCatalog('unit', 'welfare'),
+    },
   ]
 
   await User.insertMany(users.map((user) => ({ ...user, passwordHash, campus })))
@@ -49,7 +70,8 @@ await connectDB()
 await resetDatabase()
 
 const savedCatalogs = await Catalog.insertMany(catalogs)
-const findCatalog = (type, code) => savedCatalogs.find((item) => item.type === type && item.code === code)._id
+const findCatalog = (type, code) =>
+  savedCatalogs.find((item) => item.type === type && item.code === code)._id
 
 await seedUsers(findCatalog)
 
