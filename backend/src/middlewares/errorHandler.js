@@ -1,8 +1,14 @@
+import { HttpError } from '../utils/httpError.js'
+
 export function notFound(_req, res) {
   res.status(404).json({ message: 'Ruta no encontrada' })
 }
 
 export function errorHandler(err, _req, res, _next) {
+  if (err instanceof HttpError) {
+    return res.status(err.status).json({ message: err.message })
+  }
+
   if (err.name === 'ValidationError' || err.name === 'CastError') {
     return res.status(400).json({ message: 'Datos inválidos' })
   }
