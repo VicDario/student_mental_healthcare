@@ -22,10 +22,12 @@ export async function login({ email, password }) {
     throw new HttpError(401, 'Correo o contraseña incorrectos')
   }
 
+  const token = createToken(user)
+
   user.lastLoginAt = new Date()
   await user.save()
 
-  return { token: createToken(user), user: toPublicUser(user) }
+  return { token, user: toPublicUser(user) }
 }
 
 export async function getProfile(userId) {
