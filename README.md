@@ -62,7 +62,11 @@ Estructura de `backend/src/`:
 ```
 config/        # Conexión a MongoDB y constantes (perfiles, estados, tipos)
 models/        # Modelos de Mongoose (10 colecciones)
-middlewares/   # Manejo de errores
+routes/        # Rutas y perfiles permitidos en cada una
+controllers/   # Reciben la petición y responden
+services/      # Lógica de negocio y acceso a datos
+middlewares/   # Autorización (JWT y perfiles) y manejo de errores
+utils/         # JWT y errores HTTP
 app.js         # Configuración de Express
 server.js      # Punto de entrada
 seed.js        # Crea colecciones e índices y carga datos de prueba
@@ -70,7 +74,22 @@ seed.js        # Crea colecciones e índices y carga datos de prueba
 
 Colecciones: `users`, `sessions`, `catalogs`, `supportRequests`, `followUps`, `appointments`, `notifications`, `workshops`, `enrollments`, `auditLogs`.
 
-Los endpoints de cada funcionalidad se implementan según los issues del repositorio (#12 a #28).
+### Autenticación
+
+| Método | Ruta | Acceso | Respuesta |
+|--------|------|--------|-----------|
+| `POST` | `/api/auth/login` | Público | `{ token, user }` |
+| `GET` | `/api/auth/me` | Cualquier usuario autenticado | Datos del usuario |
+
+El token se envía en el header `Authorization: Bearer <token>` y solo contiene `id` y `role`. Variables necesarias en `.env`: `JWT_SECRET` y `JWT_EXPIRES_IN` (por defecto `2h`).
+
+Para proteger una ruta se usa `authorize` con los perfiles permitidos. Sin perfiles, permite a cualquier usuario autenticado. El middleware deja `req.user = { id, role }` disponible para el controlador y el servicio:
+
+```js
+router.get('/', authorize('admin', 'counselor'), listUsers)
+```
+
+Los endpoints de las demás funcionalidades se implementan según los issues del repositorio (#12 a #28).
 
 ---
 
