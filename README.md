@@ -41,6 +41,8 @@ student_mental_healthcare/
    npm run seed   # crea colecciones, índices y usuarios de prueba (contraseña: 123456)
    npm run dev
    ```
+   Antes de `npm run dev`, completa en `.env` los valores de `JWT_SECRET` y `ENCRYPTION_KEY` (ver [Cifrado de datos sensibles](#cifrado-de-datos-sensibles)).
+
    Estilo y lint con [Biome](https://biomejs.dev): `npm run check` (corrige formato e imports), `npm run lint`, `npm run format`.
 
    Usuarios de prueba: `estudiante@test.cl`, `docente@test.cl`, `consejero@test.cl`, `profesional@test.cl`, `admin@test.cl`.
@@ -66,7 +68,7 @@ routes/        # Rutas y perfiles permitidos en cada una
 controllers/   # Reciben la petición y responden
 services/      # Lógica de negocio y acceso a datos
 middlewares/   # Autorización (JWT y perfiles) y manejo de errores
-utils/         # JWT y errores HTTP
+utils/         # JWT, cifrado y errores HTTP
 app.js         # Configuración de Express
 server.js      # Punto de entrada
 seed.js        # Crea colecciones e índices y carga datos de prueba
@@ -88,6 +90,25 @@ Para proteger una ruta se usa `authorize` con los perfiles permitidos. Sin perfi
 ```js
 router.get('/', authorize('admin', 'counselor'), listUsers)
 ```
+
+### Cifrado de datos sensibles
+
+`supportRequests.description` y `followUps.text` se guardan cifrados con AES-256-GCM (`utils/crypto.js`). Si alguien accede directamente a MongoDB solo ve texto ilegible, y sin la clave correcta los datos no se pueden leer.
+
+La clave va en `ENCRYPTION_KEY` (64 caracteres hex). Para generarla:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+El servidor no arranca si falta o no tiene el formato correcto. Quienes compartan una misma base de datos deben usar la misma clave.
+
+El modelo cifra al asignar el campo y lo descifra al leerlo, así que los servicios trabajan con texto plano y `res.json()` lo devuelve descifrado. Consideraciones:
+
+- Quién puede ver estos campos lo decide la ruta con `authorize` y el servicio al elegir qué devolver.
+- Con `.lean()` no se descifra: se recibe el texto cifrado.
+- No se puede buscar ni filtrar por estos campos.
+- Si se cambia o pierde la clave, los datos guardados con la anterior quedan ilegibles.
 
 Los endpoints de las demás funcionalidades se implementan según los issues del repositorio (#12 a #28).
 
