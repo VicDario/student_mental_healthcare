@@ -7,15 +7,18 @@ export async function createSession(userId) {
   return session.tokenId
 }
 
-// Renueva la actividad; devuelve null si la sesión no existe o pasó el tiempo de inactividad.
+// Busca la sesión del token solo si tuvo actividad en los últimos 30 minutos.
 // El índice TTL de MongoDB borra las sesiones cada ~60 s, por eso también se filtra por fecha.
-export async function touchSession(tokenId, userId) {
+export async function findActiveSession(tokenId, userId) {
   const idleLimit = new Date(Date.now() - SESSION_IDLE_SECONDS * 1000)
 
-  return Session.findOneAndUpdate(
-    { tokenId, user: userId, lastActivityAt: { $gt: idleLimit } },
-    { lastActivityAt: new Date() },
-  )
+  return Session.findOne({ tokenId, user: userId, lastActivityAt: { $gt: idleLimit } })
+}
+
+// Registra actividad para que la sesión no expire mientras se usa
+export async function updateLastActivity(session) {
+  session.lastActivityAt = new Date()
+  await session.save()
 }
 
 export async function deleteSession(tokenId) {

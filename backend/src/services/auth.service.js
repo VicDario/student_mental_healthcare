@@ -6,6 +6,11 @@ import { createSession, deleteSession } from './session.service.js'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MIN_PASSWORD_LENGTH = 6
+const INVALID_CREDENTIALS = 'Correo o contraseña incorrectos'
+
+function normalizeEmail(email) {
+  return String(email).toLowerCase().trim()
+}
 
 function toPublicUser(user) {
   return { id: user.id, name: user.name, email: user.email, role: user.role }
@@ -17,7 +22,8 @@ export async function register({ name, email, password, studentCode, program, ph
     throw new HttpError(400, 'El nombre, el correo y la contraseña son obligatorios')
   }
 
-  if (!EMAIL_PATTERN.test(String(email))) {
+  const normalizedEmail = normalizeEmail(email)
+  if (!EMAIL_PATTERN.test(normalizedEmail)) {
     throw new HttpError(400, 'El correo no es válido')
   }
 
@@ -25,15 +31,16 @@ export async function register({ name, email, password, studentCode, program, ph
     throw new HttpError(400, `La contraseña debe tener al menos ${MIN_PASSWORD_LENGTH} caracteres`)
   }
 
-  const normalizedEmail = String(email).toLowerCase().trim()
-  if (await User.exists({ email: normalizedEmail })) {
+  const emailTaken = await User.exists({ email: normalizedEmail })
+  if (emailTaken) {
     throw new HttpError(409, 'El correo ya está registrado')
   }
 
+  const passwordHash = await bcrypt.hash(String(password), 10)
   const user = await User.create({
     name,
     email: normalizedEmail,
-    passwordHash: await bcrypt.hash(String(password), 10),
+    passwordHash,
     role: 'student',
     studentCode,
     program,
@@ -48,14 +55,17 @@ export async function login({ email, password }) {
     throw new HttpError(400, 'El correo y la contraseña son obligatorios')
   }
 
-  const user = await User.findOne({ email: String(email).toLowerCase(), active: true }).select(
-    '+passwordHash',
-  )
-  const validPassword = user && (await bcrypt.compare(String(password), user.passwordHash))
+  const normalizedEmail = normalizeEmail(email)
+  const user = await User.findOne({ email: normalizedEmail, active: true }).select('+passwordHash')
 
   // Mismo mensaje en ambos casos para no revelar qué correos existen
+  if (!user) {
+    throw new HttpError(401, INVALID_CREDENTIALS)
+  }
+
+  const validPassword = await bcrypt.compare(String(password), user.passwordHash)
   if (!validPassword) {
-    throw new HttpError(401, 'Correo o contraseña incorrectos')
+    throw new HttpError(401, INVALID_CREDENTIALS)
   }
 
   const tokenId = await createSession(user.id)

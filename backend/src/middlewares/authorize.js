@@ -1,5 +1,7 @@
-import { touchSession } from '../services/session.service.js'
+import { findActiveSession, updateLastActivity } from '../services/session.service.js'
 import { verifyToken } from '../utils/token.js'
+
+const INVALID_SESSION = 'Sesión inválida o expirada'
 
 // Sin roles permite a cualquier usuario autenticado. Deja { id, role } en req.user.
 export function authorize(...allowedRoles) {
@@ -14,14 +16,20 @@ export function authorize(...allowedRoles) {
     try {
       payload = verifyToken(token)
     } catch {
-      return res.status(401).json({ message: 'Sesión inválida o expirada' })
+      return res.status(401).json({ message: INVALID_SESSION })
     }
 
-    // La sesión debe existir y tener actividad reciente; si no, cerró sesión o expiró
-    const active = payload.tokenId && (await touchSession(payload.tokenId, payload.id))
-    if (!active) {
-      return res.status(401).json({ message: 'Sesión inválida o expirada' })
+    if (!payload.tokenId) {
+      return res.status(401).json({ message: INVALID_SESSION })
     }
+
+    // Si no hay sesión, el usuario cerró sesión o pasó el tiempo de inactividad
+    const session = await findActiveSession(payload.tokenId, payload.id)
+    if (!session) {
+      return res.status(401).json({ message: INVALID_SESSION })
+    }
+
+    await updateLastActivity(session)
 
     req.user = { id: payload.id, role: payload.role }
     req.tokenId = payload.tokenId
