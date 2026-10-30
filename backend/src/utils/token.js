@@ -6,11 +6,15 @@ function getExpiresIn() {
   return /^\d+$/.test(value) ? Number(value) : value
 }
 
-export function createToken({ id, role }) {
-  return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: getExpiresIn() })
+// tokenId (jti) identifica la sesión guardada en la colección sessions
+export function createToken({ id, role }, tokenId) {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
+    expiresIn: getExpiresIn(),
+    jwtid: tokenId,
+  })
 }
 
 export function verifyToken(token) {
-  const { id, role } = jwt.verify(token, process.env.JWT_SECRET)
-  return { id, role }
+  const { id, role, jti } = jwt.verify(token, process.env.JWT_SECRET)
+  return { id, role, tokenId: jti }
 }
