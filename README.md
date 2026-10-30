@@ -80,10 +80,12 @@ Colecciones: `users`, `sessions`, `catalogs`, `supportRequests`, `followUps`, `a
 
 | Método | Ruta | Acceso | Respuesta |
 |--------|------|--------|-----------|
+| `POST` | `/api/auth/register` | Público (crea estudiantes) | `201` con datos del usuario |
 | `POST` | `/api/auth/login` | Público | `{ token, user }` |
+| `POST` | `/api/auth/logout` | Cualquier usuario autenticado | `204` |
 | `GET` | `/api/auth/me` | Cualquier usuario autenticado | Datos del usuario |
 
-El token se envía en el header `Authorization: Bearer <token>` y solo contiene `id` y `role`. Variables necesarias en `.env`: `JWT_SECRET` y `JWT_EXPIRES_IN` (por defecto `2h`).
+El token se envía en el header `Authorization: Bearer <token>` y contiene `id`, `role` y un `jti` que identifica la sesión en la colección `sessions`. Cada petición autenticada renueva la sesión; tras 30 minutos sin actividad, o después del logout, el token deja de servir. Variables necesarias en `.env`: `JWT_SECRET` y `JWT_EXPIRES_IN` (por defecto `2h`).
 
 Para proteger una ruta se usa `authorize` con los perfiles permitidos. Sin perfiles, permite a cualquier usuario autenticado. El middleware deja `req.user = { id, role }` disponible para el controlador y el servicio:
 
