@@ -6,6 +6,7 @@ import {
   REQUEST_STATUSES,
   URGENCY_LEVELS,
 } from '../config/constants.js'
+import { encryptedField } from '../utils/crypto.js'
 
 const { ObjectId } = mongoose.Schema.Types
 
@@ -54,8 +55,8 @@ const supportRequestSchema = new mongoose.Schema(
     origin: { type: String, enum: REQUEST_ORIGINS, default: 'self' },
     referral: { type: referralSchema },
     reason: { type: String, required: true, trim: true },
-    // Se almacena cifrado (issue #12)
-    description: { type: String, required: true },
+    // Se guarda cifrado con AES-256-GCM y se descifra al leerlo
+    description: { type: String, required: true, ...encryptedField },
     perceivedUrgency: { type: String, enum: URGENCY_LEVELS, required: true },
     priority: { type: String, enum: URGENCY_LEVELS },
     contact: { type: contactSchema, required: true },
@@ -66,7 +67,8 @@ const supportRequestSchema = new mongoose.Schema(
     statusHistory: [statusChangeSchema],
     closure: { type: closureSchema },
   },
-  { timestamps: true },
+  // getters: true para que res.json() también devuelva el texto descifrado
+  { timestamps: true, toJSON: { getters: true }, toObject: { getters: true } },
 )
 
 export default mongoose.model('SupportRequest', supportRequestSchema)
