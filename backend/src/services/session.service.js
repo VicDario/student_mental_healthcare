@@ -17,8 +17,7 @@ export async function findActiveSession(tokenId, userId) {
 
 // Registra actividad para que la sesión no expire mientras se usa
 export async function updateLastActivity(session) {
-  session.lastActivityAt = new Date()
-  await session.save()
+  await Session.updateOne({ _id: session._id }, { lastActivityAt: new Date() })
 }
 
 export async function deleteSession(tokenId) {
