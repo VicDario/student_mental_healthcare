@@ -119,13 +119,14 @@ El body se valida con [Zod](https://zod.dev) usando el middleware `validate`, pa
 
 ```js
 // schemas/auth.schemas.js
-export const loginSchema = z.object({
-  email: z.string({ error: 'El correo es obligatorio' }).trim().toLowerCase().pipe(z.email('El correo no es válido')),
-  password: z.string({ error: 'La contraseña es obligatoria' }).min(1, 'La contraseña es obligatoria'),
+export const registerSchema = z.object({
+  name: z.string({ error: 'El nombre es obligatorio' }).trim().min(1, 'El nombre es obligatorio'),
+  email: email.pipe(z.email('El correo no es válido')),
+  // ...
 })
 
 // routes/auth.routes.js
-router.post('/login', validate(loginSchema), login)
+router.post('/register', validate(registerSchema), register)
 ```
 
 Los endpoints de las demás funcionalidades se implementan según los issues del repositorio (#12 a #28).
