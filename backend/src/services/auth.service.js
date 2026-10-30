@@ -6,6 +6,7 @@ import { createSession, deleteSession } from './session.service.js'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MIN_PASSWORD_LENGTH = 6
+const BCRYPT_SALT_ROUNDS = 10
 const INVALID_CREDENTIALS = 'Correo o contraseña incorrectos'
 
 function normalizeEmail(email) {
@@ -36,7 +37,7 @@ export async function register({ name, email, password, studentCode, program, ph
     throw new HttpError(409, 'El correo ya está registrado')
   }
 
-  const passwordHash = await bcrypt.hash(String(password), 10)
+  const passwordHash = await bcrypt.hash(String(password), BCRYPT_SALT_ROUNDS)
   const user = await User.create({
     name,
     email: normalizedEmail,

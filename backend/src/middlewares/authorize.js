@@ -3,7 +3,8 @@ import { verifyToken } from '../utils/token.js'
 
 const INVALID_SESSION = 'Sesión inválida o expirada'
 
-// Sin roles permite a cualquier usuario autenticado. Deja { id, role } en req.user.
+// Sin roles permite a cualquier usuario autenticado.
+// Deja { id, role } en req.user y el id de la sesión en req.tokenId (lo usa el logout).
 export function authorize(...allowedRoles) {
   return async (req, res, next) => {
     const [scheme, token] = (req.headers.authorization ?? '').split(' ')
