@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { listNotifications, markAsRead } from '../controllers/notification.controller.js'
 import { authorize } from '../middlewares/authorize.js'
-import { validateQuery } from '../middlewares/validate.js'
+import { validateIds, validateQuery } from '../middlewares/validate.js'
 import { listNotificationsQuerySchema } from '../schemas/notification.schemas.js'
 
 const router = Router()
@@ -10,6 +10,6 @@ const router = Router()
 router.use(authorize())
 
 router.get('/', validateQuery(listNotificationsQuerySchema), listNotifications)
-router.patch('/:id/read', markAsRead)
+router.patch('/:id/read', validateIds('id'), markAsRead)
 
 export default router
