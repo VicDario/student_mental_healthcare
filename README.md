@@ -67,7 +67,8 @@ models/        # Modelos de Mongoose (10 colecciones)
 routes/        # Rutas y perfiles permitidos en cada una
 controllers/   # Reciben la petición y responden
 services/      # Lógica de negocio y acceso a datos
-middlewares/   # Autorización (JWT y perfiles) y manejo de errores
+middlewares/   # Autorización (JWT y perfiles), validación y manejo de errores
+schemas/       # Esquemas de Zod para validar el body de cada endpoint
 utils/         # JWT, cifrado y errores HTTP
 app.js         # Configuración de Express
 server.js      # Punto de entrada
@@ -111,6 +112,22 @@ El modelo cifra al asignar el campo y lo descifra al leerlo, así que los servic
 - Con `.lean()` no se descifra: se recibe el texto cifrado.
 - No se puede buscar ni filtrar por estos campos.
 - Si se cambia o pierde la clave, los datos guardados con la anterior quedan ilegibles.
+
+### Validación
+
+El body se valida con [Zod](https://zod.dev) usando el middleware `validate`, pasando el esquema del endpoint solo donde haga falta. Si los datos no son válidos responde `400` con el mensaje del primer error. Si son válidos, `req.body` queda con los datos limpios (por ejemplo, el correo en minúsculas) y sin los campos que no están en el esquema, así el servicio no repite validaciones:
+
+```js
+// schemas/auth.schemas.js
+export const registerSchema = z.object({
+  name: z.string({ error: 'El nombre es obligatorio' }).trim().min(1, 'El nombre es obligatorio'),
+  email: email.pipe(z.email('El correo no es válido')),
+  // ...
+})
+
+// routes/auth.routes.js
+router.post('/register', validate(registerSchema), register)
+```
 
 Los endpoints de las demás funcionalidades se implementan según los issues del repositorio (#12 a #28).
 
