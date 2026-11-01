@@ -6,7 +6,7 @@ import {
   listUsers,
   updateUser,
 } from '../controllers/user.controller.js'
-import { authorize } from '../middlewares/authorize.js'
+import { allowRoles, requireAuth } from '../middlewares/authorize.js'
 import { validate, validateQuery } from '../middlewares/validate.js'
 import {
   createUserSchema,
@@ -17,7 +17,7 @@ import {
 const router = Router()
 
 // Todas las rutas de usuarios son solo para el administrador de bienestar
-router.use(authorize('admin'))
+router.use(requireAuth, allowRoles('admin'))
 
 router.get('/', validateQuery(listUsersQuerySchema), listUsers)
 router.post('/', validate(createUserSchema), createUser)
