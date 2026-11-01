@@ -23,3 +23,8 @@ export async function updateLastActivity(session) {
 export async function deleteSession(tokenId) {
   await Session.deleteOne({ tokenId })
 }
+
+// Cierra todas las sesiones de un usuario, ej. cuando un administrador lo desactiva
+export async function deleteUserSessions(userId) {
+  await Session.deleteMany({ user: userId })
+}
