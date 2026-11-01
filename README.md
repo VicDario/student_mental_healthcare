@@ -88,10 +88,10 @@ Colecciones: `users`, `sessions`, `catalogs`, `supportRequests`, `followUps`, `a
 
 El token se envía en el header `Authorization: Bearer <token>` y contiene `id`, `role` y un `jti` que identifica la sesión en la colección `sessions`. Cada petición autenticada renueva la sesión; tras 30 minutos sin actividad, o después del logout, el token deja de servir. Variables necesarias en `.env`: `JWT_SECRET` y `JWT_EXPIRES_IN` (por defecto `2h`).
 
-Para proteger una ruta se usa `authorize` con los perfiles permitidos. Sin perfiles, permite a cualquier usuario autenticado. El middleware deja `req.user = { id, role }` disponible para el controlador y el servicio, y `req.tokenId` con el id de la sesión (lo usa el logout):
+Para proteger una ruta se usa `requireAuth` (exige sesión válida) y, si solo algunos perfiles pueden entrar, `allowRoles` con esos perfiles. `requireAuth` deja `req.user = { id, role }` disponible para el controlador y el servicio, y `req.tokenId` con el id de la sesión (lo usa el logout):
 
 ```js
-router.get('/', authorize('admin', 'counselor'), listUsers)
+router.get('/', requireAuth, allowRoles('admin', 'counselor'), listUsers)
 ```
 
 ### Cifrado de datos sensibles
