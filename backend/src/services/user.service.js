@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { Catalog, User } from '../models/index.js'
 import { HttpError } from '../utils/httpError.js'
+import { changedFieldsOf, recordAudit } from './audit.service.js'
 import { deleteUserSessions } from './session.service.js'
 
 const BCRYPT_SALT_ROUNDS = 10
@@ -57,7 +58,8 @@ async function findUserOrFail(id) {
   return user
 }
 
-// Los datos llegan validados por los esquemas de schemas/user.schemas.js
+// Los datos llegan validados por los esquemas de schemas/user.schemas.js.
+// actor: quién hace el cambio, para la bitácora
 
 export async function listUsers({ role, active, search }) {
   const filter = {}
@@ -73,7 +75,7 @@ export async function listUsers({ role, active, search }) {
   return users.map(toAdminUser)
 }
 
-export async function createUser({ password, ...data }) {
+export async function createUser({ password, ...data }, actor) {
   await ensureEmailAvailable(data.email)
   await ensureCatalogItem(data.campus, 'campus', 'La sede')
   await ensureCatalogItem(data.unit, 'unit', 'La unidad de apoyo')
@@ -82,10 +84,18 @@ export async function createUser({ password, ...data }) {
   const user = await User.create({ ...data, passwordHash })
   await user.populate('campus unit')
 
+  // Sin la contraseña, que ya quedó fuera de data
+  await recordAudit(actor, {
+    action: 'create',
+    entity: 'User',
+    entityId: user._id,
+    changedFields: Object.keys(data),
+  })
+
   return toAdminUser(user)
 }
 
-export async function updateUser(id, data) {
+export async function updateUser(id, data, actor) {
   const user = await findUserOrFail(id)
 
   if (data.email) await ensureEmailAvailable(data.email, user._id)
@@ -93,15 +103,26 @@ export async function updateUser(id, data) {
   await ensureCatalogItem(data.unit, 'unit', 'La unidad de apoyo')
 
   user.set(data)
+  const changedFields = changedFieldsOf(user)
   await user.save()
   await user.populate('campus unit')
+
+  // Sin cambios reales no se registra nada
+  if (changedFields.length > 0) {
+    await recordAudit(actor, {
+      action: 'update',
+      entity: 'User',
+      entityId: user._id,
+      changedFields,
+    })
+  }
 
   return toAdminUser(user)
 }
 
 // Los usuarios nunca se eliminan: se desactivan y se cierran todas sus sesiones
-export async function deactivateUser(id, adminId) {
-  if (id === adminId) {
+export async function deactivateUser(id, actor) {
+  if (id === actor.id) {
     throw new HttpError(400, 'No puedes desactivar tu propia cuenta')
   }
 
@@ -111,14 +132,28 @@ export async function deactivateUser(id, adminId) {
   await user.save()
   await deleteUserSessions(user._id)
 
+  await recordAudit(actor, {
+    action: 'update',
+    entity: 'User',
+    entityId: user._id,
+    changedFields: ['active'],
+  })
+
   return toAdminUser(user)
 }
 
-export async function activateUser(id) {
+export async function activateUser(id, actor) {
   const user = await findUserOrFail(id)
 
   user.active = true
   await user.save()
+
+  await recordAudit(actor, {
+    action: 'update',
+    entity: 'User',
+    entityId: user._id,
+    changedFields: ['active'],
+  })
 
   return toAdminUser(user)
 }
