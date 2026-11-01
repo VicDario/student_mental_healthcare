@@ -213,6 +213,9 @@ export async function enroll(workshopId, studentId) {
 
 // El estudiante cancela su propia inscripción y libera el cupo
 export async function cancelEnrollment(workshopId, studentId) {
+  const workshop = await findWorkshopOrFail(workshopId)
+  ensureScheduled(workshop, 'Solo puedes cancelar tu inscripción en talleres programados')
+
   const enrollment = await Enrollment.findOne({
     workshop: workshopId,
     student: studentId,
@@ -240,8 +243,13 @@ export async function listEnrollments(workshopId) {
   return enrollments.map(toPublicEnrollment)
 }
 
-// Marca que el estudiante asistió. Solo aplica a inscripciones activas
+// Marca que el estudiante asistió. Solo aplica a inscripciones activas de talleres no cancelados
 export async function markAttendance(workshopId, enrollmentId, actor) {
+  const workshop = await findWorkshopOrFail(workshopId)
+  if (workshop.status === 'cancelled') {
+    throw new HttpError(400, 'No se puede marcar asistencia en un taller cancelado')
+  }
+
   const filter = { _id: enrollmentId, workshop: workshopId }
   const enrollment = await Enrollment.findOne(filter).populate('student', 'name email')
 
