@@ -129,6 +129,21 @@ export const registerSchema = z.object({
 router.post('/register', validate(registerSchema), register)
 ```
 
+### Talleres
+
+| Método | Ruta | Acceso | Respuesta |
+|--------|------|--------|-----------|
+| `GET` | `/api/workshops?status=&kind=` | Cualquier usuario autenticado | Lista por fecha, con `takenSeats` (cupos ocupados) |
+| `POST` | `/api/workshops` | Administrador, profesional | `201` con el taller (`scheduled`) |
+| `PUT` | `/api/workshops/:id` | Administrador, profesional | Taller actualizado |
+| `DELETE` | `/api/workshops/:id` | Administrador, profesional | Taller con estado `cancelled` (no se elimina) |
+| `POST` | `/api/workshops/:id/enrollments` | Estudiante | `201` con la inscripción |
+| `DELETE` | `/api/workshops/:id/enrollments` | Estudiante | Inscripción con estado `cancelled` |
+| `GET` | `/api/workshops/:id/enrollments` | Administrador, profesional | Inscritos con nombre y correo |
+| `PATCH` | `/api/workshops/:id/enrollments/:enrollmentId/attendance` | Administrador, profesional | Inscripción con estado `attended` |
+
+Solo se puede inscribir en talleres `scheduled`, una vez por taller y mientras queden cupos (ocupan cupo las inscripciones `enrolled` y `attended`). Si el estudiante canceló antes, al volver a inscribirse se reactiva la misma inscripción.
+
 Los endpoints de las demás funcionalidades se implementan según los issues del repositorio (#12 a #28).
 
 ---
