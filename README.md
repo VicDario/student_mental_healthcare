@@ -88,10 +88,10 @@ Colecciones: `users`, `sessions`, `catalogs`, `supportRequests`, `followUps`, `a
 
 El token se envía en el header `Authorization: Bearer <token>` y contiene `id`, `role` y un `jti` que identifica la sesión en la colección `sessions`. Cada petición autenticada renueva la sesión; tras 30 minutos sin actividad, o después del logout, el token deja de servir. Variables necesarias en `.env`: `JWT_SECRET` y `JWT_EXPIRES_IN` (por defecto `2h`).
 
-Para proteger una ruta se usa `authorize` con los perfiles permitidos. Sin perfiles, permite a cualquier usuario autenticado. El middleware deja `req.user = { id, role }` disponible para el controlador y el servicio, y `req.tokenId` con el id de la sesión (lo usa el logout):
+Para proteger una ruta se usa `requireAuth` (exige sesión válida) y, si solo algunos perfiles pueden entrar, `allowRoles` con esos perfiles. `requireAuth` deja `req.user = { id, role }` disponible para el controlador y el servicio, y `req.tokenId` con el id de la sesión (lo usa el logout):
 
 ```js
-router.get('/', authorize('admin', 'counselor'), listUsers)
+router.get('/', requireAuth, allowRoles('admin', 'counselor'), listUsers)
 ```
 
 ### Cifrado de datos sensibles
@@ -128,6 +128,21 @@ export const registerSchema = z.object({
 // routes/auth.routes.js
 router.post('/register', validate(registerSchema), register)
 ```
+
+### Talleres
+
+| Método | Ruta | Acceso | Respuesta |
+|--------|------|--------|-----------|
+| `GET` | `/api/workshops?status=&kind=` | Cualquier usuario autenticado | Lista por fecha, con `takenSeats` (cupos ocupados) |
+| `POST` | `/api/workshops` | Administrador, profesional | `201` con el taller (`scheduled`) |
+| `PUT` | `/api/workshops/:id` | Administrador, profesional | Taller actualizado |
+| `DELETE` | `/api/workshops/:id` | Administrador, profesional | Taller con estado `cancelled` (no se elimina) |
+| `POST` | `/api/workshops/:id/enrollments` | Estudiante | `201` con la inscripción |
+| `DELETE` | `/api/workshops/:id/enrollments` | Estudiante | Inscripción con estado `cancelled` |
+| `GET` | `/api/workshops/:id/enrollments` | Administrador, profesional | Inscritos con nombre y correo |
+| `PATCH` | `/api/workshops/:id/enrollments/:enrollmentId/attendance` | Administrador, profesional | Inscripción con estado `attended` |
+
+Solo se puede inscribir en talleres `scheduled`, una vez por taller y mientras queden cupos (ocupan cupo las inscripciones `enrolled` y `attended`). Si el estudiante canceló antes, al volver a inscribirse se reactiva la misma inscripción.
 
 Los endpoints de las demás funcionalidades se implementan según los issues del repositorio (#12 a #28).
 
