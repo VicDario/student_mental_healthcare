@@ -88,11 +88,21 @@ Colecciones: `users`, `sessions`, `catalogs`, `supportRequests`, `followUps`, `a
 
 El token se envía en el header `Authorization: Bearer <token>` y contiene `id`, `role` y un `jti` que identifica la sesión en la colección `sessions`. Cada petición autenticada renueva la sesión; tras 30 minutos sin actividad, o después del logout, el token deja de servir. Variables necesarias en `.env`: `JWT_SECRET` y `JWT_EXPIRES_IN` (por defecto `2h`).
 
-Para proteger una ruta se usa `authorize` con los perfiles permitidos. Sin perfiles, permite a cualquier usuario autenticado. El middleware deja `req.user = { id, role }` disponible para el controlador y el servicio, y `req.tokenId` con el id de la sesión (lo usa el logout):
+Para proteger una ruta se usa `requireAuth` (exige sesión válida) y, si solo algunos perfiles pueden entrar, `allowRoles` con esos perfiles. `requireAuth` deja `req.user = { id, role }` disponible para el controlador y el servicio, y `req.tokenId` con el id de la sesión (lo usa el logout):
 
 ```js
-router.get('/', authorize('admin', 'counselor'), listUsers)
+router.get('/', requireAuth, allowRoles('admin', 'counselor'), listUsers)
 ```
+
+### Solicitudes de apoyo
+
+| Método | Ruta | Acceso | Respuesta |
+|--------|------|--------|-----------|
+| `POST` | `/api/requests` | Estudiante | `201` con la solicitud (código `SOL-<año>-0001`, estado `received`) |
+| `GET` | `/api/requests?status=` | Cualquier usuario autenticado | Solicitudes a su alcance, más recientes primero |
+| `GET` | `/api/requests/:id` | Cualquier usuario autenticado | Detalle; `404` si está fuera de su alcance |
+
+Cada perfil ve solo sus solicitudes (`requestScope` en `services/access.service.js`): el estudiante las propias, el docente las que derivó, el profesional las asignadas y el consejero y el administrador todas. Cuando alguien del equipo abre un detalle, queda registrado en la bitácora.
 
 ### Cifrado de datos sensibles
 
