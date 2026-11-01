@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs'
 import { User } from '../models/index.js'
 import { HttpError } from '../utils/httpError.js'
 import { createToken } from '../utils/token.js'
+import { recordAudit } from './audit.service.js'
 import { createSession, deleteSession } from './session.service.js'
 
 const BCRYPT_SALT_ROUNDS = 10
@@ -34,16 +35,23 @@ export async function register({ name, email, password, studentCode, program, ph
   return toPublicUser(user)
 }
 
-export async function login({ email, password }) {
+// ip: para la bitácora
+export async function login({ email, password }, ip) {
   const user = await User.findOne({ email, active: true }).select('+passwordHash')
 
-  // Mismo mensaje en ambos casos para no revelar qué correos existen
+  // Mismo mensaje en ambos casos para no revelar qué correos existen.
+  // Sin usuario, el intento queda registrado solo con la IP.
   if (!user) {
+    await recordAudit({ ip }, { action: 'login_failed' })
     throw new HttpError(401, INVALID_CREDENTIALS)
   }
 
   const validPassword = await bcrypt.compare(password, user.passwordHash)
   if (!validPassword) {
+    await recordAudit(
+      { id: user._id, role: user.role, ip },
+      { action: 'login_failed', entity: 'User', entityId: user._id },
+    )
     throw new HttpError(401, INVALID_CREDENTIALS)
   }
 
@@ -53,11 +61,17 @@ export async function login({ email, password }) {
   user.lastLoginAt = new Date()
   await user.save()
 
+  await recordAudit(
+    { id: user._id, role: user.role, ip },
+    { action: 'login', entity: 'User', entityId: user._id },
+  )
+
   return { token, user: toPublicUser(user) }
 }
 
-export async function logout(tokenId) {
+export async function logout(tokenId, actor) {
   await deleteSession(tokenId)
+  await recordAudit(actor, { action: 'logout', entity: 'User', entityId: actor.id })
 }
 
 export async function getProfile(userId) {
