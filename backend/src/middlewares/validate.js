@@ -15,3 +15,19 @@ export function validate(schema) {
     next()
   }
 }
+
+// Igual que validate, pero para los filtros de la URL (?role=...).
+// En Express 5 req.query no se puede reemplazar, así que los datos limpios quedan en req.filters.
+export function validateQuery(schema) {
+  return (req, _res, next) => {
+    const result = schema.safeParse(req.query ?? {})
+
+    if (!result.success) {
+      const [firstIssue] = result.error.issues
+      throw new HttpError(400, firstIssue.message)
+    }
+
+    req.filters = result.data
+    next()
+  }
+}
