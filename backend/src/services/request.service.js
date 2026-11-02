@@ -24,7 +24,7 @@ function toRequestSummary(request) {
 }
 
 // Detalle de una solicitud. Las observaciones de seguimiento nunca se incluyen aquí.
-function toPublicRequest(request) {
+export function toPublicRequest(request) {
   return {
     ...toRequestSummary(request),
     student: toRef(request.student),

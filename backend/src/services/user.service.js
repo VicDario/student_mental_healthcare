@@ -61,7 +61,36 @@ async function findUserOrFail(id) {
 // Los datos llegan validados por los esquemas de schemas/user.schemas.js.
 // actor: quién hace el cambio, para la bitácora
 
-export async function listUsers({ role, active, search }) {
+// Perfiles que el consejero puede ver al asignar una solicitud
+const STAFF_ROLES = ['professional', 'counselor']
+
+// El consejero solo ve id, nombre, perfil y unidad del equipo activo que atiende casos
+function toStaffMember(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    role: user.role,
+    unit: user.unit ? { id: user.unit.id, name: user.unit.name } : null,
+  }
+}
+
+async function listStaff({ role, search }) {
+  if (role && !STAFF_ROLES.includes(role)) {
+    throw new HttpError(403, 'Solo puedes ver a los profesionales y consejeros')
+  }
+
+  const filter = { role: role ?? { $in: STAFF_ROLES }, active: true }
+  if (search) filter.name = new RegExp(escapeRegex(search), 'i')
+
+  const users = await User.find(filter).populate('unit').sort({ name: 1 })
+  return users.map(toStaffMember)
+}
+
+export async function listUsers({ role, active, search }, requester) {
+  if (requester?.role === 'counselor') {
+    return listStaff({ role, search })
+  }
+
   const filter = {}
 
   if (role) filter.role = role
