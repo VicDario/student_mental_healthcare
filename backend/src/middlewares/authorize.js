@@ -9,24 +9,24 @@ export async function requireAuth(req, res, next) {
   const [scheme, token] = (req.headers.authorization ?? '').split(' ')
 
   if (scheme !== 'Bearer' || !token) {
-    return res.status(401).json({ message: 'Debes iniciar sesión' })
+    return res.status(401).json({ message: 'Debes iniciar sesión', errors: [] })
   }
 
   let payload
   try {
     payload = verifyToken(token)
   } catch {
-    return res.status(401).json({ message: INVALID_SESSION })
+    return res.status(401).json({ message: INVALID_SESSION, errors: [] })
   }
 
   if (!payload.tokenId) {
-    return res.status(401).json({ message: INVALID_SESSION })
+    return res.status(401).json({ message: INVALID_SESSION, errors: [] })
   }
 
   // Si no hay sesión, el usuario cerró sesión o pasó el tiempo de inactividad
   const session = await findActiveSession(payload.tokenId, payload.id)
   if (!session) {
-    return res.status(401).json({ message: INVALID_SESSION })
+    return res.status(401).json({ message: INVALID_SESSION, errors: [] })
   }
 
   await updateLastActivity(session)
@@ -42,11 +42,13 @@ export function allowRoles(...roles) {
   return (req, res, next) => {
     // Por si se olvidó poner requireAuth antes
     if (!req.user) {
-      return res.status(401).json({ message: 'Debes iniciar sesión' })
+      return res.status(401).json({ message: 'Debes iniciar sesión', errors: [] })
     }
 
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'No tienes permiso para realizar esta acción' })
+      return res
+        .status(403)
+        .json({ message: 'No tienes permiso para realizar esta acción', errors: [] })
     }
 
     next()
