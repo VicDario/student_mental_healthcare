@@ -2,6 +2,7 @@ import { Catalog, SupportRequest, User } from '../models/index.js'
 import { HttpError } from '../utils/httpError.js'
 import { findAccessibleRequest, requestScope } from './access.service.js'
 import { recordAudit } from './audit.service.js'
+import { notify } from './notification.service.js'
 
 // Id y nombre de un documento relacionado (sede, tipo, usuario), o null si no hay
 function toRef(doc) {
@@ -86,7 +87,7 @@ export async function createRequest({ campus, ...data }, actor) {
     changedFields: Object.keys(data),
   })
 
-  // La notificación al estudiante se agrega cuando se integre el PR #35 (notify)
+  await notify({ user: actor.id, type: 'received', request })
 
   await request.populate('student campus')
   return toPublicRequest(request)
