@@ -1,51 +1,60 @@
-import { SUPPORT_TYPES, UNITS } from '../../data/catalogs'
+import { useState } from 'react'
+import { api } from '../../api/client'
+import { useSubmit } from '../../hooks/useSubmit'
+import { toOptions } from '../../utils/labels'
+import ApiMessage from '../ui/ApiMessage'
 import Button from '../ui/Button'
 import Choice from '../ui/form/Choice'
 import FormActions from '../ui/form/FormActions'
 import FormField from '../ui/form/FormField'
 import Select from '../ui/form/Select'
-import Textarea from '../ui/form/Textarea'
 
-export default function ClassifyForm() {
+// El consejero define el tipo de apoyo y la prioridad (PATCH /api/requests/:id/classify)
+export default function ClassifyForm({ request, supportTypes, onSaved }) {
+  const [type, setType] = useState(request.type?.id ?? '')
+  const [priority, setPriority] = useState(request.priority ?? request.perceivedUrgency ?? 'medium')
+  const { submit, pending, error, success, fieldError } = useSubmit()
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+    const saved = await submit(
+      () => api(`/requests/${request.id}/classify`, { method: 'PATCH', body: { type, priority } }),
+      'Clasificación guardada. El estudiante recibió un aviso.',
+    )
+    if (saved) onSaved(saved)
+  }
+
   return (
-    <form>
-      <FormField id="request-type" label="Tipo de apoyo" hint="Determina la unidad que recibirá el caso.">
-        <Select id="request-type" name="type" required options={SUPPORT_TYPES} placeholder="Selecciona una opción" />
+    <form onSubmit={handleSubmit} noValidate>
+      <ApiMessage error={error} success={success} />
+      <FormField id="request-type" label="Tipo de apoyo *" hint="Solo aparecen los tipos activos del catálogo." error={fieldError('type')}>
+        <Select
+          id="request-type"
+          value={type}
+          onChange={(event) => setType(event.target.value)}
+          options={toOptions(supportTypes)}
+          placeholder="Selecciona una opción"
+        />
       </FormField>
 
       <fieldset className="mb-4 rounded-sm border-[1.5px] border-border p-4">
-        <legend className="px-1 text-[0.8125rem] font-semibold text-forest-900">Prioridad de atención</legend>
+        <legend className="px-1 text-[0.8125rem] font-semibold text-forest-900">Prioridad de atención *</legend>
         <div className="mt-1 flex flex-wrap gap-4">
-          <Choice type="radio" name="priority" value="low">
-            Baja
-          </Choice>
-          <Choice type="radio" name="priority" value="medium" defaultChecked>
-            Media
-          </Choice>
-          <Choice type="radio" name="priority" value="high">
-            Alta
-          </Choice>
+          {[
+            ['low', 'Baja'],
+            ['medium', 'Media'],
+            ['high', 'Alta'],
+          ].map(([value, label]) => (
+            <Choice key={value} type="radio" name="priority" value={value} checked={priority === value} onChange={() => setPriority(value)}>
+              {label}
+            </Choice>
+          ))}
         </div>
       </fieldset>
 
-      <FormField id="support-unit" label="Unidad de apoyo">
-        <Select id="support-unit" name="unit" options={UNITS} placeholder="Sin asignar" />
-      </FormField>
-
-      <FormField
-        id="classification-note"
-        label="Observación"
-        hint="Usa un lenguaje respetuoso y evita registrar datos sensibles que no sean necesarios para la derivación."
-      >
-        <Textarea id="classification-note" name="note" placeholder="Antecedentes relevantes para la derivación" />
-      </FormField>
-
-      <Choice name="restricted">Marcar como caso de acceso restringido</Choice>
-
       <FormActions>
-        <Button>Guardar clasificación</Button>
-        <Button type="reset" variant="secondary">
-          Cancelar
+        <Button type="submit" disabled={pending}>
+          {pending ? 'Guardando…' : 'Guardar clasificación'}
         </Button>
       </FormActions>
     </form>

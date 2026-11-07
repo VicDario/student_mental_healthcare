@@ -1,10 +1,17 @@
-export default function RecordCard({ code, badge, meta, footerStart, footerEnd, selected = false, children }) {
+// Con onSelect, toda la tarjeta se puede elegir con el mouse o el teclado
+export default function RecordCard({ code, badge, meta, footerStart, footerEnd, selected = false, onSelect, children }) {
   const stateClass = selected
     ? '-translate-y-0.5 border-border-active bg-forest-50 shadow-card'
     : 'border-border bg-page hover:border-forest-400 hover:shadow-subtle'
 
   return (
-    <li className={`rounded-md border-[1.5px] px-4 py-3.5 transition ${stateClass}`}>
+    <li
+      className={`rounded-md border-[1.5px] px-4 py-3.5 transition ${stateClass} ${onSelect ? 'cursor-pointer' : ''}`}
+      onClick={onSelect}
+      onKeyDown={onSelect ? (event) => (event.key === 'Enter' || event.key === ' ') && onSelect() : undefined}
+      tabIndex={onSelect ? 0 : undefined}
+      aria-current={selected ? 'true' : undefined}
+    >
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <p className="text-[0.8125rem] font-bold tracking-[0.06em] text-muted uppercase">{code}</p>
         {badge}

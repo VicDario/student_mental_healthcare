@@ -5,6 +5,7 @@ import {
   classifyRequest,
   closeRequest,
   createFollowUp,
+  createReferral,
   listFollowUps,
 } from '../controllers/requestFlow.controller.js'
 import { allowRoles, requireAuth } from '../middlewares/authorize.js'
@@ -15,6 +16,7 @@ import {
   classifyRequestSchema,
   closeRequestSchema,
   createFollowUpSchema,
+  createReferralSchema,
 } from '../schemas/requestFlow.schemas.js'
 
 const router = Router()
@@ -24,6 +26,9 @@ router.use(requireAuth)
 
 router.get('/', validateQuery(listRequestsQuerySchema), listRequests)
 router.post('/', allowRoles('student'), validate(createRequestSchema), createRequest)
+
+// Derivación docente (#17). Va antes de '/:id' para que "referral" no se lea como un id
+router.post('/referral', allowRoles('teacher'), validate(createReferralSchema), createReferral)
 router.get('/:id', getRequest)
 
 // Flujo de atención: clasificar (#18) y asignar a un profesional (#19)

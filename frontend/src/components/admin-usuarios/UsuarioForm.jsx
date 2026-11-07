@@ -1,51 +1,78 @@
-import { CAMPUSES, UNITS } from '../../data/catalogs'
-import { PROFILES } from '../../data/users'
+import { useState } from 'react'
+import { api } from '../../api/client'
+import { useSubmit } from '../../hooks/useSubmit'
+import { ROLE_OPTIONS, toOptions } from '../../utils/labels'
+import ApiMessage from '../ui/ApiMessage'
 import Button from '../ui/Button'
-import Choice from '../ui/form/Choice'
 import FormActions from '../ui/form/FormActions'
 import FormField from '../ui/form/FormField'
 import Input from '../ui/form/Input'
 import Select from '../ui/form/Select'
 
-export default function UsuarioForm() {
+const EMPTY = { name: '', email: '', password: '', role: '', campus: '', unit: '', studentCode: '', program: '' }
+
+// Crea una cuenta (POST /api/users). Los errores de la API aparecen bajo cada campo
+export default function UsuarioForm({ campuses, units, onCreated }) {
+  const [form, setForm] = useState(EMPTY)
+  const { submit, pending, error, success, fieldError } = useSubmit()
+  const update = (event) => setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }))
+  const isStudent = form.role === 'student'
+  const isStaff = ['professional', 'counselor'].includes(form.role)
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+    // Solo se envían los campos con valor
+    const body = Object.fromEntries(Object.entries(form).filter(([, value]) => value !== ''))
+    const created = await submit(() => api('/users', { method: 'POST', body }), 'Cuenta creada. Ya puede iniciar sesión.')
+    if (created) {
+      setForm(EMPTY)
+      onCreated()
+    }
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit} noValidate>
+      <ApiMessage error={error} success={success} />
       <p className="mb-4 text-[0.8125rem] text-muted">Los campos marcados con asterisco son obligatorios.</p>
 
       <div className="grid gap-x-4 sm:grid-cols-2">
-        <FormField id="user-name" label="Nombre completo *">
-          <Input id="user-name" name="name" placeholder="Ana Pérez Soto" required />
+        <FormField id="user-name" label="Nombre completo *" error={fieldError('name')}>
+          <Input id="user-name" name="name" value={form.name} onChange={update} placeholder="Ana Pérez Soto" />
         </FormField>
-        <FormField id="user-email" label="Correo institucional *">
-          <Input id="user-email" name="email" type="email" placeholder="ana.perez@unab.cl" required />
+        <FormField id="user-email" label="Correo institucional *" error={fieldError('email')}>
+          <Input id="user-email" name="email" type="email" value={form.email} onChange={update} placeholder="ana.perez@unab.cl" />
         </FormField>
-        <FormField id="user-profile" label="Perfil institucional *">
-          <Select id="user-profile" name="profile" options={PROFILES} placeholder="Selecciona un perfil" required />
+        <FormField id="user-password" label="Contraseña inicial *" hint="Mínimo 6 caracteres." error={fieldError('password')}>
+          <Input id="user-password" name="password" type="password" autoComplete="new-password" value={form.password} onChange={update} />
         </FormField>
-        <FormField id="user-campus" label="Sede *">
-          <Select id="user-campus" name="campus" options={CAMPUSES} placeholder="Selecciona una sede" required />
+        <FormField id="user-role" label="Perfil institucional *" error={fieldError('role')}>
+          <Select id="user-role" name="role" value={form.role} onChange={update} options={ROLE_OPTIONS} placeholder="Selecciona un perfil" />
         </FormField>
+        <FormField id="user-campus" label="Sede" error={fieldError('campus')}>
+          <Select id="user-campus" name="campus" value={form.campus} onChange={update} options={toOptions(campuses)} placeholder="Sin sede" />
+        </FormField>
+        {isStaff && (
+          <FormField id="user-unit" label="Unidad de apoyo" error={fieldError('unit')}>
+            <Select id="user-unit" name="unit" value={form.unit} onChange={update} options={toOptions(units)} placeholder="Sin unidad" />
+          </FormField>
+        )}
+        {isStudent && (
+          <>
+            <FormField id="user-code" label="Matrícula" error={fieldError('studentCode')}>
+              <Input id="user-code" name="studentCode" value={form.studentCode} onChange={update} placeholder="20261234" />
+            </FormField>
+            <FormField id="user-program" label="Carrera" error={fieldError('program')}>
+              <Input id="user-program" name="program" value={form.program} onChange={update} placeholder="Ingeniería en Computación" />
+            </FormField>
+          </>
+        )}
       </div>
 
-      <FormField id="user-unit" label="Unidad de apoyo">
-        <Select id="user-unit" name="unit" options={UNITS} placeholder="No aplica" />
-      </FormField>
-
-      <fieldset className="rounded-sm border-[1.5px] border-border p-4">
-        <legend className="px-1 text-[0.8125rem] font-semibold text-forest-900">Estado inicial de la cuenta *</legend>
-        <div className="mt-1 flex flex-col gap-2">
-          <Choice type="radio" name="status" value="active" required>
-            Activo, puede iniciar sesión de inmediato
-          </Choice>
-          <Choice type="radio" name="status" value="inactive">
-            Inactivo, queda registrada sin acceso
-          </Choice>
-        </div>
-      </fieldset>
-
       <FormActions>
-        <Button type="submit">Registrar cuenta</Button>
-        <Button type="reset" variant="secondary">
+        <Button type="submit" disabled={pending}>
+          {pending ? 'Creando…' : 'Registrar cuenta'}
+        </Button>
+        <Button variant="secondary" onClick={() => setForm(EMPTY)}>
           Limpiar formulario
         </Button>
       </FormActions>

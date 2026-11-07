@@ -41,3 +41,9 @@ export async function closeRequest(req, res) {
   )
   res.json(request)
 }
+
+// POST /api/requests/referral
+export async function createReferral(req, res) {
+  const request = await requestFlowService.createReferral(req.body, auditActor(req))
+  res.status(201).json(request)
+}

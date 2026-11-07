@@ -1,224 +1,168 @@
 import { useState } from "react";
-import {
-  BUTTON_PRIMARY,
-  BUTTON_SECONDARY,
-  FIELDSET,
-  INPUT,
-  LABEL,
-} from "../ui/styles";
-
-const SEDES = ["República", "Casona Las Condes", "Bellavista", "Antonio Varas"];
-
-const TIPOS = ["Emocional", "Académico", "Social", "Económico", "Convivencia", "Otro"];
+import { api } from "../../api/client";
+import { useSubmit } from "../../hooks/useSubmit";
+import ApiMessage from "../ui/ApiMessage";
+import { BUTTON_PRIMARY, BUTTON_SECONDARY, FIELDSET, INPUT, LABEL } from "../ui/styles";
 
 const URGENCIAS = [
-  { id: "urgencia-baja", value: "Baja", label: "Baja, conviene hacer seguimiento" },
-  { id: "urgencia-media", value: "Media", label: "Media, requiere contacto esta semana" },
-  { id: "urgencia-alta", value: "Alta", label: "Alta, requiere contacto prioritario" },
+  { id: "urgencia-baja", value: "low", label: "Baja, conviene hacer seguimiento" },
+  { id: "urgencia-media", value: "medium", label: "Media, requiere contacto esta semana" },
+  { id: "urgencia-alta", value: "high", label: "Alta, requiere contacto prioritario" },
 ];
 
 const CONTACTOS = [
-  { id: "aviso-si", value: "Sí, está en conocimiento" },
-  { id: "aviso-no", value: "No, prefiero que lo contacte la unidad" },
-  { id: "aviso-imposible", value: "No fue posible contactarlo" },
+  { id: "aviso-si", value: "true", label: "Sí, está en conocimiento" },
+  { id: "aviso-no", value: "false", label: "No, prefiero que lo contacte la unidad" },
 ];
 
-const VIAS = ["Correo institucional", "Llamada telefónica", "Notificación en la plataforma"];
+const EMPTY = { studentEmail: "", course: "", observedSituation: "", perceivedUrgency: "", studentInformed: "" };
 
 const sectionClass = "mb-[26px] border-b border-border pb-1.5";
 const sectionTitleClass = "mb-4 text-[17px] leading-tight font-semibold text-title";
 const fieldClass = "mb-[18px]";
-const halfFieldClass = "mb-[18px] flex-[1_1_220px] max-[560px]:flex-auto";
-const rowClass = "flex flex-wrap gap-[18px] max-[560px]:flex-col max-[560px]:gap-0";
+const errorClass = "mt-1.5 text-[13px] font-medium text-crisis-text";
 
-function RadioGroup({ legend, name, options }) {
+function FieldError({ message }) {
+  return message ? <p className={errorClass}>{message}</p> : null;
+}
+
+function RadioGroup({ legend, name, options, value, onChange, error }) {
   return (
     <fieldset className={FIELDSET}>
       <legend className={LABEL}>{legend}</legend>
-      {options.map(({ id, value, label }) => (
-        <div key={id} className="mb-2 flex items-start gap-2">
-          <input type="radio" id={id} name={name} value={value} required className="mt-[3px] shrink-0" />
-          <label htmlFor={id} className="leading-snug text-muted">{label ?? value}</label>
+      {options.map((option) => (
+        <div key={option.id} className="mb-2 flex items-start gap-2">
+          <input
+            type="radio"
+            id={option.id}
+            name={name}
+            value={option.value}
+            checked={value === option.value}
+            onChange={onChange}
+            className="mt-[3px] shrink-0"
+          />
+          <label htmlFor={option.id} className="leading-snug text-muted">{option.label}</label>
         </div>
       ))}
+      <FieldError message={error} />
     </fieldset>
   );
 }
 
-export default function DerivacionForm() {
-  const [caracteres, setCaracteres] = useState(0);
-  const [resumen, setResumen] = useState(null);
+// Deriva a un estudiante (POST /api/requests/referral)
+export default function DerivacionForm({ onCreated }) {
+  const [form, setForm] = useState(EMPTY);
+  const [pauta, setPauta] = useState(false);
+  const { submit, pending, error, success, fieldError } = useSubmit();
 
-  function handleSubmit(event) {
+  const update = (event) => setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+
+  async function handleSubmit(event) {
     event.preventDefault();
-    setResumen(Object.fromEntries(new FormData(event.target)));
+    const created = await submit(
+      () =>
+        api("/requests/referral", {
+          method: "POST",
+          body: {
+            studentEmail: form.studentEmail,
+            course: form.course || undefined,
+            observedSituation: form.observedSituation,
+            perceivedUrgency: form.perceivedUrgency || undefined,
+            studentInformed: form.studentInformed === "" ? undefined : form.studentInformed === "true",
+          },
+        }),
+      "Se registró la derivación. Un consejero revisará el caso y el estudiante recibirá un aviso respetuoso.",
+    );
+    if (created) {
+      setForm(EMPTY);
+      setPauta(false);
+      onCreated?.(created);
+    }
   }
-
-  function handleReset() {
-    setCaracteres(0);
-    setResumen(null);
-  }
-
-  const lineas = resumen && [
-    ["Estudiante", resumen.estudiante],
-    ["Correo", resumen.correo],
-    ["Carrera", resumen.carrera],
-    ["Sede", resumen.sede],
-    ["Asignatura", resumen.asignatura],
-    ["Tipo de necesidad observada", resumen.tipo],
-    ["Descripción", resumen.descripcion],
-    ["Urgencia percibida", resumen.urgencia],
-    ["Contacto previo con el estudiante", resumen.conversado],
-    ["Confirmación por", resumen.via],
-    ["Estado", "Recibida"],
-  ];
 
   return (
-    <>
-      <form
-        onSubmit={handleSubmit}
-        onReset={handleReset}
-        className="rounded-sm border border-border bg-card p-[26px] max-[560px]:p-[18px]"
-      >
-        <p className="mb-5 text-sm text-muted">
-          Los campos marcados con asterisco son obligatorios.
-        </p>
+    <form onSubmit={handleSubmit} noValidate className="rounded-sm border border-border bg-card p-[26px] max-[560px]:p-[18px]">
+      <ApiMessage error={error} success={success} />
+      <p className="mb-5 text-sm text-muted">Los campos marcados con asterisco son obligatorios.</p>
 
-        <div className={sectionClass}>
-          <h2 className={sectionTitleClass}>Datos del estudiante</h2>
+      <div className={sectionClass}>
+        <h2 className={sectionTitleClass}>Datos del estudiante</h2>
 
-          <div className={rowClass}>
-            <div className={halfFieldClass}>
-              <label htmlFor="estudiante" className={LABEL}>Nombre completo *</label>
-              <input type="text" id="estudiante" name="estudiante" placeholder="Ana Pérez Soto" required className={INPUT} />
-            </div>
-            <div className={halfFieldClass}>
-              <label htmlFor="correo" className={LABEL}>Correo institucional *</label>
-              <input
-                type="email"
-                id="correo"
-                name="correo"
-                placeholder="ana.perez@estudiante.unab.cl"
-                required
-                className={INPUT}
-              />
-            </div>
-          </div>
-
-          <div className={rowClass}>
-            <div className={halfFieldClass}>
-              <label htmlFor="carrera" className={LABEL}>Carrera</label>
-              <input type="text" id="carrera" name="carrera" placeholder="Ingeniería en Computación" className={INPUT} />
-            </div>
-            <div className={halfFieldClass}>
-              <label htmlFor="sede" className={LABEL}>Sede *</label>
-              <select id="sede" name="sede" required className={INPUT}>
-                <option value="">Selecciona una sede</option>
-                {SEDES.map((sede) => (
-                  <option key={sede} value={sede}>{sede}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className={fieldClass}>
-            <label htmlFor="asignatura" className={LABEL}>
-              Asignatura en que se observó la situación *
-            </label>
-            <input type="text" id="asignatura" name="asignatura" placeholder="Programación Web" required className={INPUT} />
-          </div>
-        </div>
-
-        <div className={sectionClass}>
-          <h2 className={sectionTitleClass}>Situación observada</h2>
-
-          <div className={fieldClass}>
-            <label htmlFor="tipo" className={LABEL}>Tipo de necesidad observada *</label>
-            <select id="tipo" name="tipo" required className={INPUT}>
-              <option value="">Selecciona una opción</option>
-              {TIPOS.map((tipo) => (
-                <option key={tipo} value={tipo}>{tipo}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className={fieldClass}>
-            <label htmlFor="descripcion" className={LABEL}>Descripción de lo observado *</label>
-            <textarea
-              id="descripcion"
-              name="descripcion"
-              rows="6"
-              maxLength="600"
-              placeholder="Ejemplo: ha faltado a cinco sesiones seguidas, no entregó las dos últimas evaluaciones y en clases se le nota decaído."
-              required
-              onChange={(event) => setCaracteres(event.target.value.length)}
-              className={INPUT}
-            />
-            <p className="mt-1.5 text-right text-[13px] text-muted">
-              {caracteres} / 600 caracteres
-            </p>
-          </div>
-
-          <RadioGroup legend="Urgencia percibida *" name="urgencia" options={URGENCIAS} />
-        </div>
-
-        <div className={sectionClass}>
-          <h2 className={sectionTitleClass}>Contacto previo</h2>
-
-          <RadioGroup
-            legend="¿Conversaste con el estudiante sobre esta derivación? *"
-            name="conversado"
-            options={CONTACTOS}
+        <div className={fieldClass}>
+          <label htmlFor="studentEmail" className={LABEL}>Correo institucional del estudiante *</label>
+          <input
+            type="email"
+            id="studentEmail"
+            name="studentEmail"
+            value={form.studentEmail}
+            onChange={update}
+            placeholder="estudiante@test.cl"
+            className={INPUT}
           />
-
-          <div className={fieldClass}>
-            <label htmlFor="via" className={LABEL}>
-              Vía por la que prefieres recibir la confirmación
-            </label>
-            <select id="via" name="via" className={INPUT}>
-              {VIAS.map((via) => (
-                <option key={via} value={via}>{via}</option>
-              ))}
-            </select>
-          </div>
+          <FieldError message={fieldError("studentEmail")} />
         </div>
 
-        <div className="mb-[18px] rounded-sm border border-border bg-subtle p-3.5 text-sm">
-          <input type="checkbox" id="pauta" name="pauta" required />
-          <label htmlFor="pauta" className="ml-1 text-muted">
-            Declaro que la información entregada es veraz, que conozco la pauta de derivación
-            responsable y que no compartiré estos antecedentes con terceros. *
-          </label>
+        <div className={fieldClass}>
+          <label htmlFor="course" className={LABEL}>Asignatura en que se observó la situación</label>
+          <input type="text" id="course" name="course" value={form.course} onChange={update} placeholder="Programación Web" className={INPUT} />
+        </div>
+      </div>
+
+      <div className={sectionClass}>
+        <h2 className={sectionTitleClass}>Situación observada</h2>
+
+        <div className={fieldClass}>
+          <label htmlFor="observedSituation" className={LABEL}>Descripción de lo observado *</label>
+          <textarea
+            id="observedSituation"
+            name="observedSituation"
+            rows="6"
+            maxLength="600"
+            value={form.observedSituation}
+            onChange={update}
+            placeholder="Ejemplo: ha faltado a cinco sesiones seguidas, no entregó las dos últimas evaluaciones y en clases se le nota decaído."
+            className={INPUT}
+          />
+          <p className="mt-1.5 text-right text-[13px] text-muted">{form.observedSituation.length} / 600 caracteres</p>
+          <FieldError message={fieldError("observedSituation")} />
         </div>
 
-        <div className="flex flex-wrap gap-2.5">
-          <button type="submit" className={BUTTON_PRIMARY}>Enviar derivación</button>
-          <button type="reset" className={BUTTON_SECONDARY}>Limpiar formulario</button>
-        </div>
-      </form>
+        <RadioGroup
+          legend="Urgencia percibida *"
+          name="perceivedUrgency"
+          options={URGENCIAS}
+          value={form.perceivedUrgency}
+          onChange={update}
+          error={fieldError("perceivedUrgency")}
+        />
+      </div>
 
-      <section
-        aria-labelledby="titulo-resultado"
-        className="mt-6 rounded-sm border border-forest-200 bg-subtle px-[22px] py-5"
-      >
-        <h3 id="titulo-resultado" className="mb-2 leading-tight font-semibold text-title">
-          Resumen de la derivación
-        </h3>
-        <div className="text-[15px] leading-[1.9] break-words text-muted">
-          {resumen ? (
-            <>
-              <strong className="block font-semibold text-forest-700">Se registró la derivación.</strong>
-              {lineas.map(([rotulo, valor]) => (
-                <span key={rotulo} className="block">
-                  {rotulo}: {valor}
-                </span>
-              ))}
-            </>
-          ) : (
-            "Todavía no has enviado el formulario."
-          )}
-        </div>
-      </section>
-    </>
+      <div className={sectionClass}>
+        <h2 className={sectionTitleClass}>Contacto previo</h2>
+        <RadioGroup
+          legend="¿Conversaste con el estudiante sobre esta derivación? *"
+          name="studentInformed"
+          options={CONTACTOS}
+          value={form.studentInformed}
+          onChange={update}
+          error={fieldError("studentInformed")}
+        />
+      </div>
+
+      <div className="mb-[18px] rounded-sm border border-border bg-subtle p-3.5 text-sm">
+        <input type="checkbox" id="pauta" checked={pauta} onChange={(event) => setPauta(event.target.checked)} />
+        <label htmlFor="pauta" className="ml-1 text-muted">
+          Declaro que la información entregada es veraz, que conozco la pauta de derivación responsable y que no
+          compartiré estos antecedentes con terceros. *
+        </label>
+      </div>
+
+      <div className="flex flex-wrap gap-2.5">
+        <button type="submit" disabled={pending || !pauta} className={`${BUTTON_PRIMARY} disabled:cursor-not-allowed disabled:opacity-60`}>
+          {pending ? "Enviando…" : "Enviar derivación"}
+        </button>
+        <button type="button" onClick={() => setForm(EMPTY)} className={BUTTON_SECONDARY}>Limpiar formulario</button>
+      </div>
+    </form>
   );
 }
