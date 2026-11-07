@@ -44,7 +44,7 @@ export function toPublicRequest(request) {
 // Genera el siguiente código del año: SOL-2026-0001, SOL-2026-0002, ...
 // Busca el último código del año y le suma 1, así la numeración parte de nuevo cada año.
 // El índice único de code impide que se guarden dos solicitudes con el mismo código.
-async function nextRequestCode() {
+export async function nextRequestCode() {
   const prefix = `SOL-${new Date().getFullYear()}-`
   const last = await SupportRequest.findOne({ code: { $regex: `^${prefix}` } }).sort({ code: -1 })
   const lastNumber = last ? Number(last.code.slice(prefix.length)) : 0

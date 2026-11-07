@@ -3,7 +3,7 @@ import { HttpError } from '../utils/httpError.js'
 import { findAccessibleRequest } from './access.service.js'
 import { recordAudit } from './audit.service.js'
 import { notify } from './notification.service.js'
-import { toPublicRequest } from './request.service.js'
+import { nextRequestCode, toPublicRequest } from './request.service.js'
 
 // Perfiles que pueden atender casos
 export const STAFF_ROLES = ['professional', 'counselor']
@@ -146,5 +146,45 @@ export async function closeRequest(id, { reason, referralType, referralDestinati
       closedBy: closure.closedBy,
       closedAt: closure.closedAt,
     },
+  }
+}
+
+// El docente deriva a un estudiante (#17). Se crea una solicitud con origen "referral"
+// y el estudiante recibe un aviso respetuoso. El docente solo verá sus derivaciones
+// (requestScope) y nunca las observaciones de seguimiento.
+export async function createReferral(data, actor) {
+  const { studentEmail, course, observedSituation, studentInformed, perceivedUrgency } = data
+
+  const student = await User.findOne({ email: studentEmail, role: 'student', active: true })
+  if (!student) {
+    throw fieldError('studentEmail', 'No encontramos a un estudiante activo con ese correo')
+  }
+
+  const request = await SupportRequest.create({
+    code: await nextRequestCode(),
+    student: student._id,
+    origin: 'referral',
+    referral: { teacher: actor.id, course, observedSituation, studentInformed },
+    reason: 'Derivación docente',
+    description: observedSituation,
+    perceivedUrgency,
+    contact: { channel: 'email', value: student.email },
+    campus: student.campus,
+    status: 'received',
+    statusHistory: [{ status: 'received', changedBy: actor.id }],
+  })
+
+  await recordAudit(actor, {
+    action: 'create',
+    entity: 'SupportRequest',
+    entityId: request._id,
+    changedFields: ['referral', 'perceivedUrgency'],
+  })
+  await notify({ user: student._id, type: 'received', request })
+
+  await request.populate('student campus')
+  return {
+    ...toPublicRequest(request),
+    referral: { course: course ?? null, observedSituation, studentInformed },
   }
 }

@@ -44,3 +44,20 @@ export const closeRequestSchema = z
     message: 'Indica a dónde se derivó al estudiante',
     path: ['referralDestination'],
   })
+
+// POST /api/requests/referral
+// El docente identifica al estudiante por su correo institucional
+export const createReferralSchema = z.object({
+  studentEmail: z
+    .string({ error: 'El correo del estudiante es obligatorio' })
+    .trim()
+    .toLowerCase()
+    .pipe(z.email('El correo del estudiante no es válido')),
+  course: z.string({ error: 'La asignatura debe ser texto' }).trim().optional(),
+  observedSituation: z
+    .string({ error: 'Describe la situación observada' })
+    .trim()
+    .min(1, 'Describe la situación observada'),
+  studentInformed: z.boolean({ error: 'Indica si el estudiante fue informado de la derivación' }),
+  perceivedUrgency: z.enum(URGENCY_LEVELS, { error: 'La urgencia debe ser low, medium o high' }),
+})
