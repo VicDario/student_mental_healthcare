@@ -94,6 +94,16 @@ Para proteger una ruta se usa `requireAuth` (exige sesión válida) y, si solo a
 router.get('/', requireAuth, allowRoles('admin', 'counselor'), listUsers)
 ```
 
+### Solicitudes de apoyo
+
+| Método | Ruta | Acceso | Respuesta |
+|--------|------|--------|-----------|
+| `POST` | `/api/requests` | Estudiante | `201` con la solicitud (código `SOL-<año>-0001`, estado `received`) |
+| `GET` | `/api/requests?status=` | Cualquier usuario autenticado | Solicitudes a su alcance, más recientes primero |
+| `GET` | `/api/requests/:id` | Cualquier usuario autenticado | Detalle; `404` si está fuera de su alcance |
+
+Cada perfil ve solo sus solicitudes (`requestScope` en `services/access.service.js`): el estudiante las propias, el docente las que derivó, el profesional las asignadas y el consejero y el administrador todas. Cuando alguien del equipo abre un detalle, queda registrado en la bitácora.
+
 ### Cifrado de datos sensibles
 
 `supportRequests.description` y `followUps.text` se guardan cifrados con AES-256-GCM (`utils/crypto.js`). Si alguien accede directamente a MongoDB solo ve texto ilegible, y sin la clave correcta los datos no se pueden leer.

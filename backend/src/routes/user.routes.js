@@ -16,10 +16,19 @@ import {
 
 const router = Router()
 
+// El listado también lo usa el consejero, para elegir a quién asignar una solicitud (#19).
+// El servicio le muestra solo al equipo que atiende casos.
+router.get(
+  '/',
+  requireAuth,
+  allowRoles('admin', 'counselor'),
+  validateQuery(listUsersQuerySchema),
+  listUsers,
+)
+
 // Todas las rutas de usuarios son solo para el administrador de bienestar
 router.use(requireAuth, allowRoles('admin'))
 
-router.get('/', validateQuery(listUsersQuerySchema), listUsers)
 router.post('/', validate(createUserSchema), createUser)
 router.put('/:id', validate(updateUserSchema), updateUser)
 router.patch('/:id/deactivate', deactivateUser)
