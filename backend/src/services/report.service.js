@@ -51,7 +51,8 @@ function dateFilter(field, from, to) {
   if (!from && !to) return {}
   const range = {}
   if (from) range.$gte = from
-  if (to) range.$lte = to
+  // "to" llega como el inicio del día (00:00); se usa "< día siguiente" para incluir el día completo
+  if (to) range.$lt = new Date(to.getTime() + 24 * 60 * 60 * 1000)
   return { [field]: range }
 }
 

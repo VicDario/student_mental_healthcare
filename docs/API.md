@@ -79,7 +79,7 @@ Tipos de catálogo: `support_type` (tipos de apoyo), `campus` (sedes) y `unit` (
 | `POST` | `/requests` | student | `reason`, `description`, `perceivedUrgency` (`low`/`medium`/`high`), `contact: { channel: email\|phone, value }`, `campus?` | `201` solicitud `SOL-<año>-NNNN`, estado `received`. Aviso al estudiante |
 | `POST` | `/requests/referral` | teacher | `studentEmail`, `course?`, `observedSituation`, `studentInformed` (boolean), `perceivedUrgency` | `201` solicitud con `origin: "referral"`. Aviso respetuoso al estudiante, sin la situación observada |
 | `GET` | `/requests?status=` | Autenticado | `status`: `received`, `classified`, `assigned`, `in_progress`, `closed` | Resumen de las solicitudes a su alcance |
-| `GET` | `/requests/:id` | Autenticado | — | Detalle (incluye la descripción descifrada). `404` si está fuera de su alcance. Si lo abre el equipo, queda `view` en la bitácora |
+| `GET` | `/requests/:id` | Autenticado | — | Detalle (incluye la descripción descifrada). `404` si está fuera de su alcance. Si lo abre el equipo, queda `view` en la bitácora. En una derivación el estudiante recibe `description: null` (no ve la observación del docente). Si está cerrada, el equipo (no estudiante ni docente) recibe `closure` |
 
 **Alcance por perfil:** el estudiante ve las suyas (también las derivadas por un docente), el docente solo las que derivó,
 el profesional solo las asignadas a él, y consejero y administrador todas.
@@ -89,7 +89,7 @@ el profesional solo las asignadas a él, y consejero y administrador todas.
 | Método | Ruta | Perfiles | Cuerpo | Reglas y respuesta |
 |---|---|---|---|---|
 | `PATCH` | `/requests/:id/classify` | counselor | `type` (id de `support_type` activo), `priority` (`low`/`medium`/`high`) | Estado → `classified`. Se puede corregir mientras no esté asignada |
-| `PATCH` | `/requests/:id/assign` | counselor, admin | `assignedTo` (id de un `professional` o `counselor` activo) | Primero debe estar clasificada. Estado → `assigned` (si ya está en atención, se reasigna sin cambiar el estado) |
+| `PATCH` | `/requests/:id/assign` | counselor, admin | `assignedTo` (id de un `professional` o `counselor` activo) | Primero debe estar clasificada. Estado → `assigned` (si ya está en atención, se reasigna sin cambiar el estado). Las citas agendadas pasan al nuevo profesional |
 | `GET` | `/requests/:id/follow-ups` | professional, counselor, admin | — | Observaciones `[{ id, text, author, createdAt }]`. Estudiantes y docentes: `403`. Queda `view` en la bitácora |
 | `POST` | `/requests/:id/follow-ups` | professional (asignado), counselor | `text` (máx. 5000) | `201`. Se guarda **cifrada**. La primera deja la solicitud en `in_progress` |
 | `PATCH` | `/requests/:id/close` | professional (asignado), counselor | `reason`, `referralType` (`internal`/`external`/`none`), `referralDestination` (obligatorio si hay derivación) | Estado → `closed`, con `closure`. Las citas agendadas se cancelan |
@@ -135,7 +135,7 @@ agendada (`appointment`). Solo incluyen el código de la solicitud, nunca datos 
 
 | Método | Ruta | Perfiles | Filtros | Respuesta |
 |---|---|---|---|---|
-| `GET` | `/reports/summary?from=&to=&campus=` | admin | `from`, `to` (fechas), `campus` (id) | Indicadores agregados |
+| `GET` | `/reports/summary?from=&to=&campus=` | admin | `from`, `to` (fechas `YYYY-MM-DD`; `to` incluye el día completo), `campus` (id) | Indicadores agregados |
 
 ```json
 {

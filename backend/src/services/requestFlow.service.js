@@ -3,7 +3,7 @@ import { HttpError } from '../utils/httpError.js'
 import { findAccessibleRequest } from './access.service.js'
 import { recordAudit } from './audit.service.js'
 import { notify } from './notification.service.js'
-import { nextRequestCode, toPublicRequest } from './request.service.js'
+import { nextRequestCode, toClosure, toPublicRequest } from './request.service.js'
 
 // Perfiles que pueden atender casos
 export const STAFF_ROLES = ['professional', 'counselor']
@@ -91,6 +91,13 @@ export async function assignRequest(id, { assignedTo }, actor) {
   }
   await request.save()
 
+  // Las citas pendientes pasan al nuevo profesional; si no, quedarían en la agenda del anterior,
+  // que ya no tiene acceso al caso. Las citas pasadas o canceladas no se tocan.
+  await Appointment.updateMany(
+    { request: request._id, status: 'scheduled' },
+    { professional: assignedTo },
+  )
+
   await recordAudit(actor, {
     action: 'assign',
     entity: 'SupportRequest',
@@ -136,17 +143,7 @@ export async function closeRequest(id, { reason, referralType, referralDestinati
   await notify({ user: request.student, type: 'status_changed', request, status: 'closed' })
 
   await request.populate('student type campus assignedTo')
-  const { closure } = request
-  return {
-    ...toPublicRequest(request),
-    closure: {
-      reason: closure.reason,
-      referralType: closure.referralType,
-      referralDestination: closure.referralDestination ?? null,
-      closedBy: closure.closedBy,
-      closedAt: closure.closedAt,
-    },
-  }
+  return { ...toPublicRequest(request), closure: toClosure(request.closure) }
 }
 
 // El docente deriva a un estudiante (#17). Se crea una solicitud con origen "referral"

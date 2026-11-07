@@ -14,10 +14,11 @@ const referralSchema = new mongoose.Schema(
   {
     teacher: { type: ObjectId, ref: 'User', required: true },
     course: { type: String, trim: true },
-    observedSituation: { type: String, required: true },
+    // Cifrado igual que description: es el mismo texto sensible escrito por el docente
+    observedSituation: { type: String, required: true, ...encryptedField },
     studentInformed: { type: Boolean, required: true },
   },
-  { _id: false },
+  { _id: false, toJSON: { getters: true }, toObject: { getters: true } },
 )
 
 const contactSchema = new mongoose.Schema(
