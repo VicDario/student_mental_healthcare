@@ -1,10 +1,21 @@
 import { Router } from 'express'
 import { createRequest, getRequest, listRequests } from '../controllers/request.controller.js'
-import { assignRequest, classifyRequest } from '../controllers/requestFlow.controller.js'
+import {
+  assignRequest,
+  classifyRequest,
+  closeRequest,
+  createFollowUp,
+  listFollowUps,
+} from '../controllers/requestFlow.controller.js'
 import { allowRoles, requireAuth } from '../middlewares/authorize.js'
 import { validate, validateQuery } from '../middlewares/validate.js'
 import { createRequestSchema, listRequestsQuerySchema } from '../schemas/request.schemas.js'
-import { assignRequestSchema, classifyRequestSchema } from '../schemas/requestFlow.schemas.js'
+import {
+  assignRequestSchema,
+  classifyRequestSchema,
+  closeRequestSchema,
+  createFollowUpSchema,
+} from '../schemas/requestFlow.schemas.js'
 
 const router = Router()
 
@@ -27,6 +38,23 @@ router.patch(
   allowRoles('counselor', 'admin'),
   validate(assignRequestSchema),
   assignRequest,
+)
+
+// Observaciones de seguimiento (#20). Estudiantes y docentes nunca las ven
+router.get('/:id/follow-ups', allowRoles('professional', 'counselor', 'admin'), listFollowUps)
+router.post(
+  '/:id/follow-ups',
+  allowRoles('professional', 'counselor'),
+  validate(createFollowUpSchema),
+  createFollowUp,
+)
+
+// Cierre del caso (#21)
+router.patch(
+  '/:id/close',
+  allowRoles('professional', 'counselor'),
+  validate(closeRequestSchema),
+  closeRequest,
 )
 
 export default router

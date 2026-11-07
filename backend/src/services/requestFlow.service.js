@@ -1,5 +1,6 @@
-import { Catalog, SupportRequest, User } from '../models/index.js'
+import { Appointment, Catalog, SupportRequest, User } from '../models/index.js'
 import { HttpError } from '../utils/httpError.js'
+import { findAccessibleRequest } from './access.service.js'
 import { recordAudit } from './audit.service.js'
 import { notify } from './notification.service.js'
 import { toPublicRequest } from './request.service.js'
@@ -16,20 +17,20 @@ async function findRequestOrFail(id) {
 }
 
 // Un caso cerrado no admite más cambios
-function ensureOpen(request) {
+export function ensureOpen(request) {
   if (request.status === 'closed') {
     throw new HttpError(400, 'La solicitud está cerrada y no admite cambios')
   }
 }
 
 // Cambia el estado y deja registro de quién y cuándo en el historial
-function changeStatus(request, status, userId) {
+export function changeStatus(request, status, userId) {
   request.status = status
   request.statusHistory.push({ status, changedBy: userId })
 }
 
 // Error 400 que indica el campo, con el formato de la #26
-function fieldError(field, message) {
+export function fieldError(field, message) {
   return new HttpError(400, message, [{ field, message }])
 }
 
@@ -100,4 +101,50 @@ export async function assignRequest(id, { assignedTo }, actor) {
 
   await request.populate('student type campus assignedTo')
   return toPublicRequest(request)
+}
+
+// Cierra el caso con su motivo y la derivación realizada (#21).
+// Solo el profesional asignado (findAccessibleRequest) o un consejero.
+// Las citas que seguían agendadas se cancelan, porque el caso ya no admite cambios.
+export async function closeRequest(id, { reason, referralType, referralDestination }, user, actor) {
+  const request = await findAccessibleRequest(user, id)
+  if (request.status === 'closed') {
+    throw new HttpError(400, 'La solicitud ya está cerrada')
+  }
+
+  request.closure = {
+    reason,
+    referralType,
+    referralDestination: referralType === 'none' ? undefined : referralDestination,
+    closedBy: actor.id,
+  }
+  changeStatus(request, 'closed', actor.id)
+  await request.save()
+
+  const pending = await Appointment.find({ request: request._id, status: 'scheduled' })
+  for (const appointment of pending) {
+    appointment.status = 'cancelled'
+    await appointment.save()
+  }
+
+  await recordAudit(actor, {
+    action: 'close',
+    entity: 'SupportRequest',
+    entityId: request._id,
+    changedFields: ['status', 'closure'],
+  })
+  await notify({ user: request.student, type: 'status_changed', request, status: 'closed' })
+
+  await request.populate('student type campus assignedTo')
+  const { closure } = request
+  return {
+    ...toPublicRequest(request),
+    closure: {
+      reason: closure.reason,
+      referralType: closure.referralType,
+      referralDestination: closure.referralDestination ?? null,
+      closedBy: closure.closedBy,
+      closedAt: closure.closedAt,
+    },
+  }
 }
