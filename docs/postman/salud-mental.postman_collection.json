@@ -1,0 +1,1662 @@
+{
+  "info": {
+    "name": "Red de Apoyo y Salud Mental - API",
+    "description": "Pruebas de las issues de Eliezer.\n\nAntes de usarla: levantar MongoDB, correr `npm run seed` y `npm run dev` en backend.\nCorrer las carpetas en orden (primero 0. Iniciar sesión).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "0. Iniciar sesión",
+      "item": [
+        {
+          "name": "Login administrador",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@test.cl\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('adminToken', pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login estudiante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"estudiante@test.cl\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('studentToken', pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login consejero",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"consejero@test.cl\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('counselorToken', pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login profesional",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"profesional@test.cl\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('professionalToken', pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login docente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"docente@test.cl\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('teacherToken', pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1. Usuarios (#24)",
+      "description": "Solo el administrador puede usar estas rutas.",
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Es una lista', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Filtrar estudiantes activos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/users?role=student&active=true"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Solo estudiantes', () => pm.response.json().forEach((u) => pm.expect(u.role).to.eql('student')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Buscar por nombre o correo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/users?search=admin"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Usuario de Prueba\",\n  \"email\": \"prueba{{$timestamp}}@test.cl\",\n  \"password\": \"123456\",\n  \"role\": \"student\",\n  \"studentCode\": \"20261234\",\n  \"program\": \"Ingeniería en Computación\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('newUserId', pm.response.json().id);",
+                  "pm.collectionVariables.set('newUserEmail', pm.response.json().email);",
+                  "pm.test('No devuelve la contraseña', () => pm.expect(pm.response.json()).to.not.have.property('passwordHash'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Editar usuario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users/{{newUserId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+56912345678\",\n  \"program\": \"Psicología\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Se guardó el cambio', () => pm.expect(pm.response.json().program).to.eql('Psicología'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Desactivar usuario",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/users/{{newUserId}}/deactivate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Queda inactivo', () => pm.expect(pm.response.json().active).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Activar usuario",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/users/{{newUserId}}/activate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Queda activo', () => pm.expect(pm.response.json().active).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: correo repetido (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Otro\",\n  \"email\": \"{{newUserEmail}}\",\n  \"password\": \"123456\",\n  \"role\": \"student\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: estudiante no puede entrar (403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Catálogos (#24)",
+      "description": "Cualquier usuario con sesión puede leer. Solo el administrador crea y edita.",
+      "item": [
+        {
+          "name": "Listar sedes (estudiante)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/catalogs?type=campus"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Solo sedes', () => pm.response.json().forEach((c) => pm.expect(c.type).to.eql('campus')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar todo (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/catalogs"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear tipo de apoyo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/catalogs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"support_type\",\n  \"code\": \"prueba_{{$timestamp}}\",\n  \"name\": \"Apoyo de prueba\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('catalogId', pm.response.json().id);",
+                  "pm.collectionVariables.set('catalogCode', pm.response.json().code);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Editar nombre",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/catalogs/{{catalogId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Apoyo de prueba (editado)\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Desactivar elemento",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/catalogs/{{catalogId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Queda inactivo', () => pm.expect(pm.response.json().active).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: código repetido (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/catalogs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"support_type\",\n  \"code\": \"{{catalogCode}}\",\n  \"name\": \"Repetido\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: estudiante no puede crear (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/catalogs",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"campus\",\n  \"code\": \"x\",\n  \"name\": \"X\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Notificaciones (#22)",
+      "description": "Cada usuario ve solo sus propias notificaciones. Se crean solas cuando una solicitud cambia (cuando se integre con la #16). Si la lista viene vacía es normal.",
+      "item": [
+        {
+          "name": "Mis notificaciones",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const list = pm.response.json();",
+                  "pm.test('Es una lista', () => pm.expect(list).to.be.an('array'));",
+                  "if (list.length) pm.collectionVariables.set('notificationId', list[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Solo las no leídas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications?unread=true"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Todas sin leer', () => pm.response.json().forEach((n) => pm.expect(n.read).to.eql(false)));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Marcar como leída",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications/{{notificationId}}/read",
+            "description": "Usa el id de la primera notificación de 'Mis notificaciones'. Si no hay notificaciones, responde 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.collectionVariables.get('notificationId')) { pm.test('Responde 200', () => pm.response.to.have.status(200)); pm.test('Queda leída', () => pm.expect(pm.response.json().read).to.eql(true)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: notificación de otro usuario (404)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications/0123456789abcdef01234567/read"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Errores con formato uniforme (#26)",
+      "description": "Todas las respuestas de error tienen la forma { message, errors: [{ field, message }] }.",
+      "item": [
+        {
+          "name": "Varios campos inválidos (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"email\": \"correo-malo\",\n  \"password\": \"1\",\n  \"role\": \"rey\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });",
+                  "pm.test('Informa todos los campos', () => { const f = pm.response.json().errors.map((e) => e.field); ['name','email','password','role'].forEach((x) => pm.expect(f).to.include(x)); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Filtro inválido en la URL (400)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/users?role=rey"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });",
+                  "pm.test('Campo role', () => pm.expect(pm.response.json().errors[0].field).to.eql('role'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "ID inválido (400)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users/abc",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"X\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });",
+                  "pm.test('Campo id', () => pm.expect(pm.response.json().errors[0].field).to.eql('id'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "ID que no existe (404)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/users/0123456789abcdef01234567",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"X\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "JSON mal escrito (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"admin@test.cl\", "
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sin sesión (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ruta que no existe (404)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/no-existe"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Formato de error uniforme', () => { const b = pm.response.json(); pm.expect(b).to.have.property('message'); pm.expect(b.errors).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Flujo completo de una solicitud (#16 → #21)",
+      "description": "Camino completo: el estudiante pide ayuda → el consejero clasifica y asigna → el profesional agenda una cita y registra seguimiento → cierra el caso. Correr en orden, después de '0. Iniciar sesión'.",
+      "item": [
+        {
+          "name": "1. Estudiante crea la solicitud (#16)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Ansiedad por exámenes\",\n  \"description\": \"Me cuesta dormir antes de las pruebas\",\n  \"perceivedUrgency\": \"medium\",\n  \"contact\": {\n    \"channel\": \"email\",\n    \"value\": \"estudiante@test.cl\"\n  }\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('requestId', pm.response.json().id);",
+                  "pm.test('Estado received', () => pm.expect(pm.response.json().status).to.eql(\"received\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Consejero busca los tipos de apoyo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{counselorToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/catalogs?type=support_type"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('supportTypeId', pm.response.json()[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Consejero clasifica (#18)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{counselorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{requestId}}/classify",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"{{supportTypeId}}\",\n  \"priority\": \"high\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Estado classified', () => pm.expect(pm.response.json().status).to.eql(\"classified\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Consejero ve a los profesionales (#19)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{counselorToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/users?role=professional"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const pro = pm.response.json().find((u) => u.name.includes('Profesional')) || pm.response.json()[0];",
+                  "pm.collectionVariables.set('professionalId', pro.id);",
+                  "pm.test('Sin correos', () => pm.expect(pm.response.json()[0]).to.not.have.property('email'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Consejero asigna al profesional (#19)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{counselorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{requestId}}/assign",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignedTo\": \"{{professionalId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Estado assigned', () => pm.expect(pm.response.json().status).to.eql(\"assigned\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Profesional ve la solicitud asignada",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/requests"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('La ve', () => pm.expect(pm.response.json().map((r) => r.id)).to.include(pm.collectionVariables.get('requestId')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Profesional agenda una cita (#20)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/appointments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"request\": \"{{requestId}}\",\n  \"startsAt\": \"2030-12-01T15:00:00.000Z\",\n  \"durationMinutes\": 45,\n  \"modality\": \"in_person\",\n  \"location\": \"Sala 204\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('appointmentId', pm.response.json().id);",
+                  "pm.test('Cita agendada', () => pm.expect(pm.response.json().status).to.eql(\"scheduled\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. Estudiante ve su cita",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/appointments"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tiene la cita', () => pm.expect(pm.response.json().map((a) => a.id)).to.include(pm.collectionVariables.get('appointmentId')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "9. Profesional registra seguimiento (#20)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{requestId}}/follow-ups",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Primera sesión: se acuerdan técnicas de respiración.\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10. La solicitud quedó en atención",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{requestId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Estado in_progress', () => pm.expect(pm.response.json().status).to.eql(\"in_progress\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11. Estudiante NO puede ver el seguimiento (403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{requestId}}/follow-ups"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12. Profesional marca la cita como realizada (#20)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/appointments/{{appointmentId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Cita completed', () => pm.expect(pm.response.json().status).to.eql(\"completed\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13. Error: cerrar sin destino de derivación (400)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{requestId}}/close",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Alta\",\n  \"referralType\": \"external\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Campo referralDestination', () => pm.expect(pm.response.json().errors[0].field).to.eql('referralDestination'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14. Profesional cierra el caso (#21)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{requestId}}/close",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Se cumplieron los objetivos\",\n  \"referralType\": \"external\",\n  \"referralDestination\": \"CESFAM Santiago Centro\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Estado closed', () => pm.expect(pm.response.json().status).to.eql(\"closed\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15. Caso cerrado no admite cambios (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{requestId}}/follow-ups",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"x\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16. Estudiante ve todos los avisos del camino",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Llegaron los avisos', () => pm.expect(pm.response.json().length).to.be.at.least(6));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6. Derivación docente y reportes (#17, #25)",
+      "item": [
+        {
+          "name": "Docente deriva a un estudiante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{teacherToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/referral",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentEmail\": \"estudiante@test.cl\",\n  \"course\": \"Programación Web\",\n  \"observedSituation\": \"Ha faltado a cuatro clases seguidas y no entregó la última evaluación.\",\n  \"studentInformed\": true,\n  \"perceivedUrgency\": \"medium\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Origen referral', () => pm.expect(pm.response.json().origin).to.eql('referral'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Docente ve solo sus derivaciones",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{teacherToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/requests"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Todas son derivaciones', () => pm.response.json().forEach((r) => pm.expect(r.origin).to.eql('referral')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: correo de estudiante inexistente (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{teacherToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/referral",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentEmail\": \"nadie@test.cl\",\n  \"observedSituation\": \"x\",\n  \"studentInformed\": false,\n  \"perceivedUrgency\": \"low\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Campo studentEmail', () => pm.expect(pm.response.json().errors[0].field).to.eql('studentEmail'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: docente no ve el seguimiento (403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{teacherToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{requestId}}/follow-ups"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: reporte agregado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/reports/summary"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const r = pm.response.json();",
+                  "pm.test('Tiene totales', () => pm.expect(r.totalRequests).to.be.a('number'));",
+                  "pm.test('Sin datos personales', () => { const t = JSON.stringify(r); ['@test.cl','SOL-'].forEach((x) => pm.expect(t).to.not.include(x)); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: consejero no ve reportes (403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{counselorToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/reports/summary"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "studentToken",
+      "value": ""
+    },
+    {
+      "key": "newUserId",
+      "value": ""
+    },
+    {
+      "key": "newUserEmail",
+      "value": ""
+    },
+    {
+      "key": "catalogId",
+      "value": ""
+    },
+    {
+      "key": "catalogCode",
+      "value": ""
+    },
+    {
+      "key": "notificationId",
+      "value": ""
+    },
+    {
+      "key": "counselorToken",
+      "value": ""
+    },
+    {
+      "key": "professionalToken",
+      "value": ""
+    },
+    {
+      "key": "requestId",
+      "value": ""
+    },
+    {
+      "key": "supportTypeId",
+      "value": ""
+    },
+    {
+      "key": "professionalId",
+      "value": ""
+    },
+    {
+      "key": "appointmentId",
+      "value": ""
+    },
+    {
+      "key": "teacherToken",
+      "value": ""
+    }
+  ]
+}
