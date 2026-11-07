@@ -3,7 +3,7 @@ import * as userService from '../services/user.service.js'
 
 // GET /api/users
 export async function listUsers(req, res) {
-  const users = await userService.listUsers(req.filters)
+  const users = await userService.listUsers(req.filters, req.user)
   res.json(users)
 }
 
