@@ -42,7 +42,13 @@ export async function api(path, { method = 'GET', body } = {}) {
   }
 
   const text = await response.text()
-  const data = text ? JSON.parse(text) : null
+  // Si el servidor responde algo que no es JSON (ej. una página de error HTML), se avisa con un mensaje claro
+  let data
+  try {
+    data = text ? JSON.parse(text) : null
+  } catch {
+    throw new ApiError(response.status, 'Respuesta inesperada del servidor')
+  }
 
   if (!response.ok) {
     // Con sesión iniciada, un 401 significa que expiró por inactividad o se cerró
