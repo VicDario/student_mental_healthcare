@@ -31,7 +31,6 @@ export default function App() {
           element={protect(['professional', 'counselor', 'admin'], <SeguimientoPage />)}
         />
         <Route path="agendar-cita" element={protect(['professional', 'counselor'], <AgendarCitaPage />)} />
-        <Route path="registro-citas" element={protect(['professional', 'counselor'], <AgendarCitaPage />)} />
         <Route path="talleres" element={protect(['student'], <GestionarTalleresPage />)} />
         <Route
           path="gestionar-talleres"

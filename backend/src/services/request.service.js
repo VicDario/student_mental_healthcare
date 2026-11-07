@@ -41,6 +41,17 @@ export function toPublicRequest(request) {
   }
 }
 
+// Datos del cierre del caso (#21), sin información del estudiante
+export function toClosure(closure) {
+  return {
+    reason: closure.reason,
+    referralType: closure.referralType,
+    referralDestination: closure.referralDestination ?? null,
+    closedBy: closure.closedBy,
+    closedAt: closure.closedAt,
+  }
+}
+
 // Genera el siguiente código del año: SOL-2026-0001, SOL-2026-0002, ...
 // Busca el último código del año y le suma 1, así la numeración parte de nuevo cada año.
 // El índice único de code impide que se guarden dos solicitudes con el mismo código.
@@ -113,5 +124,19 @@ export async function getRequest(user, id, actor) {
     await recordAudit(actor, { action: 'view', entity: 'SupportRequest', entityId: request._id })
   }
 
-  return toPublicRequest(request)
+  const detail = toPublicRequest(request)
+
+  // En una derivación la descripción es la observación del docente. El estudiante no la ve,
+  // para proteger lo que escribió el docente y no estigmatizar al estudiante.
+  if (request.origin === 'referral' && user.role === 'student') {
+    detail.description = null
+  }
+
+  // El cierre solo lo ve el equipo que atiende el caso (no el estudiante ni el docente)
+  const isStaff = !['student', 'teacher'].includes(user.role)
+  if (request.closure && isStaff) {
+    detail.closure = toClosure(request.closure)
+  }
+
+  return detail
 }
