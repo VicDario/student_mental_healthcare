@@ -1,5 +1,10 @@
+import { useAuth } from "../auth/AuthContext";
 import DerivacionForm from "../components/derivacion/DerivacionForm";
+import Badge from "../components/ui/Badge";
+import LoadState from "../components/ui/LoadState";
 import { NOTICE, PAGE_TITLE } from "../components/ui/styles";
+import { useApi } from "../hooks/useApi";
+import { formatDate, STATUS_TONES, statusLabel } from "../utils/labels";
 
 const PAUTA = [
   "Registra hechos observables: asistencia, entregas, cambios en la participación.",
@@ -10,6 +15,10 @@ const PAUTA = [
 ];
 
 export default function DerivacionDocentePage() {
+  const { user } = useAuth();
+  // El docente solo ve las derivaciones que hizo (y nunca el seguimiento)
+  const referrals = useApi("/requests");
+
   return (
     <div className="mx-auto grid w-full max-w-[1080px] grid-cols-[1fr_300px] items-start gap-8 px-5 pt-8 pb-12 *:min-w-0 max-[900px]:grid-cols-1 max-[900px]:gap-6 max-[560px]:px-4">
       <div>
@@ -22,7 +31,7 @@ export default function DerivacionDocentePage() {
         <div className="mb-6 rounded-sm border border-border bg-subtle px-[18px] py-4">
           <p className="mb-1 text-[13px] text-muted">Derivación registrada a nombre de</p>
           <p className="text-[15px] font-medium text-body">
-            Rodrigo Salas Vera &middot; Escuela de Ingeniería &middot; Sede Casona Las Condes
+            {user.name} &middot; {user.email}
           </p>
         </div>
 
@@ -32,7 +41,29 @@ export default function DerivacionDocentePage() {
           queda registrado en la bitácora del sistema.
         </p>
 
-        <DerivacionForm />
+        <DerivacionForm onCreated={referrals.reload} />
+
+        <section aria-labelledby="mis-derivaciones" className="mt-8">
+          <h2 id="mis-derivaciones" className="mb-3 text-[17px] font-semibold text-title">Mis derivaciones</h2>
+          <LoadState
+            loading={referrals.loading}
+            error={referrals.error}
+            empty={!referrals.data?.length}
+            emptyText="Todavía no has derivado estudiantes."
+          >
+            <ul className="flex flex-col gap-2">
+              {referrals.data?.map((referral) => (
+                <li key={referral.id} className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-border bg-card px-4 py-3 text-sm">
+                  <span>
+                    <strong className="text-title">{referral.code}</strong>
+                    <span className="ml-2 text-muted">{formatDate(referral.createdAt)}</span>
+                  </span>
+                  <Badge tone={STATUS_TONES[referral.status]}>{statusLabel(referral.status)}</Badge>
+                </li>
+              ))}
+            </ul>
+          </LoadState>
+        </section>
       </div>
 
       <aside className="rounded-sm border border-border bg-page p-5 max-[900px]:-order-1">

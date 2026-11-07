@@ -1,19 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import logo from "../../assets/logo.png";
+import { useAuth } from "../../auth/AuthContext";
+import { LINKS_BY_ROLE } from "../../auth/roleHome";
+import { roleLabel } from "../../utils/labels";
 
-const NAV_LINKS = [
+const PUBLIC_LINKS = [
   { label: "Inicio", to: "/" },
   { label: "Servicios", href: "/#servicios" },
-  { label: "Citas", to: "/agendar-cita" },
-  { label: "Solicitudes", to: "/solicitud-apoyo" },
-  { label: "Derivar", to: "/derivacion-docente" },
-  { label: "Clasificar", to: "/clasificacion" },
-  { label: "Talleres", to: "/gestionar-talleres" },
-  { label: "Seguimiento", to: "/seguimiento" },
-  { label: "Reportes", to: "/reportes" },
-  { label: "Bitácora", to: "/bitacora" },
-  { label: "Usuarios", to: "/admin-usuarios" },
   { label: "Contacto", href: "/#formulario" },
 ];
 
@@ -30,6 +24,19 @@ const linkActive =
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const navRef = useRef(null);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // Cada perfil ve solo las secciones que puede usar
+  const navLinks = user
+    ? [{ label: "Inicio", to: "/" }, ...LINKS_BY_ROLE[user.role]]
+    : PUBLIC_LINKS;
+
+  async function handleLogout() {
+    setOpen(false);
+    await logout();
+    navigate("/login");
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -79,7 +86,7 @@ export default function Navbar() {
           id="primaryNav"
           className={`${open ? "flex" : "hidden"} absolute inset-x-0 top-[calc(100%+10px)] flex-col gap-0.5 rounded-lg border-[1.5px] border-border bg-card p-2.5 shadow-elevated xl:static xl:flex xl:flex-row xl:items-center xl:gap-[3px] xl:rounded-full xl:border xl:border-border-subtle xl:bg-page xl:p-1 xl:shadow-none`}
         >
-          {NAV_LINKS.map(({ label, to, href }) => (
+          {navLinks.map(({ label, to, href }) => (
             <li key={label}>
               {to ? (
                 <NavLink
@@ -115,12 +122,28 @@ export default function Navbar() {
             <span>SOS 24/7</span>
           </a>
 
-          <Link
-            to="/solicitud-apoyo"
-            className="hidden items-center gap-1.5 whitespace-nowrap rounded-full bg-forest-800 px-4 py-2 text-[0.83rem] font-bold text-white transition hover:bg-forest-900 sm:inline-flex"
-          >
-            Solicitar Apoyo →
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-2">
+              <span className="hidden text-right text-[0.72rem] leading-tight text-muted lg:block">
+                <strong className="block text-[0.8rem] text-title">{user.name}</strong>
+                {roleLabel(user.role)}
+              </span>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="inline-flex cursor-pointer items-center whitespace-nowrap rounded-full border-[1.5px] border-forest-500 px-3.5 py-1.75 text-[0.78rem] font-bold text-forest-800 transition hover:bg-forest-50"
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-forest-800 px-4 py-2 text-[0.83rem] font-bold text-white transition hover:bg-forest-900"
+            >
+              Iniciar sesión
+            </Link>
+          )}
 
           <button
             type="button"

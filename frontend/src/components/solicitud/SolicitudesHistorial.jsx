@@ -1,3 +1,4 @@
+import { formatDate, STATUS_TONES, statusLabel } from '../../utils/labels'
 import Badge from '../ui/Badge'
 
 const COLUMNS = ['Folio', 'Fecha', 'Motivo', 'Estado']
@@ -23,12 +24,17 @@ export default function SolicitudesHistorial({ requests }) {
             {requests.map((request) => (
               <tr key={request.id} className="border-t border-border-subtle">
                 <th scope="row" className="px-4 py-3 font-semibold whitespace-nowrap text-title">
-                  {request.id}
+                  {request.code}
                 </th>
-                <td className="px-4 py-3 whitespace-nowrap text-muted">{request.dateLabel}</td>
-                <td className="px-4 py-3">{request.reason}</td>
+                <td className="px-4 py-3 whitespace-nowrap text-muted">{formatDate(request.createdAt)}</td>
                 <td className="px-4 py-3">
-                  <Badge tone={request.status.tone}>{request.status.label}</Badge>
+                  {request.reason}
+                  {request.origin === 'referral' && (
+                    <span className="block text-[0.8125rem] text-muted">Sugerida por un docente</span>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  <Badge tone={STATUS_TONES[request.status]}>{statusLabel(request.status)}</Badge>
                 </td>
               </tr>
             ))}

@@ -13,8 +13,10 @@ const STATUS_LABELS = {
 // Mensajes cortos y respetuosos. Nunca incluyen el motivo, la descripción ni datos
 // sensibles del caso: solo el código de la solicitud para que el estudiante la ubique.
 const MESSAGES = {
-  received: ({ code }) =>
-    `Recibimos tu solicitud ${code}. Un consejero la revisará y te contactaremos pronto.`,
+  received: ({ code, origin }) =>
+    origin === 'referral'
+      ? `Un docente sugirió que el equipo de bienestar te acompañe (solicitud ${code}). Un consejero se pondrá en contacto contigo; puedes conversar con calma y sin compromiso.`
+      : `Recibimos tu solicitud ${code}. Un consejero la revisará y te contactaremos pronto.`,
   assigned: ({ code }) =>
     `Tu solicitud ${code} fue asignada a un profesional, que se comunicará contigo.`,
   status_changed: ({ code, status }) =>
@@ -48,7 +50,7 @@ export async function notify({ user, type, request, status }) {
     user,
     type,
     request: request?._id,
-    message: buildMessage({ code: request?.code, status }),
+    message: buildMessage({ code: request?.code, origin: request?.origin, status }),
   })
 
   return toPublicNotification(notification)
