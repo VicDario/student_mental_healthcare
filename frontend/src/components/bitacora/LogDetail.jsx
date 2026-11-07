@@ -1,5 +1,6 @@
+import { ENTITY_LABELS, actionInfo } from '../../utils/audit'
+import { formatDate, roleLabel } from '../../utils/labels'
 import Badge from '../ui/Badge'
-import Button from '../ui/Button'
 import DetailHeader from '../ui/DetailHeader'
 import Divider from '../ui/Divider'
 
@@ -14,58 +15,47 @@ function DetailField({ label, mono = false, children }) {
   )
 }
 
-const CHANGE_STYLES = {
-  before: 'border-rose-500 bg-crisis-bg text-crisis-text',
-  after: 'border-forest-500 bg-forest-50 text-forest-800',
-}
-
-function ChangeBlock({ variant, label, changes }) {
-  return (
-    <div className={`mb-2 rounded-sm border-l-3 px-3.5 py-3 text-[0.8125rem] ${CHANGE_STYLES[variant]}`}>
-      <span className="mb-1 block font-bold">{label}</span>
-      {changes.map(([field, value]) => (
-        <span key={field} className="not-last:after:content-['_·_']">
-          {field}: <strong>{value}</strong>
-        </span>
-      ))}
-    </div>
-  )
-}
-
+// Detalle de un registro. Solo muestra nombres de campos, nunca valores sensibles
 export default function LogDetail({ entry }) {
+  const action = actionInfo(entry.action)
+
   return (
-    <article aria-label={`Detalle de ${entry.id}`}>
+    <article aria-label="Detalle del registro">
       <DetailHeader
-        code={entry.id}
-        badge={<Badge tone={entry.type.tone}>{entry.type.label}</Badge>}
-        sensitive={entry.sensitive}
+        code={formatDate(entry.createdAt, true)}
+        badge={<Badge tone={action.tone}>{action.label}</Badge>}
+        sensitive={['view', 'close'].includes(entry.action)}
       />
 
       <Divider />
 
-      <DetailField label="Caso afectado">
-        <strong>{entry.caseCode}</strong> — {entry.caseName}
+      <DetailField label="Elemento afectado">
+        {entry.entity ? ENTITY_LABELS[entry.entity] ?? entry.entity : 'Sin elemento asociado'}
+        {entry.entityId && <span className="block font-mono text-[0.8rem] text-muted">{entry.entityId}</span>}
       </DetailField>
-      <DetailField label="Acción realizada">{entry.action}</DetailField>
       <DetailField label="Usuario responsable">
-        {entry.user} — {entry.unit}
+        {entry.user ? `${entry.user.name} (${entry.user.email})` : 'Usuario no identificado'}
+        {entry.role && ` — ${roleLabel(entry.role)}`}
       </DetailField>
       <DetailField label="Fecha y hora">
-        <time dateTime={entry.datetime}>{entry.longDateLabel}</time>
+        <time dateTime={entry.createdAt}>{new Date(entry.createdAt).toLocaleString('es-CL')}</time>
       </DetailField>
       <DetailField label="Dirección IP" mono>
-        {entry.ip}
+        {entry.ip ?? '—'}
       </DetailField>
 
-      <Divider />
-
-      <p className={`${labelClass} mb-2.5`}>Cambios registrados</p>
-      <ChangeBlock variant="before" label="Antes" changes={entry.changes.before} />
-      <ChangeBlock variant="after" label="Después" changes={entry.changes.after} />
-
-      <Divider />
-
-      <Button variant="secondary">Exportar este registro</Button>
+      {entry.changedFields?.length > 0 && (
+        <>
+          <Divider />
+          <p className={`${labelClass} mb-2.5`}>Campos modificados</p>
+          <div className="flex flex-wrap gap-1.5">
+            {entry.changedFields.map((field) => (
+              <Badge key={field}>{field}</Badge>
+            ))}
+          </div>
+          <p className="mt-2 text-[0.8125rem] text-muted">Por confidencialidad, la bitácora guarda qué cambió, pero no los valores.</p>
+        </>
+      )}
     </article>
   )
 }

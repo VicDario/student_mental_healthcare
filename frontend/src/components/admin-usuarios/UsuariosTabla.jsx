@@ -1,9 +1,11 @@
+import { roleLabel } from '../../utils/labels'
 import Badge from '../ui/Badge'
 import Button from '../ui/Button'
 
 const COLUMNS = ['Usuario', 'Perfil', 'Sede', 'Estado', 'Acción']
 
-export default function UsuariosTabla({ users }) {
+// Tabla de cuentas. "Desactivar" corta el acceso y cierra sus sesiones abiertas
+export default function UsuariosTabla({ users, currentUserId, onToggle }) {
   return (
     // overflow-x-auto: en celular la tabla se desliza en vez de romper la página
     <div className="overflow-x-auto rounded-sm border border-border">
@@ -20,20 +22,25 @@ export default function UsuariosTabla({ users }) {
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.email} className="border-t border-border-subtle">
+            <tr key={user.id} className="border-t border-border-subtle">
               <th scope="row" className="px-4 py-3 text-left font-normal">
                 <span className="block font-semibold whitespace-nowrap text-title">{user.name}</span>
                 <span className="block text-[0.8125rem] text-muted">{user.email}</span>
               </th>
-              <td className="px-4 py-3">{user.profile}</td>
-              <td className="px-4 py-3 whitespace-nowrap">{user.campus}</td>
+              <td className="px-4 py-3">
+                {roleLabel(user.role)}
+                {user.unit && <span className="block text-[0.8125rem] text-muted">{user.unit.name}</span>}
+              </td>
+              <td className="px-4 py-3 whitespace-nowrap">{user.campus?.name ?? '—'}</td>
               <td className="px-4 py-3">
                 <Badge tone={user.active ? 'success' : 'neutral'}>{user.active ? 'Activo' : 'Inactivo'}</Badge>
               </td>
               <td className="px-4 py-3">
-                <Button variant="secondary" className="whitespace-nowrap">
-                  Cambiar estado
-                </Button>
+                {user.id !== currentUserId && (
+                  <Button variant="secondary" className="whitespace-nowrap" onClick={() => onToggle(user)}>
+                    {user.active ? 'Desactivar' : 'Activar'}
+                  </Button>
+                )}
               </td>
             </tr>
           ))}
