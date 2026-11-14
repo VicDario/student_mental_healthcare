@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
 import ApiMessage from '../components/ui/ApiMessage'
 import Button from '../components/ui/Button'
@@ -69,6 +69,13 @@ export default function LoginPage() {
             {pending ? 'Ingresando…' : 'Ingresar'}
           </Button>
         </form>
+
+        <p className="mt-5 text-center text-[0.875rem] text-muted">
+          ¿Eres estudiante y no tienes cuenta?{' '}
+          <Link to="/registro" className="font-semibold text-forest-800 underline">
+            Crear cuenta
+          </Link>
+        </p>
 
         <details className="mt-6 rounded-sm border border-border bg-subtle px-4 py-3 text-[0.8125rem] text-muted">
           <summary className="cursor-pointer font-semibold text-forest-900">Cuentas de prueba</summary>

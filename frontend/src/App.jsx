@@ -10,6 +10,7 @@ import GestionarTalleresPage from './pages/GestionarTalleresPage'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import PlaceholderPage from './pages/PlaceholderPage'
+import RegisterPage from './pages/RegisterPage'
 import ReportesPage from './pages/ReportesPage'
 import SeguimientoPage from './pages/SeguimientoPage'
 import SolicitudApoyoPage from './pages/SolicitudApoyoPage'
@@ -23,6 +24,7 @@ export default function App() {
       <Route element={<MainLayout />}>
         <Route index element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="registro" element={<RegisterPage />} />
         <Route path="solicitud-apoyo" element={protect(['student'], <SolicitudApoyoPage />)} />
         <Route path="derivacion-docente" element={protect(['teacher'], <DerivacionDocentePage />)} />
         <Route path="clasificacion" element={protect(['counselor', 'admin'], <ClasificacionPage />)} />
