@@ -11,9 +11,24 @@ import Select from '../ui/form/Select'
 
 const EMPTY = { name: '', email: '', password: '', role: '', campus: '', unit: '', studentCode: '', program: '' }
 
-// Crea una cuenta (POST /api/users). Los errores de la API aparecen bajo cada campo
-export default function UsuarioForm({ campuses, units, onCreated }) {
-  const [form, setForm] = useState(EMPTY)
+// Datos de una cuenta existente para el modo edición (sin contraseña)
+function toForm(user) {
+  return {
+    ...EMPTY,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    campus: user.campus?.id ?? '',
+    unit: user.unit?.id ?? '',
+    studentCode: user.studentCode ?? '',
+    program: user.program ?? '',
+  }
+}
+
+// Crea una cuenta (POST /api/users) o, si llega `editing`, edita su perfil, sede y datos
+// (PUT /api/users/:id). Los errores de la API aparecen bajo cada campo
+export default function UsuarioForm({ campuses, units, editing, onSaved, onCancelEdit }) {
+  const [form, setForm] = useState(() => (editing ? toForm(editing) : EMPTY))
   const { submit, pending, error, success, fieldError } = useSubmit()
   const update = (event) => setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }))
   const isStudent = form.role === 'student'
@@ -23,10 +38,15 @@ export default function UsuarioForm({ campuses, units, onCreated }) {
     event.preventDefault()
     // Solo se envían los campos con valor
     const body = Object.fromEntries(Object.entries(form).filter(([, value]) => value !== ''))
+    if (editing) {
+      const saved = await submit(() => api(`/users/${editing.id}`, { method: 'PUT', body }))
+      if (saved) onSaved(`Se actualizó la cuenta de ${saved.name}.`)
+      return
+    }
     const created = await submit(() => api('/users', { method: 'POST', body }), 'Cuenta creada. Ya puede iniciar sesión.')
     if (created) {
       setForm(EMPTY)
-      onCreated()
+      onSaved()
     }
   }
 
@@ -42,9 +62,11 @@ export default function UsuarioForm({ campuses, units, onCreated }) {
         <FormField id="user-email" label="Correo institucional *" error={fieldError('email')}>
           <Input id="user-email" name="email" type="email" value={form.email} onChange={update} placeholder="ana.perez@unab.cl" />
         </FormField>
-        <FormField id="user-password" label="Contraseña inicial *" hint="Mínimo 6 caracteres." error={fieldError('password')}>
-          <Input id="user-password" name="password" type="password" autoComplete="new-password" value={form.password} onChange={update} />
-        </FormField>
+        {!editing && (
+          <FormField id="user-password" label="Contraseña inicial *" hint="Mínimo 6 caracteres." error={fieldError('password')}>
+            <Input id="user-password" name="password" type="password" autoComplete="new-password" value={form.password} onChange={update} />
+          </FormField>
+        )}
         <FormField id="user-role" label="Perfil institucional *" error={fieldError('role')}>
           <Select id="user-role" name="role" value={form.role} onChange={update} options={ROLE_OPTIONS} placeholder="Selecciona un perfil" />
         </FormField>
@@ -70,11 +92,17 @@ export default function UsuarioForm({ campuses, units, onCreated }) {
 
       <FormActions>
         <Button type="submit" disabled={pending}>
-          {pending ? 'Creando…' : 'Registrar cuenta'}
+          {editing ? (pending ? 'Guardando…' : 'Guardar cambios') : pending ? 'Creando…' : 'Registrar cuenta'}
         </Button>
-        <Button variant="secondary" onClick={() => setForm(EMPTY)}>
-          Limpiar formulario
-        </Button>
+        {editing ? (
+          <Button variant="secondary" onClick={onCancelEdit}>
+            Cancelar edición
+          </Button>
+        ) : (
+          <Button variant="secondary" onClick={() => setForm(EMPTY)}>
+            Limpiar formulario
+          </Button>
+        )}
       </FormActions>
     </form>
   )

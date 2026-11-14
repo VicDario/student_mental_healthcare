@@ -36,6 +36,8 @@ export default function AdminUsuariosPage() {
   const campuses = useApi('/catalogs?type=campus')
   const units = useApi('/catalogs?type=unit')
   const { submit, error, success } = useSubmit()
+  const [editing, setEditing] = useState(null)
+  const [saved, setSaved] = useState(null)
 
   const updateFilter = (event) => setFilters((prev) => ({ ...prev, [event.target.name]: event.target.value }))
   const everyone = allUsers.data ?? []
@@ -51,7 +53,20 @@ export default function AdminUsuariosPage() {
     allUsers.reload()
   }
 
+  function startEdit(user) {
+    setSaved(null)
+    setEditing(user)
+    document.getElementById('user-form-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function handleSaved(message) {
+    setEditing(null)
+    setSaved(message ?? null)
+    refresh()
+  }
+
   async function toggleUser(user) {
+    setSaved(null)
     const action = user.active ? 'deactivate' : 'activate'
     const done = await submit(
       () => api(`/users/${user.id}/${action}`, { method: 'PATCH' }),
@@ -108,14 +123,21 @@ export default function AdminUsuariosPage() {
 
               <div className="flex flex-col gap-6">
                 <Panel id="users-list-title" title="Listado de cuentas" count={users.data ? countLabel(users.data.length, 'cuenta') : undefined}>
-                  <ApiMessage error={error} success={success} />
+                  <ApiMessage error={error} success={saved ?? success} />
                   <LoadState loading={users.loading} error={users.error} empty={!users.data?.length} emptyText="No hay cuentas con estos filtros.">
-                    <UsuariosTabla users={users.data ?? []} currentUserId={me.id} onToggle={toggleUser} />
+                    <UsuariosTabla users={users.data ?? []} currentUserId={me.id} onEdit={startEdit} onToggle={toggleUser} />
                   </LoadState>
                 </Panel>
 
-                <Panel id="user-form-title" title="Registrar nueva cuenta">
-                  <UsuarioForm campuses={campuses.data ?? []} units={units.data ?? []} onCreated={refresh} />
+                <Panel id="user-form-title" title={editing ? `Editar cuenta de ${editing.name}` : 'Registrar nueva cuenta'}>
+                  <UsuarioForm
+                    key={editing?.id ?? 'new'}
+                    campuses={campuses.data ?? []}
+                    units={units.data ?? []}
+                    editing={editing}
+                    onSaved={handleSaved}
+                    onCancelEdit={() => setEditing(null)}
+                  />
                 </Panel>
               </div>
             </>
