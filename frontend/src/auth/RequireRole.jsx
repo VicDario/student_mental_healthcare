@@ -4,15 +4,16 @@ import { useAuth } from './AuthContext'
 
 // Protege una página: exige sesión y, si se indican, uno de los perfiles permitidos
 export default function RequireRole({ roles, children }) {
-  const { user, checking } = useAuth()
+  const { user, checking, loggedOut } = useAuth()
   const location = useLocation()
 
   if (checking) {
     return <p className="px-5 py-24 text-center text-muted">Cargando tu sesión…</p>
   }
 
+  // Recuerda la página pedida solo si no se cerró sesión a propósito
   if (!user) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />
+    return <Navigate to="/login" replace state={loggedOut ? undefined : { from: location.pathname }} />
   }
 
   if (roles && !roles.includes(user.role)) {
