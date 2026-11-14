@@ -92,7 +92,9 @@ async function ensureActiveFacilitator(id) {
 
 // Lista los talleres por fecha. Por simplicidad se cuenta con una consulta por taller
 // cuántos cupos están ocupados; son pocos talleres, así que no afecta el rendimiento.
-export async function listWorkshops({ status, kind }) {
+// Al estudiante se le agrega enrollmentStatus (enrolled, attended, cancelled o null)
+// para que sepa en qué talleres está inscrito.
+export async function listWorkshops({ status, kind }, user) {
   const filter = {}
 
   if (status) filter.status = status
@@ -100,10 +102,22 @@ export async function listWorkshops({ status, kind }) {
 
   const workshops = await Workshop.find(filter).populate('campus facilitator').sort({ startsAt: 1 })
 
+  const myStatus = new Map()
+  if (user?.role === 'student') {
+    const mine = await Enrollment.find({
+      student: user.id,
+      workshop: { $in: workshops.map((workshop) => workshop._id) },
+    })
+    for (const enrollment of mine) myStatus.set(String(enrollment.workshop), enrollment.status)
+  }
+
   return Promise.all(
-    workshops.map(async (workshop) =>
-      toPublicWorkshop(workshop, await countTakenSeats(workshop._id)),
-    ),
+    workshops.map(async (workshop) => {
+      const data = toPublicWorkshop(workshop, await countTakenSeats(workshop._id))
+      if (user?.role === 'student')
+        data.enrollmentStatus = myStatus.get(String(workshop._id)) ?? null
+      return data
+    }),
   )
 }
 

@@ -3,7 +3,7 @@ import * as workshopService from '../services/workshop.service.js'
 
 // GET /api/workshops
 export async function listWorkshops(req, res) {
-  const workshops = await workshopService.listWorkshops(req.filters)
+  const workshops = await workshopService.listWorkshops(req.filters, req.user)
   res.json(workshops)
 }
 
