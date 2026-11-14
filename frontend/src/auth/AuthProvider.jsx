@@ -39,7 +39,8 @@ export default function AuthProvider({ children }) {
       // Si la sesión ya había expirado, igual se cierra en el navegador
     }
     setToken(null)
-    setState({ user: null, checking: false, sessionExpired: false })
+    // loggedOut: el próximo usuario no debe volver a la página de quien cerró sesión
+    setState({ user: null, checking: false, sessionExpired: false, loggedOut: true })
   }, [])
 
   const value = useMemo(() => ({ ...state, login, logout }), [state, login, logout])

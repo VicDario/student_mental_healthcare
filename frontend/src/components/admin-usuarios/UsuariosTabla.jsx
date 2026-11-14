@@ -4,8 +4,9 @@ import Button from '../ui/Button'
 
 const COLUMNS = ['Usuario', 'Perfil', 'Sede', 'Estado', 'Acción']
 
-// Tabla de cuentas. "Desactivar" corta el acceso y cierra sus sesiones abiertas
-export default function UsuariosTabla({ users, currentUserId, onToggle }) {
+// Tabla de cuentas. "Editar" carga la cuenta en el formulario (perfil, sede, unidad);
+// "Desactivar" corta el acceso y cierra sus sesiones abiertas
+export default function UsuariosTabla({ users, currentUserId, onEdit, onToggle }) {
   return (
     // overflow-x-auto: en celular la tabla se desliza en vez de romper la página
     <div className="overflow-x-auto rounded-sm border border-border">
@@ -36,11 +37,16 @@ export default function UsuariosTabla({ users, currentUserId, onToggle }) {
                 <Badge tone={user.active ? 'success' : 'neutral'}>{user.active ? 'Activo' : 'Inactivo'}</Badge>
               </td>
               <td className="px-4 py-3">
-                {user.id !== currentUserId && (
-                  <Button variant="secondary" className="whitespace-nowrap" onClick={() => onToggle(user)}>
-                    {user.active ? 'Desactivar' : 'Activar'}
+                <div className="flex gap-2">
+                  <Button variant="secondary" className="whitespace-nowrap" onClick={() => onEdit(user)}>
+                    Editar
                   </Button>
-                )}
+                  {user.id !== currentUserId && (
+                    <Button variant="secondary" className="whitespace-nowrap" onClick={() => onToggle(user)}>
+                      {user.active ? 'Desactivar' : 'Activar'}
+                    </Button>
+                  )}
+                </div>
               </td>
             </tr>
           ))}

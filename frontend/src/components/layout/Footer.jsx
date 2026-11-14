@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useAuth } from "../../auth/AuthContext";
 
 const NAVIGATION_LINKS = [
   { label: "Inicio", href: "/#inicio" },
@@ -13,7 +14,7 @@ const NAVIGATION_LINKS = [
 const SERVICE_LINKS = [
   { label: "Solicitud de Apoyo", to: "/solicitud-apoyo" },
   { label: "Solicitar Orientación", href: "/#formulario" },
-  { label: "Talleres Preventivos", to: "/gestionar-talleres" },
+  { label: "Talleres Preventivos", to: "/talleres" },
   { label: "Clasificar Solicitudes", to: "/clasificacion" },
   { label: "Seguimiento de Casos", to: "/seguimiento" },
 ];
@@ -52,7 +53,17 @@ function FooterLinks({ links }) {
   );
 }
 
+// Quien gestiona talleres va a su panel; los demás ven la oferta de talleres
+const WORKSHOP_MANAGERS = ["admin", "professional"];
+
 export default function Footer() {
+  const { user } = useAuth();
+  const serviceLinks = WORKSHOP_MANAGERS.includes(user?.role)
+    ? SERVICE_LINKS.map((link) =>
+        link.to === "/talleres" ? { ...link, to: "/gestionar-talleres" } : link,
+      )
+    : SERVICE_LINKS;
+
   return (
     <footer className="mt-12 bg-forest-900 pt-11 pb-6 text-white sm:mt-20 sm:pt-15 sm:pb-7">
       <div className="mx-auto w-full max-w-300 px-5">
@@ -75,7 +86,7 @@ export default function Footer() {
           </FooterColumn>
 
           <FooterColumn title="Servicios">
-            <FooterLinks links={SERVICE_LINKS} />
+            <FooterLinks links={serviceLinks} />
           </FooterColumn>
 
           <FooterColumn title="Emergencias 24/7">

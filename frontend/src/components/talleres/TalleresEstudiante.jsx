@@ -49,13 +49,21 @@ export default function TalleresEstudiante() {
                   {workshop.location ? ` · ${workshop.location}` : ''}
                   {workshop.facilitator ? ` · ${workshop.facilitator.name}` : ''}
                 </p>
-                <div className="mt-auto flex flex-wrap gap-2 pt-4">
-                  <Button className="px-4! py-2! text-[0.875rem]!" disabled={free <= 0} onClick={() => enroll(workshop)}>
-                    Inscribirme
-                  </Button>
-                  <Button variant="secondary" className="px-4! py-2! text-[0.875rem]!" onClick={() => cancel(workshop)}>
-                    Cancelar inscripción
-                  </Button>
+                <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
+                  {workshop.enrollmentStatus === 'attended' && <Badge tone="success">Asististe</Badge>}
+                  {workshop.enrollmentStatus === 'enrolled' && (
+                    <>
+                      <Badge tone="success">Inscrito</Badge>
+                      <Button variant="secondary" className="px-4! py-2! text-[0.875rem]!" onClick={() => cancel(workshop)}>
+                        Cancelar inscripción
+                      </Button>
+                    </>
+                  )}
+                  {(workshop.enrollmentStatus == null || workshop.enrollmentStatus === 'cancelled') && (
+                    <Button className="px-4! py-2! text-[0.875rem]!" disabled={free <= 0} onClick={() => enroll(workshop)}>
+                      Inscribirme
+                    </Button>
+                  )}
                 </div>
               </li>
             )
