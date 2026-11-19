@@ -15,6 +15,8 @@ import { useSubmit } from '../hooks/useSubmit'
 function GestionTalleres() {
   const workshops = useApi('/workshops')
   const [selected, setSelected] = useState(null)
+  const [editing, setEditing] = useState(null)
+  const [saved, setSaved] = useState(null)
   const { submit, error, success } = useSubmit()
   const list = useMemo(() => workshops.data ?? [], [workshops.data])
 
@@ -29,8 +31,21 @@ function GestionTalleres() {
     ]
   }, [list])
 
+  function startEdit(workshop) {
+    setSaved(null)
+    setEditing(workshop)
+    document.getElementById('panelCrear')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function handleSaved(message) {
+    setEditing(null)
+    setSaved(message ?? null)
+    workshops.reload()
+  }
+
   async function cancelWorkshop(workshop) {
     if (!window.confirm(`¿Cancelar "${workshop.title}"? Los inscritos ya no podrán asistir.`)) return
+    setSaved(null)
     const done = await submit(
       () => api(`/workshops/${workshop.id}`, { method: 'DELETE' }),
       `"${workshop.title}" quedó cancelado. Se conserva el historial de inscripciones.`,
@@ -41,12 +56,17 @@ function GestionTalleres() {
   return (
     <>
       <StatsRow label="Métricas de talleres" stats={stats} />
-      <ApiMessage error={error} success={success} />
+      <ApiMessage error={error} success={saved ?? success} />
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_360px]">
         <LoadState loading={workshops.loading} error={workshops.error} empty={false}>
-          <TallerTable workshops={list} onSelectTaller={setSelected} onCancel={cancelWorkshop} />
+          <TallerTable workshops={list} onSelectTaller={setSelected} onEdit={startEdit} onCancel={cancelWorkshop} />
         </LoadState>
-        <TallerForm onCreated={workshops.reload} />
+        <TallerForm
+          key={editing?.id ?? 'new'}
+          editing={editing}
+          onSaved={handleSaved}
+          onCancelEdit={() => setEditing(null)}
+        />
       </div>
       {selected && <NominaModal taller={selected} onClose={() => setSelected(null)} onChanged={workshops.reload} />}
     </>

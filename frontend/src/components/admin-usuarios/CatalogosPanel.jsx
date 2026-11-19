@@ -16,10 +16,12 @@ const TYPES = [
   { value: 'unit', label: 'Unidades de apoyo' },
 ]
 
-// Catálogos (GET/POST/PUT /api/catalogs). Desactivar un elemento lo oculta de los formularios
+// Catálogos (GET/POST/PUT /api/catalogs). Se pueden agregar, renombrar y desactivar elementos;
+// desactivar uno lo oculta de los formularios sin perder el historial
 export default function CatalogosPanel() {
   const [type, setType] = useState('support_type')
   const [form, setForm] = useState({ code: '', name: '' })
+  const [editing, setEditing] = useState(null)
   const items = useApi(`/catalogs?type=${type}`)
   const { submit, pending, error, success, fieldError } = useSubmit()
 
@@ -37,6 +39,23 @@ export default function CatalogosPanel() {
     if (saved) items.reload()
   }
 
+  async function rename(event) {
+    event.preventDefault()
+    const saved = await submit(
+      () => api(`/catalogs/${editing.id}`, { method: 'PUT', body: { name: editing.name } }),
+      'Nombre actualizado. Los formularios ya muestran el nuevo nombre.',
+    )
+    if (saved) {
+      setEditing(null)
+      items.reload()
+    }
+  }
+
+  function changeType(value) {
+    setEditing(null)
+    setType(value)
+  }
+
   return (
     <Panel id="catalogs-title" title="Catálogos del sistema">
       <div role="tablist" aria-label="Tipo de catálogo" className="mb-5 flex flex-wrap gap-1.5">
@@ -46,7 +65,7 @@ export default function CatalogosPanel() {
             type="button"
             role="tab"
             aria-selected={type === option.value}
-            onClick={() => setType(option.value)}
+            onClick={() => changeType(option.value)}
             className={`cursor-pointer rounded-full px-3.5 py-1.5 text-[0.8125rem] font-semibold transition ${
               type === option.value ? 'bg-forest-800 text-white' : 'bg-page text-muted hover:bg-forest-50'
             }`}
@@ -60,20 +79,47 @@ export default function CatalogosPanel() {
 
       <LoadState loading={items.loading} error={items.error} empty={!items.data?.length} emptyText="Este catálogo está vacío.">
         <ul className="mb-6 divide-y divide-border-subtle rounded-sm border border-border">
-          {items.data?.map((item) => (
-            <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 text-[0.9rem]">
-              <span>
-                <strong className="text-title">{item.name}</strong>
-                <span className="ml-2 font-mono text-[0.8rem] text-muted">{item.code}</span>
-              </span>
-              <span className="flex items-center gap-2">
-                <Badge tone={item.active ? 'success' : 'neutral'}>{item.active ? 'Activo' : 'Inactivo'}</Badge>
-                <Button variant="secondary" className="px-3! py-1! text-[0.8125rem]!" onClick={() => toggle(item)}>
-                  {item.active ? 'Desactivar' : 'Activar'}
-                </Button>
-              </span>
-            </li>
-          ))}
+          {items.data?.map((item) =>
+            editing?.id === item.id ? (
+              <li key={item.id} className="px-4 py-2.5 text-[0.9rem]">
+                <form onSubmit={rename} noValidate className="flex flex-wrap items-end gap-2">
+                  <FormField id="catalog-edit-name" label={`Nuevo nombre (código ${item.code})`} className="flex-[1_1_220px]" error={fieldError('name')}>
+                    <Input
+                      id="catalog-edit-name"
+                      value={editing.name}
+                      onChange={(event) => setEditing({ ...editing, name: event.target.value })}
+                    />
+                  </FormField>
+                  <Button type="submit" className="px-3! py-1.5! text-[0.8125rem]!" disabled={pending}>
+                    Guardar
+                  </Button>
+                  <Button variant="secondary" className="px-3! py-1.5! text-[0.8125rem]!" onClick={() => setEditing(null)}>
+                    Cancelar
+                  </Button>
+                </form>
+              </li>
+            ) : (
+              <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 text-[0.9rem]">
+                <span>
+                  <strong className="text-title">{item.name}</strong>
+                  <span className="ml-2 font-mono text-[0.8rem] text-muted">{item.code}</span>
+                </span>
+                <span className="flex items-center gap-2">
+                  <Badge tone={item.active ? 'success' : 'neutral'}>{item.active ? 'Activo' : 'Inactivo'}</Badge>
+                  <Button
+                    variant="secondary"
+                    className="px-3! py-1! text-[0.8125rem]!"
+                    onClick={() => setEditing({ id: item.id, name: item.name })}
+                  >
+                    Editar
+                  </Button>
+                  <Button variant="secondary" className="px-3! py-1! text-[0.8125rem]!" onClick={() => toggle(item)}>
+                    {item.active ? 'Desactivar' : 'Activar'}
+                  </Button>
+                </span>
+              </li>
+            ),
+          )}
         </ul>
       </LoadState>
 
