@@ -1,0 +1,16 @@
+{
+  "name": "student-mental-healthcare-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Recorrido automatizado de los RF de la rúbrica (Playwright)",
+  "scripts": {
+    "demo": "npm run seed --prefix ../backend && playwright test --project=demo",
+    "demo:auto": "npm run seed --prefix ../backend && playwright test --project=demo-auto",
+    "check": "npm run seed --prefix ../backend && playwright test --project=check",
+    "report": "playwright show-report",
+    "setup": "npm install && playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1"
+  }
+}

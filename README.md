@@ -13,6 +13,7 @@ confidencialidad, control por perfiles y trazabilidad de cada acción.
 | [docs/GUIA-ADMINISTRATIVA.md](docs/GUIA-ADMINISTRATIVA.md) | Cómo usar la plataforma según el perfil |
 | [docs/PAUTA-USO-RESPONSABLE.md](docs/PAUTA-USO-RESPONSABLE.md) | Pauta de uso responsable de los datos |
 | [docs/postman/](docs/postman/) | Colección de Postman con todas las rutas y el flujo completo |
+| [e2e/](e2e/README.md) | Demo automatizada de los 12 RF en el navegador (Playwright) |
 
 ---
 
@@ -23,6 +24,7 @@ student_mental_healthcare/
 ├── frontend/      # Librería React + Vite + framework Tailwind CSS
 ├── backend/       # Node + Express + Mongoose (API REST)
 ├── docs/          # Documentación, capturas y colección de Postman
+├── e2e/           # Demo automatizada de los RF (Playwright)
 └── compose.yaml   # Contenedor de MongoDB
 ```
 
@@ -82,7 +84,7 @@ Otros comandos: en el backend `npm run check` (Biome: formato y lint); en el fro
 ## Usuarios de prueba
 
 Los crea `npm run seed`. La contraseña de todos es **`123456`**. En la pantalla de inicio de sesión, en «Cuentas de
-prueba», se completan con un clic.
+prueba», se completan con un clic. Un estudiante también puede crear su propia cuenta en «Crear cuenta» (`/registro`).
 
 | Perfil | Correo | Nombre | Entra a |
 |---|---|---|---|
@@ -196,6 +198,9 @@ mensaje de validación que entrega la API.
 
 - **Postman**: importa [`docs/postman/salud-mental.postman_collection.json`](docs/postman/), con `npm run seed` y el
   backend corriendo. Corre las carpetas en orden: primero «0. Iniciar sesión». Cada consulta revisa sola su resultado.
+- **Demo automatizada de los RF**: en `e2e/`, `npm run setup` una vez y luego `npm run check` (recorre los 12 RF sin
+  ventana) o `npm run demo` (los muestra en el navegador, con una pausa por RF). Ambos siembran la base antes. Ver
+  [`e2e/README.md`](e2e/README.md).
 - **Flujo end-to-end**: el recorrido de las capturas (solicitud → derivación → clasificación → asignación → cita →
   seguimiento → cierre → avisos → reportes, bitácora y usuarios) se verificó en el navegador.
 
