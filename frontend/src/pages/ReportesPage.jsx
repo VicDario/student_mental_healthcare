@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toQuery } from "../api/client";
 import MesesChart from "../components/reportes/MesesChart";
 import TiposChart from "../components/reportes/TiposChart";
+import Button from "../components/ui/Button";
 import LoadState from "../components/ui/LoadState";
 import { CAPTION, INPUT, LABEL, NOTICE, PAGE_TITLE, TABLE, TD, TH_COL, TH_ROW } from "../components/ui/styles";
 import { useApi } from "../hooks/useApi";
@@ -19,6 +20,43 @@ const horas = (valor) => (valor === null ? "Sin datos" : valor < 48 ? `${valor} 
 const mesLabel = (mes) =>
   new Date(`${mes}-01T12:00:00`).toLocaleDateString("es-CL", { month: "short", year: "2-digit" });
 
+// Arma el CSV con los mismos datos y la misma protección que la pantalla:
+// solo conteos y promedios, y el detalle por sede con rango bajo cinco casos.
+// Separador ";" y BOM para que Excel en español lo abra con columnas y tildes.
+function reporteCsv(datos, periodo) {
+  const filas = [["Sección", "Indicador", "Valor"]];
+  const agregar = (seccion, indicador, valor) => filas.push([seccion, indicador, String(valor)]);
+
+  agregar("Periodo", "Sede", periodo.sede);
+  agregar("Periodo", "Desde", periodo.desde);
+  agregar("Periodo", "Hasta", periodo.hasta);
+  agregar("Resumen", "Solicitudes registradas", datos.totalRequests);
+  agregar("Resumen", "Casos cerrados", datos.byStatus.closed);
+  agregar(
+    "Resumen",
+    "Ingresadas por derivación docente",
+    `${datos.totalRequests ? Math.round((datos.byOrigin.referral / datos.totalRequests) * 100) : 0}%`,
+  );
+  agregar("Tiempos de respuesta", "Hasta la asignación", horas(datos.responseTimes.toAssignment.averageHours));
+  agregar("Tiempos de respuesta", "Hasta el cierre", horas(datos.responseTimes.toClosure.averageHours));
+  for (const item of datos.byType) {
+    agregar("Por tipo de apoyo", item.type === "sin_dato" ? "Sin clasificar" : item.type, item.count);
+  }
+  for (const item of datos.byMonth) agregar("Por mes", mesLabel(item.month), item.count);
+  for (const [estado, cantidad] of Object.entries(datos.byStatus)) agregar("Por estado", statusLabel(estado), cantidad);
+  for (const [nivel, cantidad] of Object.entries(datos.byUrgency)) agregar("Por urgencia", urgencyLabel(nivel), cantidad);
+  for (const item of datos.byCampus) {
+    agregar("Por sede", item.campus === "sin_dato" ? "Sin sede" : item.campus, protegerConteo(item.count));
+  }
+  agregar("Talleres", "Talleres en el periodo", datos.workshops.workshops);
+  agregar("Talleres", "Inscripciones activas", datos.workshops.enrollments.enrolled + datos.workshops.enrollments.attended);
+  agregar("Talleres", "Asistencias", datos.workshops.enrollments.attended);
+  agregar("Talleres", "Tasa de asistencia", datos.workshops.attendanceRate === null ? "—" : `${datos.workshops.attendanceRate}%`);
+
+  const celda = (valor) => (/[";\n]/.test(valor) ? `"${valor.replaceAll('"', '""')}"` : valor);
+  return `\uFEFF${filas.map((fila) => fila.map(celda).join(";")).join("\r\n")}`;
+}
+
 const blockTitleClass = "mb-1.5 text-[21px] leading-tight font-semibold text-title";
 const blockNoteClass = "mb-[18px] text-[13px] text-muted";
 
@@ -29,6 +67,17 @@ export default function ReportesPage() {
   const datos = report.data;
 
   const cambiar = (event) => setFiltros({ ...filtros, [event.target.name]: event.target.value });
+
+  function descargarCsv() {
+    const sede = campuses.data?.find((item) => item.id === filtros.campus)?.name ?? "Todas las sedes";
+    const csv = reporteCsv(datos, { sede, desde: filtros.from || "Sin límite", hasta: filtros.to || "Sin límite" });
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const enlace = document.createElement("a");
+    enlace.href = url;
+    enlace.download = `reporte-bienestar-${new Date().toISOString().slice(0, 10)}.csv`;
+    enlace.click();
+    URL.revokeObjectURL(url);
+  }
 
   const metricas = datos && [
     { dato: datos.totalRequests, rotulo: "Solicitudes registradas" },
@@ -47,7 +96,7 @@ export default function ReportesPage() {
 
       <p className={NOTICE}>
         Este reporte es agregado y no expone datos personales: solo trae conteos y promedios, sin nombres, correos ni
-        códigos de solicitud. Los cruces con menos de cinco casos se muestran como rango.
+        códigos de solicitud. Los cruces con menos de cinco casos se muestran como rango, también en el CSV descargado.
       </p>
 
       <div className="mb-7 flex flex-wrap gap-[18px] max-[560px]:flex-col max-[560px]:gap-3.5">
@@ -67,6 +116,11 @@ export default function ReportesPage() {
         <div className="flex-[1_1_160px]">
           <label htmlFor="filtro-to" className={LABEL}>Hasta</label>
           <input id="filtro-to" name="to" type="date" value={filtros.to} onChange={cambiar} className={INPUT} />
+        </div>
+        <div className="flex flex-[0_0_auto] items-end">
+          <Button variant="secondary" onClick={descargarCsv} disabled={!datos}>
+            Descargar CSV
+          </Button>
         </div>
       </div>
 
