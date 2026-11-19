@@ -12,9 +12,9 @@ const NEXT_WEEK = dateFromToday(7)
 let page
 let demo
 
-test.beforeAll(async ({ demoPage, demoMode, demoAutoplay }) => {
+test.beforeAll(async ({ demoPage, demoMode, demoAutoplay, demoStepDelay }) => {
   page = demoPage
-  demo = createDemo(page, demoMode, demoAutoplay)
+  demo = createDemo(page, demoMode, demoAutoplay, demoStepDelay)
 })
 
 const main = () => page.locator('main')
