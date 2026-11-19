@@ -8,6 +8,8 @@ export const test = base.extend({
   demoMode: [false, { option: true, scope: 'worker' }],
   // Milisegundos que espera cada pausa antes de seguir sola (0 = esperar el botón)
   demoAutoplay: [0, { option: true, scope: 'worker' }],
+  // Milisegundos de pausa al terminar cada paso, para que el público vea el resultado
+  demoStepDelay: [0, { option: true, scope: 'worker' }],
   demoPage: [
     async ({ browser, demoMode }, use, workerInfo) => {
       const { baseURL, viewport, locale, timezoneId } = workerInfo.project.use
@@ -23,7 +25,7 @@ export const test = base.extend({
 
 // Acciones del recorrido. En modo demo resaltan el elemento antes de usarlo,
 // actualizan el rótulo y esperan el botón "Siguiente" entre un RF y otro.
-export function createDemo(page, demoMode, autoplay = 0) {
+export function createDemo(page, demoMode, autoplay = 0, stepDelay = 0) {
   let current = null
 
   async function setCaption(data) {
@@ -58,7 +60,9 @@ export function createDemo(page, demoMode, autoplay = 0) {
 
     async step(text, body) {
       await setCaption({ ...current, step: text })
-      return test.step(text, body)
+      const result = await test.step(text, body)
+      if (demoMode && stepDelay > 0) await page.waitForTimeout(stepDelay)
+      return result
     },
 
     // Pausa hasta que alguien presione el botón del rótulo
