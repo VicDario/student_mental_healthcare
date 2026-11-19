@@ -28,42 +28,73 @@ const EMPTY = {
 
 const toIso = (date, time) => (date && time ? new Date(`${date}T${time}`).toISOString() : undefined)
 
-// Crea un taller (POST /api/workshops). Queda a cargo de quien lo crea
-export default function TallerForm({ onCreated }) {
-  const [form, setForm] = useState(EMPTY)
+// Fecha y hora locales para los campos date y time del formulario
+const pad = (value) => String(value).padStart(2, '0')
+const toDateInput = (iso) => {
+  const date = new Date(iso)
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+}
+const toTimeInput = (iso) => {
+  const date = new Date(iso)
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
+
+// Datos de una actividad existente para el modo edición
+function toForm(workshop) {
+  return {
+    title: workshop.title,
+    kind: workshop.kind,
+    category: workshop.category ?? '',
+    modality: workshop.modality,
+    campus: workshop.campus?.id ?? '',
+    location: workshop.location ?? '',
+    date: toDateInput(workshop.startsAt),
+    startTime: toTimeInput(workshop.startsAt),
+    endTime: toTimeInput(workshop.endsAt),
+    capacity: String(workshop.capacity),
+    description: workshop.description ?? '',
+  }
+}
+
+// Crea un taller (POST /api/workshops), que queda a cargo de quien lo crea.
+// Si llega `editing`, edita esa actividad (PUT /api/workshops/:id)
+export default function TallerForm({ editing, onSaved, onCancelEdit }) {
+  const [form, setForm] = useState(() => (editing ? toForm(editing) : EMPTY))
   const campuses = useApi('/catalogs?type=campus')
   const { submit, pending, error, success, fieldError } = useSubmit()
   const update = (event) => setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }))
 
   async function handleSubmit(event) {
     event.preventDefault()
+    const body = {
+      title: form.title,
+      kind: form.kind,
+      category: form.category || undefined,
+      modality: form.modality,
+      campus: form.campus || undefined,
+      location: form.location || undefined,
+      startsAt: toIso(form.date, form.startTime),
+      endsAt: toIso(form.date, form.endTime),
+      capacity: Number(form.capacity),
+      description: form.description || undefined,
+    }
+    if (editing) {
+      const saved = await submit(() => api(`/workshops/${editing.id}`, { method: 'PUT', body }))
+      if (saved) onSaved(`Se guardaron los cambios de "${saved.title}".`)
+      return
+    }
     const created = await submit(
-      () =>
-        api('/workshops', {
-          method: 'POST',
-          body: {
-            title: form.title,
-            kind: form.kind,
-            category: form.category || undefined,
-            modality: form.modality,
-            campus: form.campus || undefined,
-            location: form.location || undefined,
-            startsAt: toIso(form.date, form.startTime),
-            endsAt: toIso(form.date, form.endTime),
-            capacity: Number(form.capacity),
-            description: form.description || undefined,
-          },
-        }),
+      () => api('/workshops', { method: 'POST', body }),
       'Actividad publicada. Los estudiantes ya pueden inscribirse.',
     )
     if (created) {
       setForm(EMPTY)
-      onCreated()
+      onSaved()
     }
   }
 
   return (
-    <Panel id="panelCrear" title="Nueva actividad">
+    <Panel id="panelCrear" title={editing ? 'Editar actividad' : 'Nueva actividad'}>
       <ApiMessage error={error} success={success} />
       <form onSubmit={handleSubmit} noValidate>
         <FormField id="title" label="Título *" className="mb-3" error={fieldError('title')}>
@@ -113,8 +144,13 @@ export default function TallerForm({ onCreated }) {
         </FormField>
 
         <Button type="submit" className="w-full" disabled={pending}>
-          {pending ? 'Publicando…' : 'Publicar actividad'}
+          {editing ? (pending ? 'Guardando…' : 'Guardar cambios') : pending ? 'Publicando…' : 'Publicar actividad'}
         </Button>
+        {editing && (
+          <Button variant="secondary" className="mt-2 w-full" onClick={onCancelEdit}>
+            Cancelar edición
+          </Button>
+        )}
       </form>
     </Panel>
   )

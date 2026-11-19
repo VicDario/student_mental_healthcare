@@ -22,7 +22,7 @@ function matchesFilter(workshop, filter) {
 }
 
 // Tabla de talleres con búsqueda y filtro por cupos
-export default function TallerTable({ workshops, onSelectTaller, onCancel }) {
+export default function TallerTable({ workshops, onSelectTaller, onEdit, onCancel }) {
   const [activeFilter, setActiveFilter] = useState('all')
   const [search, setSearch] = useState('')
 
@@ -122,6 +122,15 @@ export default function TallerTable({ workshops, onSelectTaller, onCancel }) {
                     >
                       Ver nómina
                     </button>
+                    {workshop.status === 'scheduled' && (
+                      <button
+                        type="button"
+                        onClick={() => onEdit(workshop)}
+                        className="ml-1.5 cursor-pointer rounded-full border border-forest-300 bg-page px-3 py-1 font-semibold text-forest-800 transition hover:border-forest-600 hover:bg-forest-100"
+                      >
+                        Editar
+                      </button>
+                    )}
                     {workshop.status === 'scheduled' && (
                       <button
                         type="button"
