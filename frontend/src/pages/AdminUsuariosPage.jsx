@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { api, toQuery } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import CatalogosPanel from '../components/admin-usuarios/CatalogosPanel'
+import PerfilesPanel from '../components/admin-usuarios/PerfilesPanel'
 import UsuarioForm from '../components/admin-usuarios/UsuarioForm'
 import UsuariosTabla from '../components/admin-usuarios/UsuariosTabla'
 import DashboardPage from '../components/layout/DashboardPage'
@@ -19,6 +20,7 @@ import { countLabel, ROLE_OPTIONS } from '../utils/labels'
 
 const SECTIONS = [
   { value: 'users', label: 'Usuarios' },
+  { value: 'profiles', label: 'Perfiles' },
   { value: 'catalogs', label: 'Tipos de apoyo, sedes y unidades' },
 ]
 
@@ -103,9 +105,17 @@ export default function AdminUsuariosPage() {
         </aside>
 
         <div className="min-w-0">
-          {section === 'catalogs' ? (
-            <CatalogosPanel />
-          ) : (
+          {section === 'catalogs' && <CatalogosPanel />}
+          {section === 'profiles' && (
+            <PerfilesPanel
+              users={everyone}
+              onShowUsers={(role) => {
+                setFilters({ search: '', role, active: '' })
+                setSection('users')
+              }}
+            />
+          )}
+          {section === 'users' && (
             <>
               <StatsRow label="Resumen de cuentas" stats={stats} />
 
