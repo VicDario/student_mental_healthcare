@@ -2,7 +2,7 @@
 // paso actual. La página reserva ese espacio abajo para que la barra no tape
 // formularios ni botones. Se vuelve a dibujar después de cada recarga.
 export function captionScript() {
-  const HEIGHT = 76
+  const HEIGHT = 52
 
   const render = () => {
     let data = null
@@ -29,22 +29,22 @@ export function captionScript() {
         zIndex: '2147483647',
         display: 'flex',
         alignItems: 'center',
-        gap: '20px',
-        padding: '0 24px',
+        gap: '14px',
+        padding: '0 16px',
         background: '#1b4332',
         color: '#ffffff',
         boxShadow: '0 -6px 20px rgba(0,0,0,0.25)',
-        font: '15px/1.35 system-ui, sans-serif',
+        font: '13px/1.3 system-ui, sans-serif',
       })
       document.body.appendChild(bar)
-      document.body.style.paddingBottom = `${HEIGHT + 24}px`
-      document.documentElement.style.scrollPaddingBottom = `${HEIGHT + 24}px`
+      document.body.style.paddingBottom = `${HEIGHT + 16}px`
+      document.documentElement.style.scrollPaddingBottom = `${HEIGHT + 16}px`
     }
     bar.replaceChildren()
 
     const id = document.createElement('strong')
     id.textContent = data.id
-    id.style.cssText = 'flex:none;font-size:26px;letter-spacing:-0.01em;min-width:72px'
+    id.style.cssText = 'flex:none;font-size:18px;letter-spacing:-0.01em;min-width:52px'
 
     const text = document.createElement('div')
     text.style.cssText = 'flex:1;min-width:0'
@@ -55,7 +55,7 @@ export function captionScript() {
     if (data.step) {
       const step = document.createElement('div')
       step.textContent = data.step
-      step.style.cssText = 'font-size:13.5px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'
+      step.style.cssText = 'font-size:12px;opacity:0.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'
       text.append(step)
     }
 
@@ -64,7 +64,7 @@ export function captionScript() {
     if (data.presenter) {
       const who = document.createElement('span')
       who.textContent = `Presenta: ${data.presenter}`
-      who.style.cssText = 'flex:none;font-size:13px;opacity:0.8'
+      who.style.cssText = 'flex:none;font-size:12px;opacity:0.8'
       bar.append(who)
     }
 
@@ -73,7 +73,7 @@ export function captionScript() {
       next.type = 'button'
       next.textContent = data.waiting
       next.style.cssText =
-        'flex:none;padding:10px 22px;border:0;border-radius:999px;background:#ffffff;color:#1b4332;font-weight:700;font-size:15px;cursor:pointer'
+        'flex:none;padding:6px 14px;border:0;border-radius:999px;background:#ffffff;color:#1b4332;font-weight:700;font-size:13px;cursor:pointer'
       next.addEventListener('click', () => {
         window.__demoNext = true
       })
