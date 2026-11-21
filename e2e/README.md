@@ -3,10 +3,10 @@
 Recorre en el navegador los 12 requerimientos de la rúbrica del Caso 5, en el mismo orden que el guion de la
 presentación (RF1–RF8, RF11, RF9, RF10, RF12). Está hecha con [Playwright](https://playwright.dev).
 
-Cada RF es un test. En modo demo, el navegador se abre maximizado y avanza en cámara lenta, resaltando cada
-elemento antes de usarlo. Un rótulo abajo a la izquierda muestra el RF en curso, quién lo presenta y el paso
-actual. Al terminar cada RF, la demo se detiene hasta que alguien presiona **Siguiente ▶** en ese rótulo, así el
-equipo explica con calma.
+Cada RF es un test. En modo demo, el navegador se abre maximizado y marca con un borde naranjo cada elemento antes
+de usarlo: lo deja marcado 3 segundos y recién entonces hace el clic o escribe. Una barra al pie de la página muestra el RF en curso, quién lo presenta y el
+paso actual. Después de cada paso espera 2 segundos para que se vea el resultado, y al terminar cada RF se detiene
+hasta que alguien presiona **Siguiente ▶** en esa barra, así el equipo explica con calma.
 
 ## Requisitos
 
@@ -42,11 +42,18 @@ Para probar contra servidores en otros puertos, sin sembrar la base de desarroll
 E2E_BASE_URL=http://localhost:5199 E2E_API_URL=http://localhost:3999 npx playwright test --project=check
 ```
 
-`E2E_HEADLESS=1` corre los modos demo sin abrir ventana.
+`E2E_HEADLESS=1` corre los modos demo sin abrir ventana. Los tiempos de la demo se ajustan en milisegundos:
+
+| Variable | Qué controla | Por defecto |
+|---|---|---|
+| `E2E_ACTION_DELAY` | Cuánto queda marcado cada elemento antes del clic o de escribir | `3000` |
+| `E2E_STEP_DELAY` | Pausa al terminar cada paso, para ver el resultado | `2000` |
+
+Por ejemplo, `E2E_ACTION_DELAY=2000 npm run demo` la hace un poco más rápida.
 
 ## Archivos
 
 - `tests/rf-demo.spec.js`: el recorrido, un test por RF.
 - `tests/support.js`: acciones de la demo (resaltar, pausar, ingresar, cerrar sesión).
-- `tests/caption.js`: el rótulo que se muestra en la página.
+- `tests/caption.js`: la barra que se muestra al pie de la página.
 - `playwright.config.js`: los modos `demo`, `demo-auto` y `check`.

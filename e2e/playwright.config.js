@@ -5,9 +5,13 @@ import { defineConfig } from '@playwright/test'
 const BASE_URL = process.env.E2E_BASE_URL ?? 'http://localhost:5173'
 const API_URL = process.env.E2E_API_URL ?? 'http://localhost:3000'
 
-// E2E_HEADLESS=1 corre la demo sin ventana (solo para probar el recorrido)
+// E2E_HEADLESS=1 corre la demo sin ventana (solo para probar el recorrido).
+// E2E_ACTION_DELAY cambia cuánto se marca cada elemento antes de usarlo (milisegundos, por defecto 3000).
+// E2E_STEP_DELAY cambia la pausa al final de cada paso (milisegundos, por defecto 2000).
 const DEMO_USE = {
   demoMode: true,
+  demoActionDelay: Number(process.env.E2E_ACTION_DELAY ?? 3000),
+  demoStepDelay: Number(process.env.E2E_STEP_DELAY ?? 2000),
   headless: process.env.E2E_HEADLESS === '1',
   viewport: null,
   launchOptions: { slowMo: 300, args: ['--start-maximized'] },

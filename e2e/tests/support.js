@@ -8,6 +8,10 @@ export const test = base.extend({
   demoMode: [false, { option: true, scope: 'worker' }],
   // Milisegundos que espera cada pausa antes de seguir sola (0 = esperar el botón)
   demoAutoplay: [0, { option: true, scope: 'worker' }],
+  // Milisegundos de pausa al terminar cada paso, para que el público vea el resultado
+  demoStepDelay: [0, { option: true, scope: 'worker' }],
+  // Milisegundos que cada elemento queda marcado antes de usarlo (clic, escribir, elegir)
+  demoActionDelay: [0, { option: true, scope: 'worker' }],
   demoPage: [
     async ({ browser, demoMode }, use, workerInfo) => {
       const { baseURL, viewport, locale, timezoneId } = workerInfo.project.use
@@ -23,7 +27,7 @@ export const test = base.extend({
 
 // Acciones del recorrido. En modo demo resaltan el elemento antes de usarlo,
 // actualizan el rótulo y esperan el botón "Siguiente" entre un RF y otro.
-export function createDemo(page, demoMode, autoplay = 0) {
+export function createDemo(page, { demoMode = false, autoplay = 0, stepDelay = 0, actionDelay = 0 } = {}) {
   let current = null
 
   async function setCaption(data) {
@@ -37,8 +41,10 @@ export function createDemo(page, demoMode, autoplay = 0) {
 
   async function show(locator) {
     if (!demoMode) return
-    // Centra el elemento (lejos de la barra inferior) y lo marca un momento con un borde naranjo
-    await locator.evaluate((el) => {
+    // Centra el elemento (lejos de la barra inferior) y lo marca con un borde naranjo.
+    // Espera con el borde visible antes de usarlo, para que el público vea qué va a pasar.
+    const wait = Math.max(actionDelay, 450)
+    await locator.evaluate((el, visibleFor) => {
       el.scrollIntoView({ block: 'center', behavior: 'instant' })
       const previous = { outline: el.style.outline, offset: el.style.outlineOffset }
       el.style.outline = '3px solid #f59e0b'
@@ -46,9 +52,9 @@ export function createDemo(page, demoMode, autoplay = 0) {
       setTimeout(() => {
         el.style.outline = previous.outline
         el.style.outlineOffset = previous.offset
-      }, 900)
-    })
-    await page.waitForTimeout(450)
+      }, visibleFor)
+    }, wait + 500)
+    await page.waitForTimeout(wait)
   }
 
   const demo = {
@@ -58,7 +64,9 @@ export function createDemo(page, demoMode, autoplay = 0) {
 
     async step(text, body) {
       await setCaption({ ...current, step: text })
-      return test.step(text, body)
+      const result = await test.step(text, body)
+      if (demoMode && stepDelay > 0) await page.waitForTimeout(stepDelay)
+      return result
     },
 
     // Pausa hasta que alguien presione el botón del rótulo
