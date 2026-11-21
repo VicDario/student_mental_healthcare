@@ -1595,6 +1595,566 @@
           ]
         }
       ]
+    },
+    {
+      "name": "7. Talleres e inscripciones (#23)",
+      "item": [
+        {
+          "name": "Admin crea un taller",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/workshops",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Manejo del estrés en época de exámenes\",\n  \"description\": \"Técnicas de respiración y organización del tiempo\",\n  \"kind\": \"workshop\",\n  \"modality\": \"in_person\",\n  \"location\": \"Sala 204\",\n  \"startsAt\": \"{{workshopStart}}\",\n  \"endsAt\": \"{{workshopEnd}}\",\n  \"capacity\": 1\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// El taller debe ser futuro: empieza en 3 días y dura 1 hora",
+                  "const start = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);",
+                  "pm.collectionVariables.set('workshopStart', start.toISOString());",
+                  "pm.collectionVariables.set('workshopEnd', new Date(start.getTime() + 60 * 60 * 1000).toISOString());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('workshopId', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: fecha de término antes del inicio (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/workshops",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Taller inválido\",\n  \"kind\": \"talk\",\n  \"modality\": \"online\",\n  \"startsAt\": \"{{workshopEnd}}\",\n  \"endsAt\": \"{{workshopStart}}\",\n  \"capacity\": 10\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Estudiante ve los talleres",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/workshops?status=scheduled"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Incluye el taller', () => pm.expect(pm.response.json().map((w) => w.id)).to.include(pm.collectionVariables.get('workshopId')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Estudiante se inscribe",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/workshops/{{workshopId}}/enrollments"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: inscribirse dos veces (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{studentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/workshops/{{workshopId}}/enrollments"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Rechaza la segunda inscripción', () => pm.expect(pm.response.code).to.be.within(400, 409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: docente no puede crear talleres (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{teacherToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/workshops",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"x\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profesional ve la nómina",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/workshops/{{workshopId}}/enrollments"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const list = pm.response.json();",
+                  "pm.test('Hay un inscrito', () => pm.expect(list.length).to.eql(1));",
+                  "pm.collectionVariables.set('enrollmentId', list[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profesional marca asistencia",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/workshops/{{workshopId}}/enrollments/{{enrollmentId}}/attendance"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin cancela el taller",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/workshops/{{workshopId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "8. Bitácora de accesos y cambios (#15)",
+      "item": [
+        {
+          "name": "Admin ve la bitácora",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/audit-logs?limit=20"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Es una lista', () => pm.expect(pm.response.json()).to.be.an('array'));",
+                  "pm.test('No guarda el texto sensible', () => pm.expect(pm.response.text()).to.not.include('Me cuesta dormir'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Filtrar por acción (cierres)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/audit-logs?action=close"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Solo cierres', () => pm.response.json().forEach((l) => pm.expect(l.action).to.eql('close')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Historial de la solicitud del flujo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/audit-logs?entityId={{requestId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: profesional no ve la bitácora (403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{professionalToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/audit-logs"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "9. Registro, perfil y cierre de sesión (#13)",
+      "item": [
+        {
+          "name": "Estudiante nuevo se registra",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Camila Soto\",\n  \"email\": \"camila{{$timestamp}}@test.cl\",\n  \"password\": \"123456\",\n  \"studentCode\": \"2026-0042\",\n  \"program\": \"Ingeniería Civil\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Queda como estudiante', () => pm.expect(pm.response.json().role).to.eql('student'));",
+                  "pm.test('No devuelve la contraseña', () => pm.expect(pm.response.text()).to.not.include('password'));",
+                  "pm.collectionVariables.set('newStudentEmail', pm.response.json().email);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: datos inválidos en el registro (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"email\": \"no-es-correo\",\n  \"password\": \"123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Lista los campos con error', () => pm.expect(pm.response.json().errors.length).to.be.above(1));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login del estudiante nuevo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{newStudentEmail}}\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('newStudentToken', pm.response.json().token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{newStudentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/me"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: contraseña incorrecta (401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{newStudentEmail}}\",\n  \"password\": \"otra\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cerrar sesión",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{newStudentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/logout"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Error: el token ya no sirve (401)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{newStudentToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/me"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "variable": [
@@ -1656,6 +2216,30 @@
     },
     {
       "key": "teacherToken",
+      "value": ""
+    },
+    {
+      "key": "workshopId",
+      "value": ""
+    },
+    {
+      "key": "workshopStart",
+      "value": ""
+    },
+    {
+      "key": "workshopEnd",
+      "value": ""
+    },
+    {
+      "key": "enrollmentId",
+      "value": ""
+    },
+    {
+      "key": "newStudentEmail",
+      "value": ""
+    },
+    {
+      "key": "newStudentToken",
       "value": ""
     }
   ]
